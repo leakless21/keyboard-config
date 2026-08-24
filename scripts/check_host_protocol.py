@@ -68,6 +68,7 @@ EXPECTED_HOST_SIGNALS = [
     "&kp LA(F14)",  # QUICK_TERMINAL (Ghostty scratchpad / Quake)
     "&kp LA(F15)",  # NEW_TERMINAL (Ghostty / Windows Terminal)
     "&kp LA(F16)",  # PREVIOUS_WINDOW (focus-back-and-forth / Alt+Tab)
+    "&kp LA(F17)",  # LANGUAGE_TOGGLE (Input Source / EVKey)
     "&kp LA(F18)",  # SERVICE_MODE (AeroSpace / GlazeWM service)
 ]
 
@@ -122,8 +123,8 @@ def validate_karabiner_translator(karabiner_data: dict) -> None:
     # Check device scoping conditions
     assert_eq(
         len(all_manipulators),
-        32,
-        f"Layer B (Karabiner): Expected exactly 32 canonical manipulators (27 HOST + 5 editing), found {len(all_manipulators)}",
+        33,
+        f"Layer B (Karabiner): Expected exactly 33 canonical manipulators (28 HOST + 5 editing), found {len(all_manipulators)}",
     )
 
     # Check device scoping conditions
@@ -166,6 +167,7 @@ def validate_karabiner_translator(karabiner_data: dict) -> None:
         ("f14", {"option"}, "grave_accent_and_tilde", {"left_control"}),  # QTERM -> Ctrl+`
         ("f15", {"option"}, "return_or_enter", {"left_alt"}),            # TERM -> Alt+Enter
         ("f16", {"option"}, "grave_accent_and_tilde", {"left_alt"}),      # PREV WIN -> Alt+`
+        ("f17", {"option"}, "spacebar", {"left_control"}),               # LANG -> Ctrl+Space
         ("f18", {"option"}, "semicolon", {"left_alt", "left_shift"}),     # SERVICE -> Alt+Shift+;
         # Workspace focus 1-5
         ("f13", set(), "1", {"left_alt"}),
@@ -280,6 +282,7 @@ def validate_windows_ahk(content: str) -> None:
         ("!F14::", "wt", "Quick Terminal"),
         ("!F15::", "wt.exe", "New Terminal -> wt.exe"),
         ("!F16::", "Tab", "Previous Window -> Alt+Tab"),
+        ("!F17::", "ToggleInputLanguage", "Language Toggle -> EVKey"),
     ]
 
     for trigger, target, desc in required_ahk_bindings:
@@ -292,7 +295,7 @@ def validate_windows_ahk(content: str) -> None:
     if idx_shift_f24 == -1 or idx_bare_f24 == -1 or idx_shift_f24 > idx_bare_f24:
         fail("Windows AutoHotkey: +F24:: (Redo) must precede bare F24:: (Undo)")
 
-    print("PASS: Windows AutoHotkey Bridge validated (editing F21-F24, launchers Alt+F13-F16, and hotkey precedence).")
+    print("PASS: Windows AutoHotkey Bridge validated (editing F21-F24, desktop actions Alt+F13-F17, and hotkey precedence).")
 
 
 def validate_glazewm_consumer(data: dict) -> None:

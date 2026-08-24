@@ -330,7 +330,7 @@ layers:
   - Launch
   - QTerm
   - Term
-  - ''
+  - LANG
   - ''
   - ''
   - Move ←

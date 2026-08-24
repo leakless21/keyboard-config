@@ -52,6 +52,7 @@ parse_config:
     "&kp LA(F14)": "QTerm"
     "&kp LA(F15)": "Term"
     "&kp LA(F16)": "Prev Win"
+    "&kp LA(F17)": "LANG"
     "&kp LC(F13)": "Focus ←"
     "&kp LC(F14)": "Focus ↓"
     "&kp LC(F15)": "Focus ↑"

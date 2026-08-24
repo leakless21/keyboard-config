@@ -21,6 +21,7 @@ Semantic F13–F24 HID Signals
   Resize Mode                     Quick Terminal summon (Alt+F14)
   Service Mode                    New Terminal window (Alt+F15)
   Fullscreen & Float              Previous Window (Alt+F16)
+                                  Language Toggle (Alt+F17)
 ```
 
 ---
@@ -31,6 +32,7 @@ Semantic F13–F24 HID Signals
 - Install [AutoHotkey v2](https://www.autohotkey.com/).
 - Copy `hosts/windows/keyboard.ahk` to your Windows system.
 - Place a shortcut to `keyboard.ahk` in your Windows Startup directory (`Win+R` $\rightarrow$ `shell:startup`).
+- **Input Language / EVKey Toggle (`Alt+F17`):** AutoHotkey maps `Alt+F17` to `ToggleInputLanguage()`, which simulates `Ctrl+Shift` (or your chosen EVKey toggle hotkey). Ensure EVKey is configured with the matching toggle shortcut.
 
 ### 2. GlazeWM (Tiling Window Manager)
 - Install [GlazeWM](https://github.com/glzr-io/glazewm) (e.g., `winget install glzr-io.glazewm`).

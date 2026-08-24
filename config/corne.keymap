@@ -252,7 +252,7 @@
                 &none            &kp LS(F18)      &kp LA(F18)      &none            &none            &kp ESCAPE
                 &none            &kp F13          &kp F14          &kp F15          &kp F16          &kp F17
                 &kp LA(F16)      &kp LC(F13)      &kp LC(F14)      &kp LC(F15)      &kp LC(F16)      &none
-                &none            &kp LA(F13)      &kp LA(F14)      &kp LA(F15)      &none            &none
+                &none            &kp LA(F13)      &kp LA(F14)      &kp LA(F15)      &kp LA(F17)      &none
                 &none            &kp LC(LS(F13))  &kp LC(LS(F14))  &kp LC(LS(F15))  &kp LC(LS(F16))  &none
                 &none            &none            &none            &kp F19          &kp F18          &kp F20
             >;

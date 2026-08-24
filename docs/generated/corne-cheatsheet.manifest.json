@@ -1,0 +1,10 @@
+{
+  "schema": 1,
+  "keyboard": "corne",
+  "keymap_sha256": "e113e1822d1803db48dfc3656add839c536c370435b6068fe0faa2325305005c",
+  "protocol_sha256": "594ff62b50bcf2a729a8dbaabda715a6143bc3400552f9d8c8cb43a1d7ee7e25",
+  "presentation_sha256": "d60d8493eeca94a7873146dc9e6bd8cffd16f187df004c5e9ab01af71d1e6822",
+  "aliases_sha256": "897d9c01dd1982bdd694abdf620a6bcb436f42e05b64799afffcd092317cc31e",
+  "svg_sha256": "89bcdb7c6023be304dd12f4e2f7629343a17c4dec678b0e262b77a30d85337d8",
+  "pdf_sha256": "66e91c23209dc0707a896328b790e0b7d7024075ee93bf628a891e59aa63613c"
+}

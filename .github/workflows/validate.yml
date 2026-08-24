@@ -6,19 +6,23 @@ on:
     paths:
       - "config/**"
       - "protocol/**"
+      - "cheatsheets/**"
       - "hosts/**"
       - "scripts/**"
       - "docs/**"
       - "build.yaml"
+      - "keymap_drawer.config.yaml"
       - ".github/workflows/**"
   pull_request:
     paths:
       - "config/**"
       - "protocol/**"
+      - "cheatsheets/**"
       - "hosts/**"
       - "scripts/**"
       - "docs/**"
       - "build.yaml"
+      - "keymap_drawer.config.yaml"
       - ".github/workflows/**"
 
 concurrency:
@@ -32,25 +36,34 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v7
 
-      - name: Set up Python
-        uses: actions/setup-python@v7
+      - name: Set up uv
+        uses: astral-sh/setup-uv@88789728010476483c6fcf4a30dbf20c4c4ea090 # v5.3.0
         with:
-          python-version: "3.x"
+          enable-cache: true
 
       - name: Install Validation Dependencies
-        run: pip install --upgrade pyyaml tomli
+        run: uv sync --frozen --dev
 
       - name: Run Corne Keymap Invariant Checks
-        run: python3 scripts/check_corne_keymap.py
+        run: uv run scripts/check_corne_keymap.py
 
       - name: Run Sofle Keymap Invariant Checks
-        run: python3 scripts/check_sofle_keymap.py
+        run: uv run scripts/check_sofle_keymap.py
 
       - name: Run Build & Manifest Validation
-        run: python3 scripts/check_build_config.py
+        run: uv run scripts/check_build_config.py
 
       - name: Run Multi-Host Protocol Validation
-        run: python3 scripts/check_host_protocol.py
+        run: uv run scripts/check_host_protocol.py
 
       - name: Run Generated Artifact & Freshness Validation
-        run: python3 scripts/check_generated.py
+        run: uv run scripts/check_generated.py
+
+      - name: Smoke-Test PDF Render with rsvg-convert
+        run: |
+          sudo apt-get update && sudo apt-get install -y librsvg2-bin
+          uv run scripts/generate_cheatsheet.py all --out-dir /tmp/cheatsheet-smoke-test
+          test -f /tmp/cheatsheet-smoke-test/corne-cheatsheet.pdf
+          test -s /tmp/cheatsheet-smoke-test/corne-cheatsheet.pdf
+          test -f /tmp/cheatsheet-smoke-test/sofle-cheatsheet.pdf
+          test -s /tmp/cheatsheet-smoke-test/sofle-cheatsheet.pdf

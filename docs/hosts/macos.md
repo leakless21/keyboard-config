@@ -50,6 +50,13 @@ Native macOS Chords (Alt + Cmd shortcuts)
   ```
 - This sets up the dropdown Quick Terminal on `Ctrl+``` (`Alt+F14`).
 
+
+### 4. Input Source / Language Toggle (Ctrl+Space)
+- The keyboard emits `Alt+F17` for `LANGUAGE_TOGGLE`.
+- Karabiner-Elements translates `Option+F17` to `Control+Space`.
+- Configure macOS input source shortcut in:
+  **System Settings** $\rightarrow$ **Keyboard** $\rightarrow$ **Keyboard Shortcuts** $\rightarrow$ **Input Sources** $\rightarrow$ **Select previous input source** = `Control+Space` (or `Select next source in Input menu`).
+  With two primary input sources (e.g. English and Vietnamese), `Control+Space` acts as a clean toggle.
 ---
 
 ## 3. Workspaces & Modal Operations

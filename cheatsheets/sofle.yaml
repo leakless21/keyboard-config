@@ -1,0 +1,31 @@
+schema_version: 1
+
+keyboard: sofle
+title: "SOFLE v2 · ONE-PAGE LAYER CHEATSHEET"
+base_layout: "Colemak-DH"
+
+# Saturated, high-contrast print-optimized accent colors for each layer
+colors:
+  BASE: "#475569"
+  NAV: "#0284c7"
+  MOUSE: "#0d9488"
+  MEDIA: "#ea580c"
+  NUM: "#d97706"
+  SYM: "#9333ea"
+  FUN: "#db2777"
+  HOST: "#6366f1"
+  GAME: "#dc2626"
+  ADJUST: "#c026d3"
+
+# Layer descriptions for subtitles and metadata
+descriptions:
+  BASE: "Colemak-DH"
+  NAV: "Navigation"
+  MOUSE: "Pointer & scrolling"
+  MEDIA: "Media controls"
+  NUM: "Numeric"
+  SYM: "Symbols"
+  FUN: "Function keys"
+  HOST: "Host/window control"
+  GAME: "Tap-only QWERTY"
+  ADJUST: "Device management"

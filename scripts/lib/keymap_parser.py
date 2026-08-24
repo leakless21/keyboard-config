@@ -165,22 +165,52 @@ def parse_keymap_content(content: str, layout: Optional[str] = None) -> Keyboard
         defines[m.group(1)] = int(m.group(2))
 
     # 2. Parse custom behaviors
+    def extract_dts_block(text: str, block_name: str) -> str:
+        pattern = rf'\b{block_name}\s*\{{'
+        m = re.search(pattern, text)
+        if not m:
+            return ""
+        start = m.end() - 1
+        depth = 0
+        for idx in range(start, len(text)):
+            if text[idx] == '{':
+                depth += 1
+            elif text[idx] == '}':
+                depth -= 1
+                if depth == 0:
+                    return text[start + 1:idx]
+        return ""
+
+    # 2. Parse custom behaviors
     behaviors = {}
-    beh_match = re.search(r'behaviors\s*\{(?P<body>.*?)\n\s*\};', content, re.DOTALL)
-    if beh_match:
-        b_body = beh_match.group("body")
-        for m in re.finditer(r'(\w+):\s*(\w+)\s*\{([^\{\}]+)\};', b_body):
+    b_body = extract_dts_block(content, "behaviors")
+    if b_body:
+        for m in re.finditer(r'(\w+):\s*(\w+)\s*\{([^\{\}]+(?:\{[^\{\}]*\}[^\{\}]*)*)\};', b_body, re.DOTALL):
             b_name = m.group(1)
             b_node = m.group(2)
             b_props_text = m.group(3)
-            props = {}
-            for line in b_props_text.splitlines():
-                line = line.strip()
-                if not line or line.startswith('//') or line.startswith('/*'):
+            props: Dict[str, Any] = {}
+            clean_props_text = re.sub(r'/\*.*?\*/', '', b_props_text, flags=re.DOTALL)
+            for stmt in clean_props_text.split(';'):
+                stmt = stmt.strip()
+                if not stmt or stmt.startswith('//'):
                     continue
-                if '=' in line:
-                    k, v = line.split('=', 1)
-                    props[k.strip()] = v.rstrip(';').strip()
+                if '=' in stmt:
+                    k, v = stmt.split('=', 1)
+                    k = k.strip()
+                    v = v.strip()
+                    if '<' in v and '>' in v:
+                        bracket_items = re.findall(r'<([^>]+)>', v)
+                        if bracket_items:
+                            if len(bracket_items) > 1 or ',' in v:
+                                items = [f"<{it.strip()}>" for it in bracket_items]
+                                props[k] = items
+                            else:
+                                props[k] = bracket_items[0].split()
+                    else:
+                        props[k] = v.strip('" ')
+                else:
+                    props[stmt] = True
             behaviors[b_name] = Behavior(
                 name=b_name,
                 node_name=b_node,
@@ -190,10 +220,9 @@ def parse_keymap_content(content: str, layout: Optional[str] = None) -> Keyboard
 
     # 3. Parse conditional layers
     conditional_layers = []
-    cond_match = re.search(r'conditional_layers\s*\{(?P<body>.*?)\n\s*\};', content, re.DOTALL)
-    if cond_match:
-        c_body = cond_match.group("body")
-        for m in re.finditer(r'(\w+)\s*\{([^\{\}]+)\};', c_body):
+    c_body = extract_dts_block(content, "conditional_layers")
+    if c_body:
+        for m in re.finditer(r'(\w+)\s*\{([^\{\}]+)\};', c_body, re.DOTALL):
             c_name = m.group(1)
             c_block = m.group(2)
             if_m = re.search(r'if-layers\s*=\s*<([^>]+)>;', c_block)
@@ -204,34 +233,16 @@ def parse_keymap_content(content: str, layout: Optional[str] = None) -> Keyboard
                 conditional_layers.append(ConditionalLayer(name=c_name, if_layers=if_layers, then_layer=then_layer))
 
     # 4. Parse keymap and layer blocks
-    km_start = content.find("keymap {")
-    if km_start == -1:
-        km_start = content.find("keymap{")
-    if km_start == -1:
+    km_body = extract_dts_block(content, "keymap")
+    if not km_body:
         raise ValueError("Could not find 'keymap {' block in DTS")
-
-    brace_depth = 0
-    km_end = -1
-    for i in range(km_start, len(content)):
-        if content[i] == '{':
-            brace_depth += 1
-        elif content[i] == '}':
-            brace_depth -= 1
-            if brace_depth == 0:
-                km_end = i
-                break
-
-    if km_end == -1:
-        raise ValueError("Unmatched braces in keymap block")
-
-    km_body = content[km_start:km_end + 1]
 
     layers = {}
     layer_order = []
 
     layer_matches = re.finditer(
         r'(\w+)\s*\{([^\{\}]+(?:\{[^\{\}]*\}[^\{\}]*)*)\};',
-        km_body[km_body.find('{') + 1 : -1],
+        km_body,
         re.DOTALL
     )
 

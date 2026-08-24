@@ -27,7 +27,21 @@ LB5 LB4 LB3 LB2 LB1 LB0 | RB0 RB1 RB2 RB3 RB4 RB5
 
 ---
 
-## 3. The 11 Layers
+## 3. Visual Keymap & Cheatsheet References
+
+* **One-Page Cheatsheet (SVG):** [`docs/generated/corne-cheatsheet.svg`](../generated/corne-cheatsheet.svg)
+* **Printable Vector PDF:** [`docs/generated/corne-cheatsheet.pdf`](../generated/corne-cheatsheet.pdf)
+* **Technical Keymap Diagram (keymap-drawer):** [`keymap-drawer/corne.svg`](../../keymap-drawer/corne.svg)
+* **Cheatsheet Configuration:** [`cheatsheets/corne.yaml`](../../cheatsheets/corne.yaml)
+
+To regenerate all visual reference artifacts from the current keymap:
+```bash
+uv run scripts/generate_cheatsheet.py corne
+```
+
+---
+
+## 4. The 11 Layers
 
 | Index | Layer Name | Activation | Primary Purpose |
 |-------|------------|------------|-----------------|
@@ -43,26 +57,20 @@ LB5 LB4 LB3 LB2 LB1 LB0 | RB0 RB1 RB2 RB3 RB4 RB5
 | 9 | `ADJUST` | Hold `NAV + NUM` | Bluetooth management (`LM4`–`LM0`), power toggles, mirrored reset/bootloaders, Studio unlock. |
 | 10 | `GAME_FN` | Hold `Esc` / `RH1` | Gaming numbers 1–0, F1–F10, missing symbols, and deliberate exit to `BASE` (`RH2`). |
 
----
-
-## 4. Bootloader & Recovery Shortcuts
+## 5. Bootloader & Recovery Shortcuts
 
 - **Left controller bootloader:** Hold `NAV` and press `LT5` (top-left key).
 - **Right controller bootloader:** Hold `NUM` and press `RT5` (top-right key).
 - **Mirrored software recovery:** Hold `ADJUST` (`NAV + NUM`), press `LT5` (left bootloader) or `RT5` (right bootloader).
 - **Hardware recovery:** Double-tap physical reset button on nice!nano v2.
 
----
-
-## 5. Artifacts & Flashing
+## 6. Artifacts & Flashing
 
 - `corne-left.uf2` (left half, includes ZMK Studio RPC over USB-UART)
 - `corne-right.uf2` (right half)
 - `settings-reset.uf2` (settings partition wipe utility)
 
----
-
-## 6. Power & Display Policy
+## 7. Power & Display Policy
 
 * **Sleep Timing:** Idle blank at 30 seconds (`CONFIG_ZMK_IDLE_TIMEOUT=30000`); deep sleep at 15 minutes (`CONFIG_ZMK_IDLE_SLEEP_TIMEOUT=900000`).
 * **External Power Normalization:** `CONFIG_ZMK_RGB_UNDERGLOW_EXT_POWER=n` ensures external power lines remain energized for OLED status screens even when underglow is toggled.

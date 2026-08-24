@@ -1,0 +1,10 @@
+{
+  "schema": 1,
+  "keyboard": "sofle",
+  "keymap_sha256": "cfcf24e11d2b7a97457ec2018c1bfe38786c9ce29cc22d291fd703303f5853c1",
+  "protocol_sha256": "594ff62b50bcf2a729a8dbaabda715a6143bc3400552f9d8c8cb43a1d7ee7e25",
+  "presentation_sha256": "bf6e7da7bbfb44908782de16747d4b317d78abbc8215923b53f35325646b88fb",
+  "aliases_sha256": "897d9c01dd1982bdd694abdf620a6bcb436f42e05b64799afffcd092317cc31e",
+  "svg_sha256": "47f4bd352c2f5c51467a580777cda8913f9be843149f9d89e05d981deb670d2f",
+  "pdf_sha256": "4348f38acb4eb6320477667f3139da360ed58bb1c0fc33630e07ce8586ca70af"
+}

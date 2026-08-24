@@ -34,7 +34,21 @@ LB5 LB4 LB3 LB2 LB1 LB0 LEC │ REC RB0 RB1 RB2 RB3 RB4 RB5
 
 ---
 
-## 3. The 10 Modernized Layers
+## 3. Visual Keymap & Cheatsheet References
+
+* **One-Page Cheatsheet (SVG):** [`docs/generated/sofle-cheatsheet.svg`](../generated/sofle-cheatsheet.svg)
+* **Printable Vector PDF:** [`docs/generated/sofle-cheatsheet.pdf`](../generated/sofle-cheatsheet.pdf)
+* **Technical Keymap Diagram (keymap-drawer):** [`keymap-drawer/sofle.svg`](../../keymap-drawer/sofle.svg)
+* **Cheatsheet Configuration:** [`cheatsheets/sofle.yaml`](../../cheatsheets/sofle.yaml)
+
+To regenerate visual reference artifacts for Sofle:
+```bash
+uv run scripts/generate_cheatsheet.py sofle
+```
+
+---
+
+## 4. The 10 Modernized Layers
 
 | Index | Layer Name | Activation | Primary Purpose |
 |-------|------------|------------|-----------------|
@@ -51,9 +65,7 @@ LB5 LB4 LB3 LB2 LB1 LB0 LEC │ REC RB0 RB1 RB2 RB3 RB4 RB5
 
 > **No `BUTTON` or `GAME_FN`:** The obsolete `BUTTON` layer was removed. Sofle has a physical number row, eliminating the need for Corne's `GAME_FN` layer.
 
----
-
-## 4. Rotary Encoders & Push Switches
+## 5. Rotary Encoders & Push Switches
 
 ### Normal Operation (`BASE`)
 - **Left Encoder Rotation:** Page Up / Page Down
@@ -68,18 +80,14 @@ LB5 LB4 LB3 LB2 LB1 LB0 LEC │ REC RB0 RB1 RB2 RB3 RB4 RB5
 ### Gaming Operation (`GAME`)
 - **Right Encoder Press (`REC`):** Deliberate exit to `BASE` (`&to L_BASE`). Protects against accidental layer exit during intense gameplay.
 
----
-
-## 5. Bootloader & Recovery Shortcuts
+## 6. Bootloader & Recovery Shortcuts
 
 - **Left controller bootloader:** Hold `NAV` and press `LT5` (top-left alpha key).
 - **Right controller bootloader:** Hold `NUM` and press `RT5` (top-right alpha key).
 - **Mirrored software recovery:** Hold `ADJUST` (`NAV + NUM`), press `LT5` (left bootloader) or `RT5` (right bootloader).
 - **Hardware recovery:** Double-tap physical reset button on nice!nano v2.
 
----
-
-## 6. Mandatory Settings Reset After Migration
+## 7. Mandatory Settings Reset After Migration
 
 Because modern Sofle firmware completely overhauls layer numbering, switches to ZMK Studio locking, updates hold-tap timing, and enables deep sleep:
 
@@ -87,9 +95,7 @@ Because modern Sofle firmware completely overhauls layer numbering, switches to 
 2. Flash `sofle-left.uf2` and `sofle-right.uf2`.
 3. Forget previous Bluetooth pairing on your host device and re-pair cleanly.
 
----
-
-## 7. Power & Display Policy
+## 8. Power & Display Policy
 
 * **Sleep Timing:** Idle blank at 30 seconds (`CONFIG_ZMK_IDLE_TIMEOUT=30000`); deep sleep at 15 minutes (`CONFIG_ZMK_IDLE_SLEEP_TIMEOUT=900000`).
 * **External Power Normalization:** `CONFIG_ZMK_RGB_UNDERGLOW_EXT_POWER=n` ensures external power lines remain energized for OLED status screens even when underglow is toggled.

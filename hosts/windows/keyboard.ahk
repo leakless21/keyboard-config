@@ -17,6 +17,7 @@
 ;   Alt+F14        ->    Ctrl+Alt+`     (Quick Terminal / Quake summon)
 ;   Alt+F15        ->    Run wt.exe     (New independent Windows Terminal)
 ;   Alt+F16        ->    Alt+Tab        (Previous Window)
+;   Alt+F17        ->    EVKey toggle   (Language Toggle)
 ; =============================================================================
 
 ; Redo (Shift+F24) must precede bare F24
@@ -45,3 +46,11 @@ F23::Send("^x")
 
 ; Previous Window toggle (Alt+F16 -> Alt+Tab)
 !F16::Send("!{Tab}")
+
+; Language Toggle (Alt+F17 -> EVKey E/V toggle)
+; EVKey must use the same E/V toggle shortcut configured below.
+ToggleInputLanguage() {
+    SendEvent("{Ctrl down}{Shift down}{Shift up}{Ctrl up}")
+}
+
+!F17::ToggleInputLanguage()

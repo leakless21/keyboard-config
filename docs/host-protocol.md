@@ -35,6 +35,7 @@ This document is the canonical source of truth for the semantic high-function ke
 | `Alt+F14` | Toggle quick dropdown scratchpad terminal (Quake mode) | Karabiner: Ctrl+` (Ghostty Quick Terminal) | AutoHotkey: Windows Terminal _quake dropdown |
 | `Alt+F15` | Launch new independent terminal window | Karabiner: Alt+Enter (Ghostty new window) | AutoHotkey: wt.exe new window |
 | `Alt+F16` | Switch to previous active window across workspaces | Karabiner: Alt+` (AeroSpace focus-back-and-forth) | AutoHotkey: Alt+Tab (Previous Window) |
+| `Alt+F17` | Toggle primary input language / input method | Karabiner: Ctrl+Space (switch input source) | AutoHotkey: trigger configured EVKey E/V toggle |
 | `F21` | Copy selected text to clipboard | Karabiner: Cmd+C | AutoHotkey: Ctrl+C |
 | `F22` | Paste text from clipboard | Karabiner: Cmd+V | AutoHotkey: Ctrl+V |
 | `F23` | Cut selected text to clipboard | Karabiner: Cmd+X | AutoHotkey: Ctrl+X |
@@ -59,3 +60,16 @@ Both keyboards implement the full protocol:
    - **`hosts/windows/keyboard.ahk`:** AutoHotkey v2 script translating clipboard, launcher, and terminal signals.
    - **`hosts/windows/glazewm.yaml`:** GlazeWM window manager configuration natively consuming `F13`–`F20` signals and binding modes.
    - **`hosts/windows/windows-terminal-actions.jsonc`:** Windows Terminal action snippet for `_quake` global summon.
+
+---
+
+## 4. Design Decisions & Implementation Notes
+
+### Cross-Platform Language Toggle (`Alt+F17 = LANGUAGE_TOGGLE`)
+- **Firmware Emission:** Emits `&kp LA(F17)` (`Alt+F17`) from the launcher row on the `HOST` layer.
+- **macOS Translation:** Karabiner maps `Option+F17` $\rightarrow$ `Control+Space` (macOS native input source toggle).
+- **Windows Translation:** AutoHotkey maps `Alt+F17` $\rightarrow$ `ToggleInputLanguage()` (triggering EVKey E/V toggle via `Ctrl+Shift`).
+- **Why `&kp GLOBE` is intentionally not used in firmware:**
+  - Apple-oriented behavior with platform-specific caveats.
+  - Not a reliable or standard interface for Windows or IME engines like EVKey / UniKey.
+  - Semantic host translation delivers identical physical muscle memory while allowing each OS to handle input switching natively.

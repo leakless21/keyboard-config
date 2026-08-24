@@ -220,7 +220,7 @@ def test_cross_platform_bindings(cfg: KeyboardConfig) -> None:
 
 
 def test_host_layer_bindings(cfg: KeyboardConfig) -> None:
-    """Verify all 27 semantic signals on the HOST layer at exact physical positions."""
+    """Verify all 28 semantic signals on the HOST layer at exact physical positions."""
     host = cfg.layer("HOST")
 
     # Top row: Move window to workspace (LT4..LT0)
@@ -241,6 +241,7 @@ def test_host_layer_bindings(cfg: KeyboardConfig) -> None:
     assert_eq(host.pos("LB4"), "&kp LA(F13)", "LB4 must be Launcher")
     assert_eq(host.pos("LB3"), "&kp LA(F14)", "LB3 must be Quick Terminal")
     assert_eq(host.pos("LB2"), "&kp LA(F15)", "LB2 must be New Terminal")
+    assert_eq(host.pos("LB1"), "&kp LA(F17)", "LB1 must be Language Toggle")
 
     # Right top: Modals & Esc (RT1, RT2, RT5)
     assert_eq(host.pos("RT1"), "&kp LS(F18)", "RT1 must be Resize Mode")

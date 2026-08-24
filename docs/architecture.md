@@ -38,7 +38,7 @@ Spotlight                  Windows Search
 3. **Separation of Workspace Switching and App Launching:**
    - Focusing a workspace (e.g., `DEV` / `F14`) strictly means *focus workspace DEV*.
    - It must never automatically summon terminals, launch IDEs, or route apps.
-   - Terminal and application launchers (`Alt+F13`–`Alt+F15`) are explicit, separate actions.
+   - Terminal, application launchers, and language toggle (`Alt+F13`–`Alt+F17`) are explicit, separate actions.
 
 4. **Internal Laptop Keyboards Remain Untouched:**
    - Laptop keyboards remain standard QWERTY without background remappings or key swaps.

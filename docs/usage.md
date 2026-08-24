@@ -58,6 +58,6 @@ For complete rules on permitted vs forbidden Studio modifications, see [docs/dev
 - [ ] **Thumb Layers:** NAV, MOUSE, MEDIA, NUM, SYM, FUN, HOST accessible via thumbs.
 - [ ] **Encoders (Sofle):** Page scroll on left, volume on right; Caps Word and Mute on presses.
 - [ ] **Semantic Editing:** Copy (`F21`), Paste (`F22`), Cut (`F23`), Undo (`F24`), Redo (`Shift+F24`).
-- [ ] **HOST Navigation:** Workspaces 1–5 (`F13`–`F17`), directional focus/move, launchers (`Alt+F13`–`Alt+F15`), Previous Window (`Alt+F16`).
+- [ ] **HOST Navigation:** Workspaces 1–5 (`F13`–`F17`), directional focus/move, launchers & desktop actions (`Alt+F13`–`Alt+F17`), Previous Window (`Alt+F16`), Language Toggle (`Alt+F17`).
 - [ ] **Gaming:** QWERTY alphas, physical numbers (Sofle) or AUX numbers (Corne), safe non-accidental exit to BASE.
 - [ ] **Bootloaders:** NAV LT5 triggers left bootloader; NUM RT5 triggers right bootloader.

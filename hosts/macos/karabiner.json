@@ -625,6 +625,39 @@
             }
           ],
           "from": {
+            "key_code": "f17",
+            "modifiers": {
+              "mandatory": [
+                "option"
+              ],
+              "optional": [
+                "caps_lock"
+              ]
+            }
+          },
+          "to": [
+            {
+              "key_code": "spacebar",
+              "modifiers": [
+                "left_control"
+              ]
+            }
+          ]
+        },
+        {
+          "type": "basic",
+          "conditions": [
+            {
+              "type": "device_if",
+              "identifiers": [
+                {
+                  "is_keyboard": true,
+                  "is_built_in_keyboard": false
+                }
+              ]
+            }
+          ],
+          "from": {
             "key_code": "f18",
             "modifiers": {
               "mandatory": [

@@ -468,7 +468,7 @@ layers:
   - Launch
   - QTerm
   - Term
-  - ''
+  - LANG
   - ''
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}

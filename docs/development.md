@@ -101,6 +101,23 @@ To re-generate documentation tables from `protocol/semantic-v1.yaml`:
 uv run scripts/generate_protocol_files.py
 ```
 
+To re-generate visual reference cheatsheet artifacts (SVG, PDF, and manifest):
+```bash
+# Default generation (SVG + vector PDF + manifest):
+uv run scripts/generate_cheatsheet.py corne
+
+# Generate SVG only:
+uv run scripts/generate_cheatsheet.py corne --svg-only
+
+# Export optional 300-DPI PNG:
+uv run scripts/generate_cheatsheet.py corne --png
+
+# Verify freshness without modifying disk artifacts:
+uv run scripts/generate_cheatsheet.py corne --check
+
+# Render with debug position overlays (LT5..RH2):
+uv run scripts/generate_cheatsheet.py corne --debug
+```
 ---
 
 ## 5. Manual Smoke Test Sequences
@@ -125,11 +142,12 @@ uv run scripts/generate_protocol_files.py
   * `Alt+F18` $\rightarrow$ Enter Service mode (exit with `Esc` / `Enter`).
   * `F19` $\rightarrow$ Toggle fullscreen.
   * `F20` $\rightarrow$ Toggle floating / tiling.
-* **Launchers:**
+* **Launchers & Desktop Actions:**
   * `Alt+F13` $\rightarrow$ System Search (Spotlight / Windows Search).
   * `Alt+F14` $\rightarrow$ Quick Terminal (Ghostty dropdown / Windows Terminal Quake).
   * `Alt+F15` $\rightarrow$ New Terminal window (`Ghostty` / `wt.exe`).
   * `Alt+F16` $\rightarrow$ Previous active window across workspaces.
+  * `Alt+F17` $\rightarrow$ Language toggle (macOS input source `Ctrl+Space` / Windows EVKey toggle).
 * **Editing:**
   * `F21` $\rightarrow$ Copy (`Cmd+C` / `Ctrl+C`).
   * `F22` $\rightarrow$ Paste (`Cmd+V` / `Ctrl+V`).

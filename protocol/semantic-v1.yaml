@@ -284,6 +284,16 @@ actions:
       macos: "Karabiner: Alt+` (AeroSpace focus-back-and-forth)"
       windows: "AutoHotkey: Alt+Tab (Previous Window)"
 
+  language_toggle:
+    signal:
+      key: F17
+      modifiers: [alt]
+    category: input
+    description: "Toggle primary input language / input method"
+    host_implementations:
+      macos: "Karabiner: Ctrl+Space (switch input source)"
+      windows: "AutoHotkey: trigger configured EVKey E/V toggle"
+
   # ===========================================================================
   # Semantic Clipboard & Editing (NAV / MOUSE)
   # ===========================================================================

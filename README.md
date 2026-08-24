@@ -39,8 +39,27 @@ Both keyboards share a single, OS-neutral design language:
 
 ---
 
-## 3. Host Integration Matrix
+## 3. Quick Reference Cheatsheets
 
+Single-page, deterministic A4 reference sheets generated directly from firmware keymap semantics and presentation metadata:
+
+### Corne (CRKBD · 42 Keys)
+![Corne Cheatsheet](docs/generated/corne-cheatsheet.svg)
+
+* **Printable Vector PDF:** [`docs/generated/corne-cheatsheet.pdf`](docs/generated/corne-cheatsheet.pdf)
+* **Technical Keymap Diagram:** [`keymap-drawer/corne.svg`](keymap-drawer/corne.svg)
+* **Cheatsheet Configuration:** [`cheatsheets/corne.yaml`](cheatsheets/corne.yaml)
+
+### Sofle v2 (60 Keys + 2× Encoders)
+![Sofle Cheatsheet](docs/generated/sofle-cheatsheet.svg)
+
+* **Printable Vector PDF:** [`docs/generated/sofle-cheatsheet.pdf`](docs/generated/sofle-cheatsheet.pdf)
+* **Technical Keymap Diagram:** [`keymap-drawer/sofle.svg`](keymap-drawer/sofle.svg)
+* **Cheatsheet Configuration:** [`cheatsheets/sofle.yaml`](cheatsheets/sofle.yaml)
+
+---
+
+## 4. Host Integration Matrix
 | Feature | Firmware Signal | macOS Adapter | Windows Adapter |
 |---|---|---|---|
 | **Workspaces 1–5** | `F13`–`F17` | AeroSpace `Alt-1..5` | GlazeWM `f13..f17` |
@@ -56,12 +75,13 @@ Both keyboards share a single, OS-neutral design language:
 | **Quick Terminal** | `Alt+F14` | Ghostty dropdown (`Ctrl+```) | Windows Terminal Quake (`Ctrl+Alt+```) |
 | **New Terminal** | `Alt+F15` | Ghostty window (`Alt+Enter`) | Windows Terminal (`wt.exe`) |
 | **Previous Window** | `Alt+F16` | AeroSpace (`Alt+```) | Windows (`Alt+Tab`) |
+| **Language Toggle** | `Alt+F17` | Input Source (`Ctrl+Space`) | EVKey Toggle (`Ctrl+Shift`) |
 | **Copy / Paste / Cut** | `F21` / `F22` / `F23` | `Cmd+C` / `Cmd+V` / `Cmd+X` | `Ctrl+C` / `Ctrl+V` / `Ctrl+X` |
 | **Undo / Redo** | `F24` / `Shift+F24` | `Cmd+Z` / `Cmd+Shift+Z` | `Ctrl+Z` / `Ctrl+Y` |
 
 ---
 
-## 4. Repository Structure
+## 5. Repository Structure
 
 ```text
 keyboard-config/
@@ -73,10 +93,12 @@ keyboard-config/
 │   └── west.yml              # Pinned West dependencies
 ├── protocol/
 │   └── semantic-v1.yaml      # Canonical semantic HID protocol specification
+├── cheatsheets/
+│   ├── corne.yaml            # Corne cheatsheet styling and palette
+│   └── sofle.yaml            # Sofle cheatsheet styling and palette
 ├── hosts/
 │   ├── macos/
 │   │   ├── karabiner.json    # Device-scoped complex modifications bridge
-│   │   ├── aerospace.toml    # Tiling window manager config
 │   │   └── ghostty.config    # Terminal & scratchpad config
 │   └── windows/
 │       ├── keyboard.ahk      # AutoHotkey v2 bridge
@@ -90,16 +112,20 @@ keyboard-config/
 │   ├── lib/
 │   │   ├── keymap_parser.py  # Structured ZMK DTS parser
 │   │   ├── protocol.py       # Protocol loader & signal helpers
-│   │   └── validation.py     # Real JSON/YAML/TOML loaders & assertions
+│   │   ├── validation.py     # Real JSON/YAML/TOML loaders & assertions
+│   │   ├── cheatsheet.py     # Semantic model & hold-tap resolver
+│   │   └── cheatsheet_svg.py # Deterministic A4 SVG renderer
 │   ├── check_corne_keymap.py # Positional invariant validator
 │   ├── check_sofle_keymap.py # Positional & encoder validator
 │   ├── check_host_protocol.py# End-to-end multi-host protocol validator
 │   ├── check_build_config.py # Target matrix & manifest validator
 │   ├── check_generated.py    # Freshness & undeclared signal validator
-│   └── generate_protocol_files.py
+│   ├── generate_protocol_files.py
+│   └── generate_cheatsheet.py# First-class cheatsheet SVG/PDF generator
 └── docs/
-    ├── architecture.md
-    ├── host-protocol.md
+    ├── generated/
+    │   ├── corne-cheatsheet.svg / corne-cheatsheet.pdf / corne-cheatsheet.manifest.json
+    │   └── sofle-cheatsheet.svg / sofle-cheatsheet.pdf / sofle-cheatsheet.manifest.json
     ├── setup.md
     ├── usage.md
     ├── development.md
@@ -117,7 +143,7 @@ keyboard-config/
 
 ---
 
-## 5. Documentation & Guides
+## 6. Documentation & Guides
 
 - **Architecture:** [docs/architecture.md](docs/architecture.md)
 - **Semantic Protocol:** [docs/host-protocol.md](docs/host-protocol.md)
@@ -134,9 +160,9 @@ keyboard-config/
 
 ---
 
-## 6. Static Verification Suite
+## 7. Static Verification Suite
 
-Run all static invariant and protocol checks locally:
+Run all static invariant, protocol, and cheatsheet checks locally:
 
 ```bash
 uv run scripts/check_corne_keymap.py
@@ -144,4 +170,9 @@ uv run scripts/check_sofle_keymap.py
 uv run scripts/check_host_protocol.py
 uv run scripts/check_build_config.py
 uv run scripts/check_generated.py
+```
+
+To regenerate cheatsheet visual reference artifacts (SVG, PDF, and manifest):
+```bash
+uv run scripts/generate_cheatsheet.py all
 ```

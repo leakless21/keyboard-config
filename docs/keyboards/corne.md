@@ -49,8 +49,8 @@ uv run scripts/generate_cheatsheet.py corne
 | 1 | `NAV` | Hold `LH1` (Space) | Semantic editing (`F21`–`F24`), cursor navigation, Caps Word (`RM0`), and left bootloader (`LT5`). |
 | 2 | `MOUSE` | Hold `LH2` (Esc) | Pointer movement, wheel scrolling, left modifiers, and MB1–MB5 mouse buttons. |
 | 3 | `MEDIA` | Hold `LM5` | Consumer HID display brightness, previous/volume/next transport controls, and stop/play/mute thumbs. |
-| 4 | `NUM` | Hold `RH1` (Bspc) | Spatial numpad on left; mirrored modifiers and right bootloader (`RT5`) on right. |
-| 5 | `SYM` | Hold `RH0` (Enter) | Shifted NUM symbols on left; mirrored modifiers on right. |
+| 4 | `NUM` | Hold `RH1` (Bspc) | Spatial numpad with arithmetic operator rail on left; mirrored modifiers and right bootloader (`RT5`) on right. |
+| 5 | `SYM` | Hold `RH0` (Enter) | Seniply+-inspired programming/general-computing symbol grammar with delimiter families, direct comparisons/operators, and mirrored modifiers. |
 | 6 | `FUN` | Hold `RH2` (Delete) | F1–F12 function key grid on left; Caps Lock fallback (`RT0`) on right. |
 | 7 | `HOST` | Hold `LH0` (Tab) | Semantic `F13`–`F20` host protocol for window management, launchers, and modal controls. |
 | 8 | `GAME` | Via `ADJUST` | Tap-only QWERTY for gaming; `game_fn_lt` on `LT5`, momentary `RH1` FN. |

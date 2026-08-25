@@ -102,9 +102,11 @@ The three primary thumb keys on each half activate the six core layers:
 ### Spatial & Functional Geometry
 - **Outer-Left Home Key (`LM5`):** Momentary hold for `MEDIA` (`&mo L_MEDIA`).
 - **NAV / MOUSE / MEDIA:** Share the right-hand directional geometry (`RM1`–`RM4` $\rightarrow$ `← ↓ ↑ →`, pointer movement, volume/track controls).
-- **NUM / SYM / FUN:** Share the left-hand 5-column grid (spatial numpad $\rightarrow$ shifted symbols $\rightarrow$ F1–F12 grid).
+- **NUM:** Miryoku-derived 5-column numpad core + Corne/Sofle outer-column arithmetic rail (`/ * +`), with mirrored right-hand modifiers.
+- **SYM:** Seniply+-inspired 6-column symbol grammar with paired delimiters, direct comparisons/operators, programming sigils, and mirrored right-hand modifiers.
+- **FUN:** Retains Miryoku-style 5-column F1–F12 function key grid with mirrored right-hand modifiers.
+- **Shared Core vs. 6-Column Extensions:** The core 5 columns maintain portable Miryoku ancestry; both Corne and Sofle utilize the available 6th column for high-value extensions (arithmetic rail on NUM, extended symbol grammar on SYM).
 - **HOST:** Left home visits workspaces 1–5; left top moves window to workspace 1–5; left bottom launches search & terminals; right hand controls directional focus/move and modal states.
-
 ---
 
 ## 3. Deliberate Hardware Differences

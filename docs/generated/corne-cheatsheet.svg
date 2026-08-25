@@ -703,8 +703,9 @@
   <rect x="1015.0" y="584.0" width="4.5" height="22" rx="2.2" fill="#d97706" />
   <text x="1027.0" y="601.0" class="panel-title" fill="#d97706">NUM</text>
   <text x="1074.0" y="601.0" class="panel-sub">NUM · L4   (Hold R-thumb Bsp)</text>
-  <g class="key unused" data-layer="NUM" data-position="LT5" data-binding="&amp;none">
-    <rect x="1010.0" y="616.0" width="72.0" height="96.0" rx="6" ry="6" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.0" />
+  <g class="key normal" data-layer="NUM" data-position="LT5" data-binding="&amp;kp SLASH">
+    <rect x="1010.0" y="616.0" width="72.0" height="96.0" rx="6" ry="6" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.2" />
+    <text x="1046.0" y="672.5" class="lbl-single" font-size="28">/</text>
   </g>
   <g class="key normal" data-layer="NUM" data-position="LT4" data-binding="&amp;kp LEFT_BRACKET">
     <rect x="1088.0" y="616.0" width="72.0" height="96.0" rx="6" ry="6" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.2" />
@@ -745,8 +746,9 @@
     <rect x="1888.0" y="616.0" width="72.0" height="96.0" rx="6" ry="6" fill="#fff1f2" stroke="#e11d48" stroke-width="2.0" />
     <text x="1924.0" y="669.5" class="lbl-boot" font-size="15">BOOT</text>
   </g>
-  <g class="key unused" data-layer="NUM" data-position="LM5" data-binding="&amp;none">
-    <rect x="1010.0" y="718.0" width="72.0" height="96.0" rx="6" ry="6" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.0" />
+  <g class="key normal" data-layer="NUM" data-position="LM5" data-binding="&amp;kp ASTERISK">
+    <rect x="1010.0" y="718.0" width="72.0" height="96.0" rx="6" ry="6" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.2" />
+    <text x="1046.0" y="774.5" class="lbl-single" font-size="28">*</text>
   </g>
   <g class="key normal" data-layer="NUM" data-position="LM4" data-binding="&amp;kp SEMICOLON">
     <rect x="1088.0" y="718.0" width="72.0" height="96.0" rx="6" ry="6" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.2" />
@@ -790,8 +792,9 @@
   <g class="key unused" data-layer="NUM" data-position="RM5" data-binding="&amp;none">
     <rect x="1888.0" y="718.0" width="72.0" height="96.0" rx="6" ry="6" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.0" />
   </g>
-  <g class="key unused" data-layer="NUM" data-position="LB5" data-binding="&amp;none">
-    <rect x="1010.0" y="820.0" width="72.0" height="96.0" rx="6" ry="6" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.0" />
+  <g class="key normal" data-layer="NUM" data-position="LB5" data-binding="&amp;kp PLUS">
+    <rect x="1010.0" y="820.0" width="72.0" height="96.0" rx="6" ry="6" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.2" />
+    <text x="1046.0" y="876.5" class="lbl-single" font-size="28">+</text>
   </g>
   <g class="key normal" data-layer="NUM" data-position="LB4" data-binding="&amp;kp GRAVE">
     <rect x="1088.0" y="820.0" width="72.0" height="96.0" rx="6" ry="6" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.2" />
@@ -858,28 +861,29 @@
   <rect x="1987.0" y="584.0" width="4.5" height="22" rx="2.2" fill="#9333ea" />
   <text x="1999.0" y="601.0" class="panel-title" fill="#9333ea">SYM</text>
   <text x="2046.0" y="601.0" class="panel-sub">SYM · L5   (Hold R-thumb Enter)</text>
-  <g class="key unused" data-layer="SYM" data-position="LT5" data-binding="&amp;none">
-    <rect x="1982.0" y="616.0" width="72.0" height="96.0" rx="6" ry="6" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.0" />
+  <g class="key normal" data-layer="SYM" data-position="LT5" data-binding="&amp;kp AT_SIGN">
+    <rect x="1982.0" y="616.0" width="72.0" height="96.0" rx="6" ry="6" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.2" />
+    <text x="2018.0" y="672.5" class="lbl-single" font-size="28">@</text>
   </g>
-  <g class="key normal" data-layer="SYM" data-position="LT4" data-binding="&amp;kp LEFT_BRACE">
+  <g class="key normal" data-layer="SYM" data-position="LT4" data-binding="&amp;kp HASH">
     <rect x="2060.0" y="616.0" width="72.0" height="96.0" rx="6" ry="6" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.2" />
-    <text x="2096.0" y="672.5" class="lbl-single" font-size="28">{</text>
+    <text x="2096.0" y="672.5" class="lbl-single" font-size="28">#</text>
   </g>
-  <g class="key normal" data-layer="SYM" data-position="LT3" data-binding="&amp;kp AMPERSAND">
+  <g class="key normal" data-layer="SYM" data-position="LT3" data-binding="&amp;kp DOLLAR">
     <rect x="2138.0" y="616.0" width="72.0" height="96.0" rx="6" ry="6" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.2" />
-    <text x="2174.0" y="672.5" class="lbl-single" font-size="28">&amp;</text>
+    <text x="2174.0" y="672.5" class="lbl-single" font-size="28">$</text>
   </g>
-  <g class="key normal" data-layer="SYM" data-position="LT2" data-binding="&amp;kp ASTERISK">
+  <g class="key normal" data-layer="SYM" data-position="LT2" data-binding="&amp;kp RIGHT_BRACKET">
     <rect x="2216.0" y="616.0" width="72.0" height="96.0" rx="6" ry="6" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.2" />
-    <text x="2252.0" y="672.5" class="lbl-single" font-size="28">*</text>
+    <text x="2252.0" y="672.5" class="lbl-single" font-size="28">]</text>
   </g>
-  <g class="key normal" data-layer="SYM" data-position="LT1" data-binding="&amp;kp LEFT_PARENTHESIS">
+  <g class="key normal" data-layer="SYM" data-position="LT1" data-binding="&amp;kp RIGHT_BRACE">
     <rect x="2294.0" y="616.0" width="72.0" height="96.0" rx="6" ry="6" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.2" />
-    <text x="2330.0" y="672.5" class="lbl-single" font-size="28">(</text>
+    <text x="2330.0" y="672.5" class="lbl-single" font-size="28">}</text>
   </g>
-  <g class="key normal" data-layer="SYM" data-position="LT0" data-binding="&amp;kp RIGHT_BRACE">
+  <g class="key normal" data-layer="SYM" data-position="LT0" data-binding="&amp;kp RIGHT_PARENTHESIS">
     <rect x="2372.0" y="616.0" width="72.0" height="96.0" rx="6" ry="6" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.2" />
-    <text x="2408.0" y="672.5" class="lbl-single" font-size="28">}</text>
+    <text x="2408.0" y="672.5" class="lbl-single" font-size="28">)</text>
   </g>
   <g class="key unused" data-layer="SYM" data-position="RT0" data-binding="&amp;none">
     <rect x="2470.0" y="616.0" width="72.0" height="96.0" rx="6" ry="6" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.0" />
@@ -899,28 +903,29 @@
   <g class="key unused" data-layer="SYM" data-position="RT5" data-binding="&amp;none">
     <rect x="2860.0" y="616.0" width="72.0" height="96.0" rx="6" ry="6" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.0" />
   </g>
-  <g class="key unused" data-layer="SYM" data-position="LM5" data-binding="&amp;none">
-    <rect x="1982.0" y="718.0" width="72.0" height="96.0" rx="6" ry="6" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.0" />
+  <g class="key normal" data-layer="SYM" data-position="LM5" data-binding="&amp;kp EXCLAMATION">
+    <rect x="1982.0" y="718.0" width="72.0" height="96.0" rx="6" ry="6" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.2" />
+    <text x="2018.0" y="774.5" class="lbl-single" font-size="28">!</text>
   </g>
-  <g class="key normal" data-layer="SYM" data-position="LM4" data-binding="&amp;kp COLON">
+  <g class="key normal" data-layer="SYM" data-position="LM4" data-binding="&amp;kp LESS_THAN">
     <rect x="2060.0" y="718.0" width="72.0" height="96.0" rx="6" ry="6" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.2" />
-    <text x="2096.0" y="774.5" class="lbl-single" font-size="28">:</text>
+    <text x="2096.0" y="774.5" class="lbl-single" font-size="28">&lt;</text>
   </g>
-  <g class="key normal" data-layer="SYM" data-position="LM3" data-binding="&amp;kp DOLLAR">
+  <g class="key normal" data-layer="SYM" data-position="LM3" data-binding="&amp;kp GREATER_THAN">
     <rect x="2138.0" y="718.0" width="72.0" height="96.0" rx="6" ry="6" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.2" />
-    <text x="2174.0" y="774.5" class="lbl-single" font-size="28">$</text>
+    <text x="2174.0" y="774.5" class="lbl-single" font-size="28">&gt;</text>
   </g>
-  <g class="key normal" data-layer="SYM" data-position="LM2" data-binding="&amp;kp PERCENT">
+  <g class="key normal" data-layer="SYM" data-position="LM2" data-binding="&amp;kp LEFT_BRACKET">
     <rect x="2216.0" y="718.0" width="72.0" height="96.0" rx="6" ry="6" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.2" />
-    <text x="2252.0" y="774.5" class="lbl-single" font-size="28">%</text>
+    <text x="2252.0" y="774.5" class="lbl-single" font-size="28">[</text>
   </g>
-  <g class="key normal" data-layer="SYM" data-position="LM1" data-binding="&amp;kp CARET">
+  <g class="key normal" data-layer="SYM" data-position="LM1" data-binding="&amp;kp LEFT_BRACE">
     <rect x="2294.0" y="718.0" width="72.0" height="96.0" rx="6" ry="6" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.2" />
-    <text x="2330.0" y="774.5" class="lbl-single" font-size="28">^</text>
+    <text x="2330.0" y="774.5" class="lbl-single" font-size="28">{</text>
   </g>
-  <g class="key normal" data-layer="SYM" data-position="LM0" data-binding="&amp;kp PLUS">
+  <g class="key normal" data-layer="SYM" data-position="LM0" data-binding="&amp;kp LEFT_PARENTHESIS">
     <rect x="2372.0" y="718.0" width="72.0" height="96.0" rx="6" ry="6" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.2" />
-    <text x="2408.0" y="774.5" class="lbl-single" font-size="28">+</text>
+    <text x="2408.0" y="774.5" class="lbl-single" font-size="28">(</text>
   </g>
   <g class="key unused" data-layer="SYM" data-position="RM0" data-binding="&amp;none">
     <rect x="2470.0" y="718.0" width="72.0" height="96.0" rx="6" ry="6" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.0" />
@@ -944,28 +949,29 @@
   <g class="key unused" data-layer="SYM" data-position="RM5" data-binding="&amp;none">
     <rect x="2860.0" y="718.0" width="72.0" height="96.0" rx="6" ry="6" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.0" />
   </g>
-  <g class="key unused" data-layer="SYM" data-position="LB5" data-binding="&amp;none">
-    <rect x="1982.0" y="820.0" width="72.0" height="96.0" rx="6" ry="6" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.0" />
+  <g class="key normal" data-layer="SYM" data-position="LB5" data-binding="&amp;kp AMPERSAND">
+    <rect x="1982.0" y="820.0" width="72.0" height="96.0" rx="6" ry="6" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.2" />
+    <text x="2018.0" y="876.5" class="lbl-single" font-size="28">&amp;</text>
   </g>
-  <g class="key normal" data-layer="SYM" data-position="LB4" data-binding="&amp;kp TILDE">
+  <g class="key normal" data-layer="SYM" data-position="LB4" data-binding="&amp;kp PIPE">
     <rect x="2060.0" y="820.0" width="72.0" height="96.0" rx="6" ry="6" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.2" />
-    <text x="2096.0" y="876.5" class="lbl-single" font-size="28">~</text>
+    <text x="2096.0" y="876.5" class="lbl-single" font-size="28">|</text>
   </g>
-  <g class="key normal" data-layer="SYM" data-position="LB3" data-binding="&amp;kp EXCLAMATION">
+  <g class="key normal" data-layer="SYM" data-position="LB3" data-binding="&amp;kp ASTERISK">
     <rect x="2138.0" y="820.0" width="72.0" height="96.0" rx="6" ry="6" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.2" />
-    <text x="2174.0" y="876.5" class="lbl-single" font-size="28">!</text>
+    <text x="2174.0" y="876.5" class="lbl-single" font-size="28">*</text>
   </g>
-  <g class="key normal" data-layer="SYM" data-position="LB2" data-binding="&amp;kp AT_SIGN">
+  <g class="key normal" data-layer="SYM" data-position="LB2" data-binding="&amp;kp MINUS">
     <rect x="2216.0" y="820.0" width="72.0" height="96.0" rx="6" ry="6" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.2" />
-    <text x="2252.0" y="876.5" class="lbl-single" font-size="28">@</text>
+    <text x="2252.0" y="876.5" class="lbl-single" font-size="28">-</text>
   </g>
-  <g class="key normal" data-layer="SYM" data-position="LB1" data-binding="&amp;kp HASH">
+  <g class="key normal" data-layer="SYM" data-position="LB1" data-binding="&amp;kp EQUAL">
     <rect x="2294.0" y="820.0" width="72.0" height="96.0" rx="6" ry="6" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.2" />
-    <text x="2330.0" y="876.5" class="lbl-single" font-size="28">#</text>
+    <text x="2330.0" y="876.5" class="lbl-single" font-size="28">=</text>
   </g>
-  <g class="key normal" data-layer="SYM" data-position="LB0" data-binding="&amp;kp PIPE">
+  <g class="key normal" data-layer="SYM" data-position="LB0" data-binding="&amp;kp PLUS">
     <rect x="2372.0" y="820.0" width="72.0" height="96.0" rx="6" ry="6" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.2" />
-    <text x="2408.0" y="876.5" class="lbl-single" font-size="28">|</text>
+    <text x="2408.0" y="876.5" class="lbl-single" font-size="28">+</text>
   </g>
   <g class="key unused" data-layer="SYM" data-position="RB0" data-binding="&amp;none">
     <rect x="2470.0" y="820.0" width="72.0" height="96.0" rx="6" ry="6" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.0" />
@@ -985,13 +991,13 @@
   <g class="key unused" data-layer="SYM" data-position="RB5" data-binding="&amp;none">
     <rect x="2860.0" y="820.0" width="72.0" height="96.0" rx="6" ry="6" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.0" />
   </g>
-  <g class="key normal" data-layer="SYM" data-position="LH2" data-binding="&amp;kp LEFT_PARENTHESIS">
+  <g class="key normal" data-layer="SYM" data-position="LH2" data-binding="&amp;kp BACKSLASH">
     <rect x="2216.0" y="928.0" width="72.0" height="96.0" rx="6" ry="6" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.2" />
-    <text x="2252.0" y="984.5" class="lbl-single" font-size="28">(</text>
+    <text x="2252.0" y="984.5" class="lbl-single" font-size="28">\</text>
   </g>
-  <g class="key normal" data-layer="SYM" data-position="LH1" data-binding="&amp;kp RIGHT_PARENTHESIS">
+  <g class="key normal" data-layer="SYM" data-position="LH1" data-binding="&amp;kp SLASH">
     <rect x="2294.0" y="928.0" width="72.0" height="96.0" rx="6" ry="6" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.2" />
-    <text x="2330.0" y="984.5" class="lbl-single" font-size="28">)</text>
+    <text x="2330.0" y="984.5" class="lbl-single" font-size="28">/</text>
   </g>
   <g class="key normal" data-layer="SYM" data-position="LH0" data-binding="&amp;kp UNDERSCORE">
     <rect x="2372.0" y="928.0" width="72.0" height="96.0" rx="6" ry="6" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.2" />

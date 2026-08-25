@@ -16,9 +16,44 @@ This guide covers daily keyboard usage, layer navigation, gaming, and the firmwa
 | Left Outer (`LH2`) | `Escape` | `MOUSE` | Pointer movement, wheel scroll, MB1–MB5 buttons, F21–F24 editing |
 | Left Middle (`LH1`) | `Space` | `NAV` | Directional cursor, line/page nav, Caps Word (`RM0`), F21–F24 editing, left bootloader (`LT5`) |
 | Left Inner (`LH0`) | `Tab` | `HOST` | Semantic F13–F20 workspace protocol, launchers, previous window, resize, service |
-| Right Inner (`RH0`) | `Enter` | `SYM` | Shifted NUM symbols (`{ & * ( }`, `: $ % ^ +`, `~ ! @ # \|`) |
-| Right Middle (`RH1`) | `Backspace` | `NUM` | Spatial numpad on left (`7 8 9`, `4 5 6`, `1 2 3`), right bootloader (`RT5`) |
-| Right Outer (`RH2`) | `Delete` | `FUN` | Standard application function keys F1–F12 across all hosts, Caps Lock fallback (`RT0`) |
+| Right Inner (`RH0`) | `Enter` | `SYM` | Seniply+ symbols (delimiter pairs, `< >`, `- = +`, sigils, `\ / _`), mirrored modifiers |
+| Right Middle (`RH1`) | `Backspace` | `NUM` | Spatial numpad on left with arithmetic rail (`/ * +`), mirrored modifiers, right bootloader (`RT5`) |
+| Right Outer (`RH2`) | `Delete` | `FUN` | Standard application function keys F1–F12 across all hosts, Caps Lock fallback (`RT0`), mirrored modifiers |
+
+### NUM+ (Numpad & Arithmetic Rail)
+```text
+NUM · left hand
+
+/    [    7    8    9    ]
+*    ;    4    5    6    =
++    `    1    2    3    \
+
+          .    0    -
+```
+- **Spatial Numpad Core:** Standard 3×3 phone/numpad layout (`789`, `456`, `123`, `0`).
+- **Outer Arithmetic Rail:** `/` on top (`LT5`), `*` on home (`LM5`), `+` on bottom (`LB5`).
+- **Calculation & Brackets:** Delimiters `[` `]`, `;`, `=`, `` ` ``, `\`, `.`, `-` easily accessible.
+- **Right Hand:** Mirrored home-row modifiers (`Shift`, `Ctrl`, `Alt`, `GUI`) and bootloader on `RT5`.
+
+### SYM (Seniply+ Symbol Grammar)
+```text
+SYM · left hand
+
+@    #    $    ]    }    )
+!    <    >    [    {    (
+&    |    *    -    =    +
+
+          \    /    _
+```
+- **Paired Delimiters (closers stacked above openers):**
+  - `] } )` (top row `LT2..LT0`)
+  - `[ { (` (home row `LM2..LM0`)
+- **Common Operators Together:** `- = +` (bottom row `LB2..LB0`).
+- **Direct Comparisons:** `< >` on home row strong positions (`LM4`, `LM3`).
+- **Logic & Operator Symbols:** `! & | *` on left column and bottom row.
+- **Common Programming Sigils:** `@ # $` on top row (`LT5..LT3`).
+- **Path & Identifier Punctuation on Thumbs:** `\` (left outer `LH2`), `/` (left middle `LH1`), `_` (left inner `LH0`).
+- **Right Hand:** Mirrored home-row modifiers (`Shift`, `Ctrl`, `Alt`, `GUI`).
 
 ---
 

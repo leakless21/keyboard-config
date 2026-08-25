@@ -248,6 +248,120 @@ def test_caps_behavior(cfg: KeyboardConfig) -> None:
 
     print("PASS: Caps behavior verified (&caps_word on NAV, &kp CAPSLOCK fallback on FUN).")
 
+def test_num_layer(cfg: KeyboardConfig) -> None:
+    """Verify NUM layer exact physical positions (operator rail, numpad, thumbs, modifiers, bootloader)."""
+    num = cfg.layer("NUM")
+
+    # Left hand operator rail
+    assert_eq(num.pos("LT5"), "&kp SLASH", "NUM LT5 must be /")
+    assert_eq(num.pos("LM5"), "&kp ASTERISK", "NUM LM5 must be *")
+    assert_eq(num.pos("LB5"), "&kp PLUS", "NUM LB5 must be +")
+
+    # Left hand spatial numpad core
+    assert_eq(num.pos("LT4"), "&kp LEFT_BRACKET", "NUM LT4 must be [")
+    assert_eq(num.pos("LT3"), "&kp NUMBER_7", "NUM LT3 must be 7")
+    assert_eq(num.pos("LT2"), "&kp NUMBER_8", "NUM LT2 must be 8")
+    assert_eq(num.pos("LT1"), "&kp NUMBER_9", "NUM LT1 must be 9")
+    assert_eq(num.pos("LT0"), "&kp RIGHT_BRACKET", "NUM LT0 must be ]")
+
+    assert_eq(num.pos("LM4"), "&kp SEMICOLON", "NUM LM4 must be ;")
+    assert_eq(num.pos("LM3"), "&kp NUMBER_4", "NUM LM3 must be 4")
+    assert_eq(num.pos("LM2"), "&kp NUMBER_5", "NUM LM2 must be 5")
+    assert_eq(num.pos("LM1"), "&kp NUMBER_6", "NUM LM1 must be 6")
+    assert_eq(num.pos("LM0"), "&kp EQUAL", "NUM LM0 must be =")
+
+    assert_eq(num.pos("LB4"), "&kp GRAVE", "NUM LB4 must be `")
+    assert_eq(num.pos("LB3"), "&kp NUMBER_1", "NUM LB3 must be 1")
+    assert_eq(num.pos("LB2"), "&kp NUMBER_2", "NUM LB2 must be 2")
+    assert_eq(num.pos("LB1"), "&kp NUMBER_3", "NUM LB1 must be 3")
+    assert_eq(num.pos("LB0"), "&kp BACKSLASH", "NUM LB0 must be \\")
+
+    # Left thumbs
+    assert_eq(num.pos("LH2"), "&kp PERIOD", "NUM LH2 must be .")
+    assert_eq(num.pos("LH1"), "&kp NUMBER_0", "NUM LH1 must be 0")
+    assert_eq(num.pos("LH0"), "&kp MINUS", "NUM LH0 must be -")
+
+    # Right hand mirrored modifiers and bootloader
+    assert_eq(num.pos("RT5"), "&bootloader", "NUM RT5 must be bootloader")
+    assert_eq(num.pos("RM1"), "&kp RIGHT_SHIFT", "NUM RM1 must be Right Shift")
+    assert_eq(num.pos("RM2"), "&kp RCTRL", "NUM RM2 must be Right Ctrl")
+    assert_eq(num.pos("RM3"), "&kp RIGHT_ALT", "NUM RM3 must be Right Alt")
+    assert_eq(num.pos("RM4"), "&kp RIGHT_GUI", "NUM RM4 must be Right GUI")
+
+    print("PASS: Corne NUM Seniply+/operator geometry verified.")
+
+
+def test_sym_layer(cfg: KeyboardConfig) -> None:
+    """Verify SYM layer exact Seniply+ physical positions and mirrored modifiers."""
+    sym = cfg.layer("SYM")
+
+    # Left hand top row: @ # $ ] } )
+    assert_eq(sym.pos("LT5"), "&kp AT_SIGN", "SYM LT5 must be @")
+    assert_eq(sym.pos("LT4"), "&kp HASH", "SYM LT4 must be #")
+    assert_eq(sym.pos("LT3"), "&kp DOLLAR", "SYM LT3 must be $")
+    assert_eq(sym.pos("LT2"), "&kp RIGHT_BRACKET", "SYM LT2 must be ]")
+    assert_eq(sym.pos("LT1"), "&kp RIGHT_BRACE", "SYM LT1 must be }")
+    assert_eq(sym.pos("LT0"), "&kp RIGHT_PARENTHESIS", "SYM LT0 must be )")
+
+    # Left hand middle row: ! < > [ { (
+    assert_eq(sym.pos("LM5"), "&kp EXCLAMATION", "SYM LM5 must be !")
+    assert_eq(sym.pos("LM4"), "&kp LESS_THAN", "SYM LM4 must be <")
+    assert_eq(sym.pos("LM3"), "&kp GREATER_THAN", "SYM LM3 must be >")
+    assert_eq(sym.pos("LM2"), "&kp LEFT_BRACKET", "SYM LM2 must be [")
+    assert_eq(sym.pos("LM1"), "&kp LEFT_BRACE", "SYM LM1 must be {")
+    assert_eq(sym.pos("LM0"), "&kp LEFT_PARENTHESIS", "SYM LM0 must be (")
+
+    # Left hand bottom row: & | * - = +
+    assert_eq(sym.pos("LB5"), "&kp AMPERSAND", "SYM LB5 must be &")
+    assert_eq(sym.pos("LB4"), "&kp PIPE", "SYM LB4 must be |")
+    assert_eq(sym.pos("LB3"), "&kp ASTERISK", "SYM LB3 must be *")
+    assert_eq(sym.pos("LB2"), "&kp MINUS", "SYM LB2 must be -")
+    assert_eq(sym.pos("LB1"), "&kp EQUAL", "SYM LB1 must be =")
+    assert_eq(sym.pos("LB0"), "&kp PLUS", "SYM LB0 must be +")
+
+    # Left thumbs: \ / _
+    assert_eq(sym.pos("LH2"), "&kp BACKSLASH", "SYM LH2 must be \\")
+    assert_eq(sym.pos("LH1"), "&kp SLASH", "SYM LH1 must be /")
+    assert_eq(sym.pos("LH0"), "&kp UNDERSCORE", "SYM LH0 must be _")
+
+    # Right hand mirrored modifiers
+    assert_eq(sym.pos("RM1"), "&kp RIGHT_SHIFT", "SYM RM1 must be Right Shift")
+    assert_eq(sym.pos("RM2"), "&kp RCTRL", "SYM RM2 must be Right Ctrl")
+    assert_eq(sym.pos("RM3"), "&kp RIGHT_ALT", "SYM RM3 must be Right Alt")
+    assert_eq(sym.pos("RM4"), "&kp RIGHT_GUI", "SYM RM4 must be Right GUI")
+
+    print("PASS: Corne SYM Seniply+ geometry verified.")
+
+def test_cross_keyboard_parity(corne_cfg: KeyboardConfig) -> None:
+    """Verify exact parity between Corne and Sofle across all shared NUM and SYM positions."""
+    sofle_keymap_path = REPO_ROOT / "config" / "sofle.keymap"
+    sofle_cfg = parse_keymap_file(sofle_keymap_path, layout="sofle")
+
+    shared_positions = [
+        "LT5", "LT4", "LT3", "LT2", "LT1", "LT0",
+        "LM5", "LM4", "LM3", "LM2", "LM1", "LM0",
+        "LB5", "LB4", "LB3", "LB2", "LB1", "LB0",
+        "LH2", "LH1", "LH0",
+        "RT0", "RT1", "RT2", "RT3", "RT4", "RT5",
+        "RM0", "RM1", "RM2", "RM3", "RM4", "RM5",
+        "RB0", "RB1", "RB2", "RB3", "RB4", "RB5",
+        "RH0", "RH1", "RH2",
+    ]
+
+    for layer_name in ["NUM", "SYM"]:
+        corne_layer = corne_cfg.layer(layer_name)
+        sofle_layer = sofle_cfg.layer(layer_name)
+        for pos in shared_positions:
+            c_val = corne_layer.pos(pos)
+            s_val = sofle_layer.pos(pos)
+            assert_eq(
+                c_val,
+                s_val,
+                f"Cross-keyboard parity mismatch on {layer_name} {pos}: Corne={c_val}, Sofle={s_val}",
+            )
+
+    print("PASS: Cross-keyboard NUM and SYM common geometry parity verified (Corne == Sofle).")
+
 def test_fun_layer(cfg: KeyboardConfig) -> None:
     """Verify FUN layer exact physical grid (F1-F12, system keys, modifiers, and thumbs)."""
     fun = cfg.layer("FUN")
@@ -371,6 +485,9 @@ def main() -> None:
     test_bootloader_shortcuts(cfg)
     test_cross_platform_bindings(cfg)
     test_caps_behavior(cfg)
+    test_num_layer(cfg)
+    test_sym_layer(cfg)
+    test_cross_keyboard_parity(cfg)
     test_fun_layer(cfg)
     test_host_layer_bindings(cfg)
     test_studio_configuration(cfg)

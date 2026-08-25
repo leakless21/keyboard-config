@@ -280,6 +280,8 @@ STANDARD_KP_MAP: Dict[str, str] = {
     "BACKSLASH": "\\",
     "PIPE": "|",
     "COMMA": ",",
+    "LESS_THAN": "<",
+    "GREATER_THAN": ">",
     "DOT": ".",
     "PERIOD": ".",
     "SLASH": "/",

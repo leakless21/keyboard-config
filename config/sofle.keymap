@@ -188,14 +188,15 @@
             label = "NUM";
             display-name = "NUM";
             /*
-             * Standard numpad geometry on the left; mirrored mods on the right.
+             * Spatial numpad with arithmetic operator rail on the outer column;
+             * mirrored modifiers on the right.
              * RT5 provides same-side right bootloader shortcut while holding NUM.
              */
             bindings = <
 &trans       &none             &none              &none              &none               &none                                          &none               &none               &none              &none              &none              &trans
-&none        &kp LEFT_BRACKET  &kp NUMBER_7       &kp NUMBER_8       &kp NUMBER_9        &kp RIGHT_BRACKET                              &none               &none               &none              &none              &none              &bootloader
-&none        &kp SEMICOLON     &kp NUMBER_4       &kp NUMBER_5       &kp NUMBER_6        &kp EQUAL                                      &none               &kp RIGHT_SHIFT     &kp RCTRL          &kp RIGHT_ALT      &kp RIGHT_GUI      &none
-&none        &kp GRAVE         &kp NUMBER_1       &kp NUMBER_2       &kp NUMBER_3        &kp BACKSLASH &trans              &trans       &none               &none               &none              &none              &none              &none
+&kp SLASH    &kp LEFT_BRACKET  &kp NUMBER_7       &kp NUMBER_8       &kp NUMBER_9        &kp RIGHT_BRACKET                              &none               &none               &none              &none              &none              &bootloader
+&kp ASTERISK &kp SEMICOLON     &kp NUMBER_4       &kp NUMBER_5       &kp NUMBER_6        &kp EQUAL                                      &none               &kp RIGHT_SHIFT     &kp RCTRL          &kp RIGHT_ALT      &kp RIGHT_GUI      &none
+&kp PLUS     &kp GRAVE         &kp NUMBER_1       &kp NUMBER_2       &kp NUMBER_3        &kp BACKSLASH &trans              &trans       &none               &none               &none              &none              &none              &none
                                &trans             &trans             &kp PERIOD          &kp NUMBER_0 &kp MINUS           &none        &none               &none               &trans             &trans
             >;
 
@@ -207,13 +208,17 @@
         SYM {
             label = "SYM";
             display-name = "SYM";
-            /* Shifted NUM geometry; direct programming symbols on the thumbs. */
+            /*
+             * Seniply+-inspired symbol layer:
+             * paired delimiters, comparison/operators on strong positions,
+             * programming sigils, and mirrored right-hand modifiers.
+             */
             bindings = <
-&trans       &none             &none              &none              &none               &none                                          &none               &none               &none              &none              &none              &trans
-&none        &kp LEFT_BRACE    &kp AMPERSAND      &kp ASTERISK       &kp LEFT_PARENTHESIS &kp RIGHT_BRACE                               &none               &none               &none              &none              &none              &none
-&none        &kp COLON         &kp DOLLAR         &kp PERCENT        &kp CARET           &kp PLUS                                       &none               &kp RIGHT_SHIFT     &kp RCTRL          &kp RIGHT_ALT      &kp RIGHT_GUI      &none
-&none        &kp TILDE         &kp EXCLAMATION    &kp AT_SIGN        &kp HASH            &kp PIPE    &trans              &trans         &none               &none               &none              &none              &none              &none
-                               &trans             &trans             &kp LEFT_PARENTHESIS &kp RIGHT_PARENTHESIS &kp UNDERSCORE &none   &none               &none               &trans             &trans
+&trans          &none             &none              &none              &none               &none                                          &none               &none               &none              &none              &none              &trans
+&kp AT_SIGN     &kp HASH          &kp DOLLAR         &kp RIGHT_BRACKET  &kp RIGHT_BRACE     &kp RIGHT_PARENTHESIS                          &none               &none               &none              &none              &none              &none
+&kp EXCLAMATION &kp LESS_THAN     &kp GREATER_THAN   &kp LEFT_BRACKET   &kp LEFT_BRACE      &kp LEFT_PARENTHESIS                           &none               &kp RIGHT_SHIFT     &kp RCTRL          &kp RIGHT_ALT      &kp RIGHT_GUI      &none
+&kp AMPERSAND   &kp PIPE          &kp ASTERISK       &kp MINUS          &kp EQUAL           &kp PLUS      &trans              &trans       &none               &none               &none              &none              &none              &none
+                                  &trans             &trans             &kp BACKSLASH       &kp SLASH     &kp UNDERSCORE      &none        &none               &none               &trans             &trans
             >;
 
             sensor-bindings =

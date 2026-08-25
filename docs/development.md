@@ -126,11 +126,10 @@ uv run scripts/generate_cheatsheet.py corne --debug
 1. **BASE Layer:** Type alphabet sentence, punctuation, bilateral HRMs (`A R S T` / `N E I O`).
 2. **NAV Layer:** Left bootloader on `LT5`, directional arrows, line/page jump, Caps Word on `RM0`, editing `F21`–`F24`.
 3. **MOUSE Layer:** Mouse pointer movement (`mmv`), wheel scrolling (`msc`), buttons MB1–MB5, editing `F21`–`F24`.
-4. **MEDIA Layer:** Previous/Next, Volume Up/Down, Stop, Play/Pause, Mute.
+4. **MEDIA Layer:** Display brightness down (`RT2`) / up (`RT3`), Previous/Next track, Volume Down/Up, Stop, Play/Pause, Mute.
 5. **NUM & SYM Layers:** Left spatial numpad / symbols, right mirrored modifiers, right bootloader on `RT5`.
-6. **FUN Layer:** Function keys `F1`–`F12`, Caps Lock fallback on `RT0`.
-7. **HOST Layer:** All 27 semantic signals (see below).
-
+6. **FUN Layer:** Standard function keys `F1`–`F12`, modified F-keys (`Shift+F5`, `Ctrl+F5`, `Cmd+F5`, `Alt+F5`), Caps Lock fallback on `RT0`.
+7. **HOST Layer:** All 28 semantic signals (see below).
 ### B. Host Semantic Smoke Test (macOS & Windows)
 * **Workspaces:** Tap `F13`–`F17` $\rightarrow$ Visits workspaces 1–5 (`WEB`, `DEV`, `COMMS`, `RUN`, `AUX`).
 * **Move Window:** Tap `Shift+F13`–`Shift+F17` $\rightarrow$ Moves active window to target workspace and follows.
@@ -155,6 +154,10 @@ uv run scripts/generate_cheatsheet.py corne --debug
   * `F24` $\rightarrow$ Undo (`Cmd+Z` / `Ctrl+Z`).
   * `Shift+F24` $\rightarrow$ Redo (`Cmd+Shift+Z` / `Ctrl+Y`).
 
+* **Standard Function Keys (macOS Karabiner Verification):**
+  * macOS Function Keys setting **OFF** (media mode): Press `FUN` + `F1`..`F12` $\rightarrow$ Target application receives real `F1`..`F12` (not brightness/media).
+  * macOS Function Keys setting **ON** (standard F-keys mode): Press `FUN` + `F1`..`F12` $\rightarrow$ Target application still receives `F1`..`F12`.
+  * Modified F-keys (`Shift+F5`, `Ctrl+F5`, `Cmd+F5`) pass through with modifiers intact.
 ### C. Keyboard-Specific Hardware Tests
 * **Corne Gaming:**
   1. Hold `NAV + NUM` $\rightarrow$ `ADJUST` $\rightarrow$ press `to L_GAME`.

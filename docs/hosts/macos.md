@@ -28,9 +28,9 @@ Native macOS Chords (Alt + Cmd shortcuts)
 - Install [Karabiner-Elements](https://karabiner-elements.pqrs.org/).
 - Copy `hosts/macos/karabiner.json` to `~/.config/karabiner/assets/complex_modifications/karabiner.json`.
 - In Karabiner-Elements Settings $\rightarrow$ **Complex Modifications** $\rightarrow$ **Add rule**:
-  - Enable **"Keyboard Semantic Host Bridge"** (F13–F20 $\rightarrow$ AeroSpace).
-  - Enable **"Keyboard Semantic Editing"** (F21–F24 $\rightarrow$ Cmd+C/V/X/Z).
-
+  - Enable **"F13-F20 Semantic Window Management Bridge"** (F13–F20 $\rightarrow$ AeroSpace chords).
+  - Enable **"F21-F24 Semantic Editing"** (F21–F24 $\rightarrow$ Cmd+C/V/X/Z).
+  - Enable **"Standard F1-F12 normalization for external keyboard"** (guarantees application F1–F12).
 ### 2. AeroSpace (Tiling Window Manager)
 - Install [AeroSpace](https://nikitabobko.github.io/AeroSpace/).
 - Grant **Accessibility** permission in macOS System Settings $\rightarrow$ Privacy & Security $\rightarrow$ Accessibility.
@@ -75,7 +75,25 @@ AeroSpace operates with five persistent virtual workspaces:
 
 ---
 
-## 4. Device Scoping & Built-in Keyboard Isolation
+## 4. Standard F1–F12 Normalization
+
+By default, macOS interprets incoming HID `F1`–`F12` keycodes as Apple media and display brightness keys unless the user enables **"Use all F1, F2, etc. keys as standard function keys"** in macOS **System Settings** $\rightarrow$ **Keyboard** $\rightarrow$ **Keyboard Shortcuts** $\rightarrow$ **Function Keys**.
+
+To ensure that the `FUN` layer reliably emits application `F1`–`F12` across any Mac without requiring global system setting alterations:
+
+1. **System Variable Awareness:**
+   Karabiner-Elements evaluates `system.use_fkeys_as_standard_function_keys`.
+   - When standard function keys mode is **OFF** (macOS media mode), Karabiner transforms external `F1`–`F12` into `Fn + F1`–`Fn + F12`, which macOS translates to standard application function keys.
+   - When standard function keys mode is **ON**, the rule does not intervene, passing `F1`–`F12` directly.
+
+2. **Modifier Preservation (`optional: ["any"]`):**
+   The `FUN` layer provides mirrored modifiers on the opposite hand (`Shift`, `Ctrl`, `Alt`, `Cmd`). Karabiner's `optional: ["any"]` specification ensures that modified combinations (e.g., `Shift+F5`, `Ctrl+F5`, `Cmd+F5`) pass through with their modifier flags fully intact.
+
+3. **Isolation to External Keyboards:**
+   Scoped with `is_built_in_keyboard: false` so that the MacBook's physical built-in Touch Bar or top function row remains unaffected.
+---
+
+## 5. Device Scoping & Built-in Keyboard Isolation
 
 To prevent high-function keys (`F13`–`F24`) on the built-in laptop keyboard or other standard peripherals from being intercepted, every rule manipulator in `hosts/macos/karabiner.json` is scoped with a `device_if` condition:
 

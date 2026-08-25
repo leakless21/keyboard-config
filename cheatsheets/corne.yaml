@@ -23,7 +23,7 @@ descriptions:
   BASE: "Colemak-DH"
   NAV: "Navigation"
   MOUSE: "Pointer & scrolling"
-  MEDIA: "Media controls"
+  MEDIA: "Media & display"
   NUM: "Numeric"
   SYM: "Symbols"
   FUN: "Function keys"

@@ -78,6 +78,8 @@ Single-page, deterministic A4 reference sheets generated directly from firmware 
 | **Language Toggle** | `Alt+F17` | Input Source (`Ctrl+Space`) | EVKey Toggle (`Ctrl+Shift`) |
 | **Copy / Paste / Cut** | `F21` / `F22` / `F23` | `Cmd+C` / `Cmd+V` / `Cmd+X` | `Ctrl+C` / `Ctrl+V` / `Ctrl+X` |
 | **Undo / Redo** | `F24` / `Shift+F24` | `Cmd+Z` / `Cmd+Shift+Z` | `Ctrl+Z` / `Ctrl+Y` |
+| **Standard F1–F12** | `F1`–`F12` | Karabiner normalization when required | Native HID |
+| **Brightness** | `C_BRI_DN` / `C_BRI_UP` | Native Consumer HID | Native Consumer HID |
 
 ---
 

@@ -173,7 +173,7 @@
             /* Directional media controls share NAV's right-hand geometry using Consumer HID. */
             bindings = <
 &trans       &none             &none              &none              &none               &none                                          &none               &none               &none              &none              &none              &trans
-&none        &none             &none              &none              &none               &none                                          &none               &none               &none              &none              &none              &none
+&none        &none             &none              &none              &none               &none                                          &none               &none               &kp C_BRI_DN       &kp C_BRI_UP       &none              &none
 &none        &kp LGUI          &kp LALT           &kp LCTRL          &kp LEFT_SHIFT      &none                                          &none               &kp C_PREVIOUS      &kp C_VOLUME_DOWN  &kp C_VOLUME_UP    &kp C_NEXT         &none
 &none        &none             &none              &none              &none               &none       &trans              &trans         &none               &none               &none              &none              &none              &none
                                &trans             &trans             &none               &none       &none               &kp C_STOP     &kp C_PLAY_PAUSE    &kp C_MUTE          &trans             &trans

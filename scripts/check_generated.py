@@ -142,6 +142,25 @@ def test_display_alias_protocol_coverage(manifest: ProtocolManifest) -> None:
 
     print("PASS: Protocol signals and presentation aliases (keymap_drawer.config.yaml) are 100% synchronized.")
 
+def test_consumer_hid_display_alias_coverage() -> None:
+    """Verify that all Consumer HID actions (&kp C_*) appearing in keymaps have display aliases in keymap_drawer.config.yaml."""
+    aliases = load_presentation_aliases(KEYMAP_DRAWER_CONFIG_PATH)
+    corne_cfg = parse_keymap_file(CORNE_KEYMAP_PATH, layout="corne")
+    sofle_cfg = parse_keymap_file(SOFLE_KEYMAP_PATH, layout="sofle")
+
+    for kb_name, cfg in [("Corne", corne_cfg), ("Sofle", sofle_cfg)]:
+        for layer_name, layer_obj in cfg.layers.items():
+            for binding in layer_obj.bindings:
+                if binding.startswith("&kp C_"):
+                    assert_in(
+                        binding,
+                        aliases,
+                        f"{kb_name} layer '{layer_name}' binding '{binding}' is missing a display alias in keymap_drawer.config.yaml",
+                    )
+
+    print("PASS: All Consumer HID bindings (&kp C_*) in firmware keymaps have display aliases in keymap_drawer.config.yaml.")
+
+
 
 def test_cheatsheet_svg_freshness(keyboard: str = "corne") -> None:
     """Verify that the committed cheatsheet SVG is identical to in-memory regenerated SVG."""
@@ -312,6 +331,7 @@ def main() -> None:
     test_undeclared_firmware_signals(manifest)
     test_undeclared_host_aliases(manifest)
     test_display_alias_protocol_coverage(manifest)
+    test_consumer_hid_display_alias_coverage()
     for kb in ["corne", "sofle"]:
         test_cheatsheet_svg_freshness(kb)
         test_cheatsheet_manifest(kb)

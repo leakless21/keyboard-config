@@ -21,6 +21,8 @@ parse_config:
     "&mkp MB3": "Middle click"
     "&mkp MB4": "Back"
     "&mkp MB5": "Forward"
+    "&kp C_BRI_DN": "Bright−"
+    "&kp C_BRI_UP": "Bright+"
     "&kp C_PREVIOUS": "Prev"
     "&kp C_VOLUME_DOWN": "Vol−"
     "&kp C_VOLUME_UP": "Vol+"

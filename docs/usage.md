@@ -8,8 +8,7 @@ This guide covers daily keyboard usage, layer navigation, gaming, and the firmwa
 
 ### BASE Layer (Colemak-DH)
 - Default typing layer is **Colemak-DH** with bilateral home-row modifiers (`A R S T` $\rightarrow$ `GUI ALT CTRL SHIFT`; `N E I O` $\rightarrow$ `SHIFT CTRL ALT GUI`).
-- **Outer-Left Home Key (`LM5`):** Momentary hold for `MEDIA` (`&mo L_MEDIA`).
-- **Encoders (Sofle):** Left encoder rotates Page Up/Down and presses for Caps Word; Right encoder rotates Volume Down/Up and presses for Mute.
+- **Outer-Left Home Key (`LM5`):** Momentary hold for `MEDIA` (`&mo L_MEDIA`) for display brightness and audio/playback controls.
 
 ### Six Core Thumb Layer-Taps
 | Thumb Position | Tap Action | Hold Layer | Functionality |
@@ -19,7 +18,7 @@ This guide covers daily keyboard usage, layer navigation, gaming, and the firmwa
 | Left Inner (`LH0`) | `Tab` | `HOST` | Semantic F13–F20 workspace protocol, launchers, previous window, resize, service |
 | Right Inner (`RH0`) | `Enter` | `SYM` | Shifted NUM symbols (`{ & * ( }`, `: $ % ^ +`, `~ ! @ # \|`) |
 | Right Middle (`RH1`) | `Backspace` | `NUM` | Spatial numpad on left (`7 8 9`, `4 5 6`, `1 2 3`), right bootloader (`RT5`) |
-| Right Outer (`RH2`) | `Delete` | `FUN` | Function keys F1–F12, Caps Lock fallback (`RT0`) |
+| Right Outer (`RH2`) | `Delete` | `FUN` | Standard application function keys F1–F12 across all hosts, Caps Lock fallback (`RT0`) |
 
 ---
 
@@ -55,8 +54,8 @@ For complete rules on permitted vs forbidden Studio modifications, see [docs/dev
 ## 4. Smoke-Test Checklist
 
 - [ ] **Base Typing:** Colemak-DH alphas, punctuation, bilateral HRMs.
-- [ ] **Thumb Layers:** NAV, MOUSE, MEDIA, NUM, SYM, FUN, HOST accessible via thumbs.
-- [ ] **Encoders (Sofle):** Page scroll on left, volume on right; Caps Word and Mute on presses.
+- [ ] **Thumb & Auxiliary Layers:** NAV, MOUSE, MEDIA (brightness + audio/playback), NUM, SYM, FUN (F1–F12), HOST accessible via thumbs and LM5.
+- [ ] **Encoders (Sofle):** Page scroll / track on left, volume on right; Caps Word and Mute on presses.
 - [ ] **Semantic Editing:** Copy (`F21`), Paste (`F22`), Cut (`F23`), Undo (`F24`), Redo (`Shift+F24`).
 - [ ] **HOST Navigation:** Workspaces 1–5 (`F13`–`F17`), directional focus/move, launchers & desktop actions (`Alt+F13`–`Alt+F17`), Previous Window (`Alt+F16`), Language Toggle (`Alt+F17`).
 - [ ] **Gaming:** QWERTY alphas, physical numbers (Sofle) or AUX numbers (Corne), safe non-accidental exit to BASE.

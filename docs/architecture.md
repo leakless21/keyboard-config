@@ -9,10 +9,11 @@ This document outlines the core architecture, design philosophy, and physical co
 ```text
 Keyboard Hardware (Corne / Sofle)
                 ↓
-    Portable ZMK Firmware Behaviors
-  (Colemak-DH, HRMs, Layers, HID Media)
-                +
-    Semantic HID Protocol (F13–F24)
+┌────────────────────────────────────────────────────────┐
+│  1. Standard HID        (letters, navigation, F1–F12)  │
+│  2. Consumer HID        (brightness, volume, playback) │
+│  3. Semantic Protocol   (F13–F24 desktop actions)      │
+└────────────────────────────────────────────────────────┘
                 ↓
          Host OS Adapters
   ┌─────────────┴─────────────┐
@@ -24,10 +25,26 @@ Ghostty                    Windows Terminal
 Spotlight                  Windows Search
 ```
 
+### Three Classes of Emitted Signals
+
+1. **Standard HID:**
+   - Alphanumeric characters, punctuation, modifiers, navigation keys, and standard application `F1`–`F12` on the `FUN` layer.
+   - Sent directly to the host OS. On macOS, Karabiner normalizes `F1`–`F12` to guarantee applications receive standard function keys regardless of the host's Apple function-row mode.
+
+2. **Consumer HID:**
+   - Display brightness (`C_BRI_DN`, `C_BRI_UP`), audio volume (`C_VOLUME_DOWN`, `C_VOLUME_UP`, `C_MUTE`), and media playback (`C_PREVIOUS`, `C_NEXT`, `C_PLAY_PAUSE`, `C_STOP`).
+   - Handled natively by modern operating systems without third-party daemon translation.
+   - **`MEDIA` is the project's portable laptop-Fn equivalent**, grouping brightness, volume, and playback controls without requiring proprietary OEM Fn firmware scancodes.
+
+3. **Semantic Protocol (`F13`–`F24`):**
+   - Abstract desktop and window management actions (`F13`–`F20`) and desktop editing commands (`F21`–`F24`).
+   - Translated by lightweight host bridges (Karabiner on macOS, AutoHotkey on Windows).
+   - `LANG` (`Alt+F17`) is a cross-platform semantic language/input-source action (`Ctrl+Space` on macOS, EVKey toggle on Windows). It is **not** a raw Apple `GLOBE` key, ensuring identical muscle memory across platforms.
+
 ### Non-Negotiable Invariants
 
 1. **Firmware remains OS-neutral:**
-   - Firmware contains letters, numbers, Colemak-DH base layer, bilateral home-row mods, navigation, mouse emulation, Consumer HID media keys, Bluetooth/device administration, gaming keys, standard F1–F12, and semantic high-function keys (`F13`–`F24`).
+   - Firmware contains letters, numbers, Colemak-DH base layer, bilateral home-row mods, navigation, mouse emulation, Consumer HID media/brightness keys, Bluetooth/device administration, gaming keys, standard F1–F12, and semantic high-function keys (`F13`–`F24`).
    - Firmware **never** contains OS-specific shortcuts (e.g., `Cmd+C` or `Ctrl+C`), window manager commands, launcher paths, or application names.
 
 2. **Semantic F13–F24 Protocol as Common Bridge:**
@@ -43,6 +60,9 @@ Spotlight                  Windows Search
 4. **Internal Laptop Keyboards Remain Untouched:**
    - Laptop keyboards remain standard QWERTY without background remappings or key swaps.
 
+5. **No Literal FN Layer or Fake Universal Fn HID Key:**
+   - `MEDIA` serves as the portable laptop-Fn layer (brightness, volume, transport).
+   - `FUN` serves as the true F1–F12 application function-key layer.
 ---
 
 ## 2. Shared Multi-Keyboard Layout Principles

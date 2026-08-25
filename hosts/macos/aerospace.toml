@@ -51,7 +51,8 @@ alt-shift-space = 'layout floating tiling'
 alt-tab = 'workspace-back-and-forth'
 alt-backtick = 'focus-back-and-forth'
 
-# Independent terminal launch in current workspace
+# Application shortcuts
+alt-b = 'exec-and-forget open -a Zen'
 alt-enter = 'exec-and-forget open -n -a Ghostty'
 
 # Legacy / direct fallback bindings for raw F13-F20 signals (without Karabiner)

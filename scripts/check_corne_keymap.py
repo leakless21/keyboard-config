@@ -217,7 +217,9 @@ def test_cross_platform_bindings(cfg: KeyboardConfig) -> None:
     nav = cfg.layer("NAV")
     mouse = cfg.layer("MOUSE")
 
-    # Media directional controls
+    # Media directional and brightness controls
+    assert_eq(media.pos("RT2"), "&kp C_BRI_DN", "MEDIA RT2 must be Brightness Down (&kp C_BRI_DN)")
+    assert_eq(media.pos("RT3"), "&kp C_BRI_UP", "MEDIA RT3 must be Brightness Up (&kp C_BRI_UP)")
     assert_eq(media.pos("RM1"), "&kp C_PREVIOUS")
     assert_eq(media.pos("RM2"), "&kp C_VOLUME_DOWN")
     assert_eq(media.pos("RM3"), "&kp C_VOLUME_UP")
@@ -234,8 +236,7 @@ def test_cross_platform_bindings(cfg: KeyboardConfig) -> None:
         assert_eq(l_obj.pos("RT3"), "&kp F23", f"{l_name} RT3 must be Cut &kp F23)")
         assert_eq(l_obj.pos("RT4"), "&kp F24", f"{l_name} RT4 must be Undo &kp F24)")
 
-    print("PASS: Cross-platform bindings verified (Consumer media HID, semantic F21-F24 editing on NAV/MOUSE).")
-
+    print("PASS: Cross-platform bindings verified (Consumer media HID brightness/volume/transport, semantic F21-F24 editing on NAV/MOUSE).")
 
 def test_caps_behavior(cfg: KeyboardConfig) -> None:
     """Verify Caps Word on NAV (RM0) and Caps Lock fallback on FUN (RT0)."""
@@ -246,6 +247,51 @@ def test_caps_behavior(cfg: KeyboardConfig) -> None:
     assert_eq(fun.pos("RT0"), "&kp CAPSLOCK", "FUN RT0 must be &kp CAPSLOCK fallback")
 
     print("PASS: Caps behavior verified (&caps_word on NAV, &kp CAPSLOCK fallback on FUN).")
+
+def test_fun_layer(cfg: KeyboardConfig) -> None:
+    """Verify FUN layer exact physical grid (F1-F12, system keys, modifiers, and thumbs)."""
+    fun = cfg.layer("FUN")
+
+    # Left hand 3x4 F-key grid (mirrors NUM geometry)
+    assert_eq(fun.pos("LT4"), "&kp F12", "FUN LT4 must be F12")
+    assert_eq(fun.pos("LT3"), "&kp F7", "FUN LT3 must be F7")
+    assert_eq(fun.pos("LT2"), "&kp F8", "FUN LT2 must be F8")
+    assert_eq(fun.pos("LT1"), "&kp F9", "FUN LT1 must be F9")
+
+    assert_eq(fun.pos("LM4"), "&kp F11", "FUN LM4 must be F11")
+    assert_eq(fun.pos("LM3"), "&kp F4", "FUN LM3 must be F4")
+    assert_eq(fun.pos("LM2"), "&kp F5", "FUN LM2 must be F5")
+    assert_eq(fun.pos("LM1"), "&kp F6", "FUN LM1 must be F6")
+
+    assert_eq(fun.pos("LB4"), "&kp F10", "FUN LB4 must be F10")
+    assert_eq(fun.pos("LB3"), "&kp F1", "FUN LB3 must be F1")
+    assert_eq(fun.pos("LB2"), "&kp F2", "FUN LB2 must be F2")
+    assert_eq(fun.pos("LB1"), "&kp F3", "FUN LB1 must be F3")
+
+    # Left hand outer column system keys
+    assert_eq(fun.pos("LT0"), "&kp PRINTSCREEN", "FUN LT0 must be PrintScreen")
+    assert_eq(fun.pos("LM0"), "&kp SCROLLLOCK", "FUN LM0 must be ScrollLock")
+    assert_eq(fun.pos("LB0"), "&kp PAUSE_BREAK", "FUN LB0 must be Pause/Break")
+
+    # Right hand CapsLock fallback and mirrored modifiers
+    assert_eq(fun.pos("RT0"), "&kp CAPSLOCK", "FUN RT0 must be CapsLock fallback")
+    assert_eq(fun.pos("RM1"), "&kp RIGHT_SHIFT", "FUN RM1 must be Right Shift")
+    assert_eq(fun.pos("RM2"), "&kp RCTRL", "FUN RM2 must be Right Ctrl")
+    assert_eq(fun.pos("RM3"), "&kp RIGHT_ALT", "FUN RM3 must be Right Alt")
+    assert_eq(fun.pos("RM4"), "&kp RIGHT_GUI", "FUN RM4 must be Right GUI")
+
+    # Left thumbs
+    assert_eq(fun.pos("LH2"), "&kp K_APP", "FUN LH2 must be App / Menu key")
+    assert_eq(fun.pos("LH1"), "&kp SPACE", "FUN LH1 must be Space")
+    assert_eq(fun.pos("LH0"), "&kp TAB", "FUN LH0 must be Tab")
+
+    # Invariant: F1-F12 appear exactly once on the layer
+    for i in range(1, 13):
+        f_sig = f"&kp F{i}"
+        count = fun.bindings.count(f_sig)
+        assert_eq(count, 1, f"FUN layer must contain {f_sig} exactly once, found {count}")
+
+    print("PASS: FUN layer F1-F12 grid, system keys, modifiers, and exact occurrence invariants verified.")
 
 
 def test_host_layer_bindings(cfg: KeyboardConfig) -> None:
@@ -325,6 +371,7 @@ def main() -> None:
     test_bootloader_shortcuts(cfg)
     test_cross_platform_bindings(cfg)
     test_caps_behavior(cfg)
+    test_fun_layer(cfg)
     test_host_layer_bindings(cfg)
     test_studio_configuration(cfg)
     test_conf_constraints()

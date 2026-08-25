@@ -1,5 +1,5 @@
 {
-  "title": "Keyboard Semantic Host Bridge (F13-F20 Window Management & F21-F24 Editing)",
+  "title": "Keyboard Semantic Host Bridge (F13-F20 Window Management, F21-F24 Editing, Standard F1-F12 Normalization)",
   "rules": [
     {
       "description": "F13-F20 Semantic Window Management Bridge (F13-F20 -> AeroSpace / macOS chords)",
@@ -1074,6 +1074,431 @@
               "key_code": "x",
               "modifiers": [
                 "left_command"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "description": "Standard F1-F12 normalization for external keyboard",
+      "manipulators": [
+        {
+          "type": "basic",
+          "conditions": [
+            {
+              "type": "device_if",
+              "identifiers": [
+                {
+                  "is_keyboard": true,
+                  "is_built_in_keyboard": false
+                }
+              ]
+            },
+            {
+              "type": "variable_if",
+              "name": "system.use_fkeys_as_standard_function_keys",
+              "value": false
+            }
+          ],
+          "from": {
+            "key_code": "f1",
+            "modifiers": {
+              "optional": [
+                "any"
+              ]
+            }
+          },
+          "to": [
+            {
+              "key_code": "f1",
+              "modifiers": [
+                "fn"
+              ]
+            }
+          ]
+        },
+        {
+          "type": "basic",
+          "conditions": [
+            {
+              "type": "device_if",
+              "identifiers": [
+                {
+                  "is_keyboard": true,
+                  "is_built_in_keyboard": false
+                }
+              ]
+            },
+            {
+              "type": "variable_if",
+              "name": "system.use_fkeys_as_standard_function_keys",
+              "value": false
+            }
+          ],
+          "from": {
+            "key_code": "f2",
+            "modifiers": {
+              "optional": [
+                "any"
+              ]
+            }
+          },
+          "to": [
+            {
+              "key_code": "f2",
+              "modifiers": [
+                "fn"
+              ]
+            }
+          ]
+        },
+        {
+          "type": "basic",
+          "conditions": [
+            {
+              "type": "device_if",
+              "identifiers": [
+                {
+                  "is_keyboard": true,
+                  "is_built_in_keyboard": false
+                }
+              ]
+            },
+            {
+              "type": "variable_if",
+              "name": "system.use_fkeys_as_standard_function_keys",
+              "value": false
+            }
+          ],
+          "from": {
+            "key_code": "f3",
+            "modifiers": {
+              "optional": [
+                "any"
+              ]
+            }
+          },
+          "to": [
+            {
+              "key_code": "f3",
+              "modifiers": [
+                "fn"
+              ]
+            }
+          ]
+        },
+        {
+          "type": "basic",
+          "conditions": [
+            {
+              "type": "device_if",
+              "identifiers": [
+                {
+                  "is_keyboard": true,
+                  "is_built_in_keyboard": false
+                }
+              ]
+            },
+            {
+              "type": "variable_if",
+              "name": "system.use_fkeys_as_standard_function_keys",
+              "value": false
+            }
+          ],
+          "from": {
+            "key_code": "f4",
+            "modifiers": {
+              "optional": [
+                "any"
+              ]
+            }
+          },
+          "to": [
+            {
+              "key_code": "f4",
+              "modifiers": [
+                "fn"
+              ]
+            }
+          ]
+        },
+        {
+          "type": "basic",
+          "conditions": [
+            {
+              "type": "device_if",
+              "identifiers": [
+                {
+                  "is_keyboard": true,
+                  "is_built_in_keyboard": false
+                }
+              ]
+            },
+            {
+              "type": "variable_if",
+              "name": "system.use_fkeys_as_standard_function_keys",
+              "value": false
+            }
+          ],
+          "from": {
+            "key_code": "f5",
+            "modifiers": {
+              "optional": [
+                "any"
+              ]
+            }
+          },
+          "to": [
+            {
+              "key_code": "f5",
+              "modifiers": [
+                "fn"
+              ]
+            }
+          ]
+        },
+        {
+          "type": "basic",
+          "conditions": [
+            {
+              "type": "device_if",
+              "identifiers": [
+                {
+                  "is_keyboard": true,
+                  "is_built_in_keyboard": false
+                }
+              ]
+            },
+            {
+              "type": "variable_if",
+              "name": "system.use_fkeys_as_standard_function_keys",
+              "value": false
+            }
+          ],
+          "from": {
+            "key_code": "f6",
+            "modifiers": {
+              "optional": [
+                "any"
+              ]
+            }
+          },
+          "to": [
+            {
+              "key_code": "f6",
+              "modifiers": [
+                "fn"
+              ]
+            }
+          ]
+        },
+        {
+          "type": "basic",
+          "conditions": [
+            {
+              "type": "device_if",
+              "identifiers": [
+                {
+                  "is_keyboard": true,
+                  "is_built_in_keyboard": false
+                }
+              ]
+            },
+            {
+              "type": "variable_if",
+              "name": "system.use_fkeys_as_standard_function_keys",
+              "value": false
+            }
+          ],
+          "from": {
+            "key_code": "f7",
+            "modifiers": {
+              "optional": [
+                "any"
+              ]
+            }
+          },
+          "to": [
+            {
+              "key_code": "f7",
+              "modifiers": [
+                "fn"
+              ]
+            }
+          ]
+        },
+        {
+          "type": "basic",
+          "conditions": [
+            {
+              "type": "device_if",
+              "identifiers": [
+                {
+                  "is_keyboard": true,
+                  "is_built_in_keyboard": false
+                }
+              ]
+            },
+            {
+              "type": "variable_if",
+              "name": "system.use_fkeys_as_standard_function_keys",
+              "value": false
+            }
+          ],
+          "from": {
+            "key_code": "f8",
+            "modifiers": {
+              "optional": [
+                "any"
+              ]
+            }
+          },
+          "to": [
+            {
+              "key_code": "f8",
+              "modifiers": [
+                "fn"
+              ]
+            }
+          ]
+        },
+        {
+          "type": "basic",
+          "conditions": [
+            {
+              "type": "device_if",
+              "identifiers": [
+                {
+                  "is_keyboard": true,
+                  "is_built_in_keyboard": false
+                }
+              ]
+            },
+            {
+              "type": "variable_if",
+              "name": "system.use_fkeys_as_standard_function_keys",
+              "value": false
+            }
+          ],
+          "from": {
+            "key_code": "f9",
+            "modifiers": {
+              "optional": [
+                "any"
+              ]
+            }
+          },
+          "to": [
+            {
+              "key_code": "f9",
+              "modifiers": [
+                "fn"
+              ]
+            }
+          ]
+        },
+        {
+          "type": "basic",
+          "conditions": [
+            {
+              "type": "device_if",
+              "identifiers": [
+                {
+                  "is_keyboard": true,
+                  "is_built_in_keyboard": false
+                }
+              ]
+            },
+            {
+              "type": "variable_if",
+              "name": "system.use_fkeys_as_standard_function_keys",
+              "value": false
+            }
+          ],
+          "from": {
+            "key_code": "f10",
+            "modifiers": {
+              "optional": [
+                "any"
+              ]
+            }
+          },
+          "to": [
+            {
+              "key_code": "f10",
+              "modifiers": [
+                "fn"
+              ]
+            }
+          ]
+        },
+        {
+          "type": "basic",
+          "conditions": [
+            {
+              "type": "device_if",
+              "identifiers": [
+                {
+                  "is_keyboard": true,
+                  "is_built_in_keyboard": false
+                }
+              ]
+            },
+            {
+              "type": "variable_if",
+              "name": "system.use_fkeys_as_standard_function_keys",
+              "value": false
+            }
+          ],
+          "from": {
+            "key_code": "f11",
+            "modifiers": {
+              "optional": [
+                "any"
+              ]
+            }
+          },
+          "to": [
+            {
+              "key_code": "f11",
+              "modifiers": [
+                "fn"
+              ]
+            }
+          ]
+        },
+        {
+          "type": "basic",
+          "conditions": [
+            {
+              "type": "device_if",
+              "identifiers": [
+                {
+                  "is_keyboard": true,
+                  "is_built_in_keyboard": false
+                }
+              ]
+            },
+            {
+              "type": "variable_if",
+              "name": "system.use_fkeys_as_standard_function_keys",
+              "value": false
+            }
+          ],
+          "from": {
+            "key_code": "f12",
+            "modifiers": {
+              "optional": [
+                "any"
+              ]
+            }
+          },
+          "to": [
+            {
+              "key_code": "f12",
+              "modifiers": [
+                "fn"
               ]
             }
           ]

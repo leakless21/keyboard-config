@@ -822,11 +822,13 @@
   <g class="key unused" data-layer="MEDIA" data-position="RT1" data-binding="&amp;none">
     <rect x="656.0" y="693.0" width="62.0" height="74.0" rx="5" ry="5" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.0" />
   </g>
-  <g class="key unused" data-layer="MEDIA" data-position="RT2" data-binding="&amp;none">
-    <rect x="723.0" y="693.0" width="62.0" height="74.0" rx="5" ry="5" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.0" />
+  <g class="key normal" data-layer="MEDIA" data-position="RT2" data-binding="&amp;kp C_BRI_DN">
+    <rect x="723.0" y="693.0" width="62.0" height="74.0" rx="5" ry="5" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.2" />
+    <text x="754.0" y="735.5" class="lbl-word" font-size="14">Bright−</text>
   </g>
-  <g class="key unused" data-layer="MEDIA" data-position="RT3" data-binding="&amp;none">
-    <rect x="790.0" y="693.0" width="62.0" height="74.0" rx="5" ry="5" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.0" />
+  <g class="key normal" data-layer="MEDIA" data-position="RT3" data-binding="&amp;kp C_BRI_UP">
+    <rect x="790.0" y="693.0" width="62.0" height="74.0" rx="5" ry="5" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.2" />
+    <text x="821.0" y="735.5" class="lbl-word" font-size="14">Bright+</text>
   </g>
   <g class="key unused" data-layer="MEDIA" data-position="RT4" data-binding="&amp;none">
     <rect x="857.0" y="693.0" width="62.0" height="74.0" rx="5" ry="5" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.0" />

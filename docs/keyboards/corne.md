@@ -48,7 +48,7 @@ uv run scripts/generate_cheatsheet.py corne
 | 0 | `BASE` | Default | Colemak-DH base layer with bilateral HRMs, `LM5` MEDIA hold, and 6 thumb layer-taps. |
 | 1 | `NAV` | Hold `LH1` (Space) | Semantic editing (`F21`–`F24`), cursor navigation, Caps Word (`RM0`), and left bootloader (`LT5`). |
 | 2 | `MOUSE` | Hold `LH2` (Esc) | Pointer movement, wheel scrolling, left modifiers, and MB1–MB5 mouse buttons. |
-| 3 | `MEDIA` | Hold `LM5` | Consumer HID previous/volume/next transport controls and stop/play/mute thumbs. |
+| 3 | `MEDIA` | Hold `LM5` | Consumer HID display brightness, previous/volume/next transport controls, and stop/play/mute thumbs. |
 | 4 | `NUM` | Hold `RH1` (Bspc) | Spatial numpad on left; mirrored modifiers and right bootloader (`RT5`) on right. |
 | 5 | `SYM` | Hold `RH0` (Enter) | Shifted NUM symbols on left; mirrored modifiers on right. |
 | 6 | `FUN` | Hold `RH2` (Delete) | F1–F12 function key grid on left; Caps Lock fallback (`RT0`) on right. |

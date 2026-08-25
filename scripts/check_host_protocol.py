@@ -109,10 +109,10 @@ def validate_keymap_producer(path: Path, board_name: str) -> None:
 # -----------------------------------------------------------------------------
 
 def validate_karabiner_translator(karabiner_data: dict) -> None:
-    """Verify that Karabiner maps all semantic signals to the intended macOS chords."""
+    """Verify that Karabiner maps all semantic signals and standard F1-F12 normalization."""
     rules = karabiner_data.get("rules", [])
-    if len(rules) < 2:
-        fail("Layer B (Karabiner): Expected at least 2 rules in karabiner.json")
+    if len(rules) < 3:
+        fail("Layer B (Karabiner): Expected at least 3 rules in karabiner.json")
 
     # Collect all manipulators across rules
     all_manipulators = []
@@ -120,14 +120,50 @@ def validate_karabiner_translator(karabiner_data: dict) -> None:
         for m in r.get("manipulators", []):
             all_manipulators.append(m)
 
-    # Check device scoping conditions
+    # Classify manipulators into distinct architectural groups
+    semantic_host_manipulators = []
+    semantic_editing_manipulators = []
+    standard_f_manipulators = []
+    unexpected_manipulators = []
+
+    for m in all_manipulators:
+        key_code = m.get("from", {}).get("key_code", "")
+        if key_code in [f"f{i}" for i in range(13, 21)]:
+            semantic_host_manipulators.append(m)
+        elif key_code in [f"f{i}" for i in range(21, 25)]:
+            semantic_editing_manipulators.append(m)
+        elif key_code in [f"f{i}" for i in range(1, 13)]:
+            standard_f_manipulators.append(m)
+        else:
+            unexpected_manipulators.append(m)
+
+    assert_eq(
+        len(unexpected_manipulators),
+        0,
+        f"Layer B (Karabiner): Found unexpected manipulators: {unexpected_manipulators}",
+    )
+    assert_eq(
+        len(semantic_host_manipulators),
+        28,
+        f"Layer B (Karabiner): Expected exactly 28 HOST manipulators, found {len(semantic_host_manipulators)}",
+    )
+    assert_eq(
+        len(semantic_editing_manipulators),
+        5,
+        f"Layer B (Karabiner): Expected exactly 5 editing manipulators, found {len(semantic_editing_manipulators)}",
+    )
+    assert_eq(
+        len(standard_f_manipulators),
+        12,
+        f"Layer B (Karabiner): Expected exactly 12 standard F-key normalizers, found {len(standard_f_manipulators)}",
+    )
     assert_eq(
         len(all_manipulators),
-        33,
-        f"Layer B (Karabiner): Expected exactly 33 canonical manipulators (28 HOST + 5 editing), found {len(all_manipulators)}",
+        45,
+        f"Layer B (Karabiner): Expected exactly 45 canonical manipulators (28 HOST + 5 editing + 12 standard F), found {len(all_manipulators)}",
     )
 
-    # Check device scoping conditions
+    # Check device scoping conditions across all manipulators
     for idx, m in enumerate(all_manipulators):
         conditions = m.get("conditions", [])
         has_device_if = False
@@ -142,7 +178,58 @@ def validate_karabiner_translator(karabiner_data: dict) -> None:
                 f"Layer B (Karabiner): Manipulator #{idx} ({m.get('from')}) "
                 f"must be scoped with device_if excluding built-in keyboard (is_built_in_keyboard: false)"
             )
-    # Test matrix: (from_key, mandatory_mods_set, expected_to_key, expected_to_mods_set)
+
+    # Validate Standard F1-F12 normalization group
+    for i in range(1, 13):
+        f_key = f"f{i}"
+        matching = [m for m in standard_f_manipulators if m.get("from", {}).get("key_code") == f_key]
+        assert_eq(
+            len(matching),
+            1,
+            f"Layer B (Karabiner): Expected exactly 1 normalizer for {f_key}, found {len(matching)}",
+        )
+        norm_m = matching[0]
+
+        # from.modifiers.optional must contain "any"
+        optional_mods = norm_m.get("from", {}).get("modifiers", {}).get("optional", [])
+        assert_in(
+            "any",
+            optional_mods,
+            f"Layer B (Karabiner): {f_key} from.modifiers.optional must contain 'any' to preserve opposite-hand mods",
+        )
+
+        # to must map to same f-key with "fn" modifier
+        to_list = norm_m.get("to", [])
+        assert_true(
+            len(to_list) > 0,
+            f"Layer B (Karabiner): {f_key} normalizer must specify at least one 'to' target",
+        )
+        to_target = to_list[0]
+        assert_eq(
+            to_target.get("key_code"),
+            f_key,
+            f"Layer B (Karabiner): {f_key} normalizer must map to key_code '{f_key}'",
+        )
+        assert_in(
+            "fn",
+            to_target.get("modifiers", []),
+            f"Layer B (Karabiner): {f_key} normalizer to.modifiers must contain 'fn'",
+        )
+
+        # conditions must contain system F-key preference condition
+        conds = norm_m.get("conditions", [])
+        has_sys_fkey_cond = False
+        for c in conds:
+            if (
+                c.get("type") == "variable_if"
+                and c.get("name") == "system.use_fkeys_as_standard_function_keys"
+                and c.get("value") is False
+            ):
+                has_sys_fkey_cond = True
+        assert_true(
+            has_sys_fkey_cond,
+            f"Layer B (Karabiner): {f_key} normalizer missing system.use_fkeys_as_standard_function_keys variable_if condition",
+        )
     expected_translations: List[Tuple[str, Set[str], str, Set[str]]] = [
         # Directional move
         ("f13", {"control", "shift"}, "h", {"left_alt", "left_shift"}),
@@ -210,7 +297,7 @@ def validate_karabiner_translator(karabiner_data: dict) -> None:
             )
 
     print(
-        f"PASS: macOS Karabiner Translation validated ({len(expected_translations)} mappings verified with device_if scoping)."
+        f"PASS: macOS Karabiner Translation validated ({len(expected_translations)} semantic mappings + {len(standard_f_manipulators)} standard F-key normalizers with device_if scoping)."
     )
 
 

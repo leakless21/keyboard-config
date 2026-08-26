@@ -33,9 +33,11 @@ if str(REPO_ROOT) not in sys.path:
 
 try:
     from lib.keymap_parser import parse_keymap_file
+    from lib.protocol import ProtocolManifest, SemanticSignal, load_protocol
     from lib.validation import assert_eq, assert_in, assert_true, fail, load_json, load_toml, load_yaml
 except ImportError:
     from scripts.lib.keymap_parser import parse_keymap_file
+    from scripts.lib.protocol import ProtocolManifest, SemanticSignal, load_protocol
     from scripts.lib.validation import assert_eq, assert_in, assert_true, fail, load_json, load_toml, load_yaml
 CORNE_KEYMAP_PATH = REPO_ROOT / "config" / "corne.keymap"
 SOFLE_KEYMAP_PATH = REPO_ROOT / "config" / "sofle.keymap"
@@ -43,7 +45,6 @@ KARABINER_PATH = REPO_ROOT / "hosts" / "macos" / "karabiner.json"
 AEROSPACE_PATH = REPO_ROOT / "hosts" / "macos" / "aerospace.toml"
 AHK_PATH = REPO_ROOT / "hosts" / "windows" / "keyboard.ahk"
 GLAZEWM_PATH = REPO_ROOT / "hosts" / "windows" / "glazewm.yaml"
-
 
 # -----------------------------------------------------------------------------
 # Layer A: Firmware Protocol Producers (Corne & Sofle)
@@ -177,8 +178,8 @@ def validate_karabiner_translator(karabiner_data: dict) -> None:
     )
     assert_eq(
         len(semantic_editing_manipulators),
-        4,
-        f"Layer B (Karabiner): Expected exactly 4 editing manipulators, found {len(semantic_editing_manipulators)}",
+        8,
+        f"Layer B (Karabiner): Expected exactly 8 editing manipulators (4 Shift-safe + 4 bare), found {len(semantic_editing_manipulators)}",
     )
     assert_eq(
         len(standard_f_manipulators),
@@ -187,20 +188,28 @@ def validate_karabiner_translator(karabiner_data: dict) -> None:
     )
     assert_eq(
         len(all_manipulators),
-        56,
-        f"Layer B (Karabiner): Expected exactly 56 canonical manipulators (28 HOST + 12 Hyper app + 4 editing + 12 standard F), found {len(all_manipulators)}",
+        60,
+        f"Layer B (Karabiner): Expected exactly 60 canonical manipulators (28 HOST + 12 Hyper app + 8 editing + 12 standard F), found {len(all_manipulators)}",
     )
 
-    # Verify that all editing manipulators specify optional: ['any'] to tolerate extra held modifiers
+    # Verify Shift-safe editing handlers appear before bare editing handlers
+    shift_safe_keys = []
+    bare_keys = []
     for m in semantic_editing_manipulators:
-        opt_mods = m.get("from", {}).get("modifiers", {}).get("optional", [])
-        assert_in(
-            "any",
-            opt_mods,
-            f"Layer B (Karabiner): Editing manipulator {m.get('from')} must specify optional: ['any'] to tolerate held modifiers",
-        )
+        k = m.get("from", {}).get("key_code")
+        mods = m.get("from", {}).get("modifiers", {})
+        mand = mods.get("mandatory", [])
+        opt = mods.get("optional", [])
+        assert_eq(opt, ["caps_lock"], f"Layer B (Karabiner): Editing manipulator for {k} must have optional: ['caps_lock']")
+        if mand == ["shift"]:
+            shift_safe_keys.append(k)
+        elif not mand:
+            bare_keys.append(k)
+        else:
+            fail(f"Layer B (Karabiner): Unexpected mandatory modifiers {mand} on editing manipulator {k}")
 
-    # Check device scoping conditions across all manipulators
+    assert_eq(shift_safe_keys, ["f21", "f22", "f23", "f24"], "Layer B (Karabiner): Expected 4 Shift-safe editing handlers in order")
+    assert_eq(bare_keys, ["f21", "f22", "f23", "f24"], "Layer B (Karabiner): Expected 4 bare editing handlers in order")
     for idx, m in enumerate(all_manipulators):
         conditions = m.get("conditions", [])
         has_device_if = False
@@ -303,7 +312,17 @@ def validate_karabiner_translator(karabiner_data: dict) -> None:
         ("f18", set(), "tab", {"left_alt"}),                             # PREV WS -> Alt+Tab
         ("f19", set(), "f", {"left_alt"}),                               # FULL -> Alt+F
         ("f20", set(), "spacebar", {"left_alt", "left_shift"}),          # FLOAT -> Alt+Shift+Space
-        # Semantic editing
+        # Semantic editing (4 Shift-safe variants + 4 bare variants)
+        # Shift-safe selection editing: mandatory Shift stripped before emitting target
+        ("f21", {"shift"}, "c", {"left_command"}),
+        ("f22", {"shift"}, "v", {"left_command"}),
+        ("f23", {"shift"}, "x", {"left_command"}),
+        ("f24", {"shift"}, "z", {"left_command"}),
+        # Bare semantic editing
+        ("f21", set(), "c", {"left_command"}),
+        ("f22", set(), "v", {"left_command"}),
+        ("f23", set(), "x", {"left_command"}),
+        ("f24", set(), "z", {"left_command"}),
         # Hyper application actions (12)
         ("f13", {"control", "option", "shift", "command"}, "a", {"left_command"}),
         ("f14", {"control", "option", "shift", "command"}, "s", {"left_command"}),
@@ -317,11 +336,6 @@ def validate_karabiner_translator(karabiner_data: dict) -> None:
         ("f22", {"control", "option", "shift", "command"}, "right_arrow", {"left_alt"}),
         ("f23", {"control", "option", "shift", "command"}, "g", {"left_command"}),
         ("f24", {"control", "option", "shift", "command"}, "z", {"left_command", "left_shift"}),
-        # Semantic editing clipboard actions (4)
-        ("f21", set(), "c", {"left_command"}),
-        ("f22", set(), "v", {"left_command"}),
-        ("f23", set(), "x", {"left_command"}),
-        ("f24", set(), "z", {"left_command"}),
     ]
     for from_key, from_mods, to_key, to_mods in expected_translations:
         found = False
@@ -504,6 +518,30 @@ def validate_glazewm_consumer(data: dict) -> None:
 
 
 # -----------------------------------------------------------------------------
+# Layer D: Protocol Manifest & Signal Identity Consistency
+# -----------------------------------------------------------------------------
+
+def validate_protocol_signal_identities(manifest: ProtocolManifest) -> None:
+    """Verify that all actions in protocol/semantic-v1.yaml have unique, well-formed signal identities."""
+    seen_identities: Dict[Tuple[str, frozenset[str]], str] = {}
+    for action_id, action in manifest.actions.items():
+        ident = action.signal.identity
+        if ident in seen_identities:
+            fail(
+                f"Protocol collision: Action '{action_id}' has duplicate signal identity {ident} "
+                f"already used by '{seen_identities[ident]}'"
+            )
+        seen_identities[ident] = action_id
+
+    assert_eq(
+        len(manifest.actions),
+        len(seen_identities),
+        f"Expected {len(manifest.actions)} unique signal identities, got {len(seen_identities)}",
+    )
+    print(f"PASS: Protocol manifest validated ({len(manifest.actions)} unique semantic signal identities).")
+
+
+# -----------------------------------------------------------------------------
 # Main Runner
 # -----------------------------------------------------------------------------
 
@@ -511,6 +549,10 @@ def main() -> None:
     print("=" * 70)
     print("RUNNING MULTI-KEYBOARD & MULTI-HOST PROTOCOL VALIDATION")
     print("=" * 70)
+
+    # 0. Protocol Manifest
+    manifest = load_protocol()
+    validate_protocol_signal_identities(manifest)
 
     # 1. Producers
     validate_keymap_producer(CORNE_KEYMAP_PATH, "Corne")

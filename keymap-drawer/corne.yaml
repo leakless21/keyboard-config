@@ -50,11 +50,11 @@ layers:
   - New Tab
   - Close Tab
   - Reopen Tab
-  - Redo
+  - Undo
   - Paste
   - Copy
   - Cut
-  - Undo
+  - Redo
   - ''
   - Sel All
   - LGUI
@@ -81,7 +81,7 @@ layers:
   - END
   - ''
   - ESCAPE
-  - {t: SPACE, type: held}
+  - {type: held}
   - TAB
   - ENTER
   - BACKSPACE
@@ -93,11 +93,11 @@ layers:
   - ''
   - ''
   - ''
-  - Redo
+  - Undo
   - Paste
   - Copy
   - Cut
-  - Undo
+  - Redo
   - ''
   - ''
   - LGUI

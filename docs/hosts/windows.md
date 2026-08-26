@@ -16,7 +16,7 @@ Semantic F13–F24 HID Signals
    GlazeWM                        AutoHotkey v2
 (Window Management)             (Desktop Actions & Editing)
       │                               │
-  Workspaces 1–5                  Clipboard (F21–F24)
+  Workspaces 1–5                  Editing (F21–F24 / Hyper+F24)
   Focus & Move                    Windows Search (Alt+F13)
   Resize Mode                     Quick Terminal summon (Alt+F14)
   Service Mode                    New Terminal window (Alt+F15)

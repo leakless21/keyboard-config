@@ -163,12 +163,12 @@
              */
             bindings = <
                 &bootloader              &kp LC(LA(LS(LG(F16))))  &kp LC(LA(LS(LG(F17))))  &kp LC(LA(LS(LG(F18))))  &kp LC(LA(LS(LG(F19))))  &kp LC(LA(LS(LG(F20))))
-                &kp LC(LA(LS(LG(F24))))  &kp F22                  &kp F21                  &kp F23                  &kp F24                  &none
+                &kp F24                  &kp F22                  &kp F21                  &kp F23                  &kp LC(LA(LS(LG(F24))))  &none
                 &kp LC(LA(LS(LG(F13))))  &kp LGUI                 &kp LALT                 &kp LCTRL                &kp LEFT_SHIFT           &kp LC(LA(LS(LG(F14))))
                 &caps_word               &kp LEFT                 &kp DOWN                 &kp UP                   &kp RIGHT                &none
                 &kp LC(LA(LS(LG(F15))))  &kp LC(LA(LS(LG(F21))))  &kp LC(LA(LS(LG(F22))))  &kp LC(LA(LS(LG(F23))))  &none                    &none
                 &kp INSERT               &kp HOME                 &kp PAGE_DOWN            &kp PAGE_UP              &kp END                  &none
-                &kp ESCAPE               &kp SPACE                &kp TAB                  &kp ENTER                &kp BACKSPACE            &kp DELETE
+                &kp ESCAPE               &none                    &kp TAB                  &kp ENTER                &kp BACKSPACE            &kp DELETE
             >;
         };
 
@@ -178,7 +178,7 @@
             /* NAV geometry: pointer on home, wheel on the secondary bank, F21-F24 editing. */
             bindings = <
                 &none            &none             &none             &none             &none             &none
-                &kp LC(LA(LS(LG(F24)))) &kp F22    &kp F21           &kp F23           &kp F24           &none
+                &kp F24          &kp F22           &kp F21           &kp F23           &kp LC(LA(LS(LG(F24)))) &none
                 &none            &kp LGUI          &kp LALT          &kp LCTRL         &kp LEFT_SHIFT    &none
                 &mkp MB4         &mmv MOVE_LEFT    &mmv MOVE_DOWN     &mmv MOVE_UP      &mmv MOVE_RIGHT   &mkp MB5
                 &none            &none             &none             &none             &none             &none
@@ -186,7 +186,6 @@
                 &none            &none             &none             &mkp MB2          &mkp MB1          &mkp MB3
             >;
         };
-
         MEDIA {
             label = "MEDIA";
             display-name = "MEDIA";

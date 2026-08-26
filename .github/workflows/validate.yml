@@ -13,6 +13,9 @@ on:
       - "build.yaml"
       - "keymap_drawer.config.yaml"
       - ".github/workflows/**"
+      - "pyproject.toml"
+      - "uv.lock"
+      - "README.md"
   pull_request:
     paths:
       - "config/**"
@@ -24,7 +27,9 @@ on:
       - "build.yaml"
       - "keymap_drawer.config.yaml"
       - ".github/workflows/**"
-
+      - "pyproject.toml"
+      - "uv.lock"
+      - "README.md"
 concurrency:
   group: validate-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true

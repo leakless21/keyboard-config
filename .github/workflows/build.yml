@@ -9,6 +9,9 @@ on:
       - "zephyr/**"
       - "build.yaml"
       - ".github/workflows/build.yml"
+      - "pyproject.toml"
+      - "uv.lock"
+      - "README.md"
   pull_request:
     paths:
       - "config/**"
@@ -16,7 +19,9 @@ on:
       - "zephyr/**"
       - "build.yaml"
       - ".github/workflows/build.yml"
-
+      - "pyproject.toml"
+      - "uv.lock"
+      - "README.md"
 concurrency:
   group: firmware-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
@@ -28,21 +33,21 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v7
 
-      - name: Set up Python
-        uses: actions/setup-python@v7
+      - name: Set up uv
+        uses: astral-sh/setup-uv@1edb52594c857e2b5b13128931090f0640537287 # v5.3.0
         with:
-          python-version: "3.x"
+          enable-cache: true
 
       - name: Install Validation Dependencies
-        run: pip install --upgrade pyyaml tomli
+        run: uv sync --frozen --dev
 
       - name: Run Keymap, Manifest & Protocol Invariant Checks
         run: |
-          python3 scripts/check_corne_keymap.py
-          python3 scripts/check_sofle_keymap.py
-          python3 scripts/check_build_config.py
-          python3 scripts/check_host_protocol.py
-          python3 scripts/check_generated.py
+          uv run scripts/check_corne_keymap.py
+          uv run scripts/check_sofle_keymap.py
+          uv run scripts/check_build_config.py
+          uv run scripts/check_host_protocol.py
+          uv run scripts/check_generated.py
 
   build:
     needs: validate-pre-build

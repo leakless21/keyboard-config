@@ -47,10 +47,13 @@ Do not confuse firmware updates, split settings resets, and ZMK Studio resets. T
 
 ### A. Normal Firmware Update (Central Only)
 Used for routine Git keymap changes that only affect central key assignments:
-1. Double-press reset button on **left (central)** half to enter bootloader.
+1. Enter bootloader via software shortcut (Hold `NAV` + press `LT5`) or double-press physical reset button on **left (central)** half.
 2. Drag and drop `corne-left.uf2` or `sofle-left.uf2` onto the `NICENANO` USB volume.
 3. Controller reboots automatically.
 
+> ℹ️ **Same-Half Bootloader Recovery:**
+> Same-half bootloader chords require no key from the opposite half during normal connected split operation (`NAV + LT5` on left, `NUM + RT5` on right; or mirrored on `ADJUST`).
+> **Peripheral Connectivity Caveat:** A peripheral keymap shortcut is not standalone if it cannot communicate with the central because ZMK sends peripheral key events to the central for keymap processing before invoking source-local reset behaviors. If the right half cannot reach the central, double-press the physical reset button on the right nice!nano.
 ### B. Flash Both Halves
 **Mandatory** when changing:
 * Split communication or BLE configuration.

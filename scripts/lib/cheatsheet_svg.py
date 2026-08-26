@@ -253,9 +253,10 @@ def render_key_svg(
         classes.append("mod")
     if key.is_bootloader:
         classes.append("bootloader")
+    if key.is_held_activator:
+        classes.append("held-activator")
     if key.position in ("LEC", "REC"):
         classes.append("encoder")
-
     attrs = [
         f'class="{" ".join(classes)}"',
         f'data-layer="{escape(layer_name)}"',
@@ -287,6 +288,11 @@ def render_key_svg(
         border_color = target_color
         border_width = 2.4
         fill_color = "#ffffff"
+    elif key.kind == "held_activator" or key.is_held_activator:
+        layer_color = color_palette.get(layer_name, "#0284c7")
+        border_color = layer_color
+        border_width = 1.8
+        fill_color = "#f8fafc"
     elif key.is_bootloader:
         border_color = "#e11d48"
         border_width = 2.0
@@ -341,6 +347,11 @@ def render_key_svg(
                 hold_color = color_palette.get(key.target_layer or "", "#0284c7")
                 out.append(
                     f'    <text x="{cx:.1f}" y="{y + (h * 0.78):.1f}" class="lbl-hold-layer" font-size="13" fill="{hold_color}">{escape(hold_lbl)}</text>'
+                )
+            elif key.kind == "held_activator" or key.is_held_activator:
+                layer_color = color_palette.get(layer_name, "#0284c7")
+                out.append(
+                    f'    <text x="{cx:.1f}" y="{y + (h * 0.78):.1f}" class="lbl-hold-layer" font-size="13" fill="{layer_color}">{escape(hold_lbl)}</text>'
                 )
             else:
                 out.append(

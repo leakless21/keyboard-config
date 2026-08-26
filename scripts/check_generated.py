@@ -252,9 +252,7 @@ def test_cheatsheet_structure(keyboard: str = "corne") -> None:
         keys_per_layer = 42
 
     assert_eq(len(expected_positions), keys_per_layer, f"{kb} must have exactly {keys_per_layer} positions")
-
-    raw_pattern = re.compile(r"&(?:kp|mo|lt|to|trans|none|sk|hml|hmr)\b")
-
+    raw_pattern = re.compile(r"&[A-Za-z_][A-Za-z0-9_]*")
     for layer_name in expected_layers:
         panel_id = f"layer-{layer_name.lower()}"
         panel_elem = root.find(f".//svg:g[@id='{panel_id}']", ns)

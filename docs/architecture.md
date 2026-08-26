@@ -40,7 +40,7 @@ Spotlight                  Windows Search
    - Abstract desktop and window management actions (`F13`–`F20`), desktop clipboard editing commands (`F21`–`F24`), and application/tab management controls (`Hyper + F13`–`F24`).
    - Translated by lightweight host bridges (Karabiner on macOS, AutoHotkey on Windows).
    - **Hyper Namespace (`Ctrl + Alt + Shift + GUI`):** Application semantics reside in the dedicated Hyper namespace. Because Hyper asserts all four ordinary modifiers, holding user modifiers (e.g. Shift for selection) cannot accidentally transmute one semantic command into another.
-   - **Held Modifier Tolerance for Clipboard:** Host bridges match `F21`–`F24` (Copy, Paste, Cut, Undo) regardless of extra held modifiers, solving modifier-collision edge cases.
+   - **Selection-Safe Shift Handling for Clipboard:** `F21`–`F24` support bare use and explicit Shift-safe invocation for selection workflows. Host bridges match bare `F21`–`F24` and explicit `Shift+F21`–`F24`, stripping held Shift before emitting target shortcuts so selecting text with Shift + NEIO and pressing Undo cannot accidentally emit Redo (`Cmd+Shift+Z`).
    - `LANG` (`Alt+F17`) is a cross-platform semantic language/input-source action (`Ctrl+Space` on macOS, EVKey toggle on Windows). It is **not** a raw Apple `GLOBE` key, ensuring identical muscle memory across platforms.
 ### Non-Negotiable Invariants
 
@@ -109,9 +109,9 @@ Home    PgDn    PgUp    End
 (RB1)   (RB2)   (RB3)   (RB4)
 ```
 Outer bottom column `RB0` carries `Insert`.
-Outer top column `RT0..RT4` carries `Redo`, `Paste`, `Copy`, `Cut`, `Undo`.
+Outer top column `RT0..RT4` carries `Undo`, `Paste`, `Copy`, `Cut`, `Redo`.
 Outer middle column `RM0` carries `Caps Word`.
-
+Thumbs carry `Esc | [NAV held] | Tab | Enter | Bsp | Del` with `LH1` consuming the NAV activator (`&none`) to prevent layer-tap repeats.
 ## 4. Left NAV: Everyday Application & Tab Management Area
 
 The left side of the `NAV` layer is dedicated to high-frequency everyday application controls:
@@ -150,8 +150,30 @@ This configuration explicitly separates sticky modifier roles:
    - Retained as plain `&kp` modifiers so holding `Shift` + `NEIO` arrows for continuous text selection remains maximally predictable.
 
 ---
+## 6. Recovery Topology & Bootloader Independence
 
-## 6. Deliberate Hardware Differences
+Firmware implements side-aware, same-half recovery paths for split operation:
+
+1. **Left Same-Half Recovery:**
+   - Hold `BASE LH1` (`NAV`) + tap `LT5` $\rightarrow$ Left controller bootloader.
+   - Both activator (`LH1`) and trigger (`LT5`) reside on the physical left half.
+
+2. **Right Same-Half Recovery:**
+   - Hold `BASE RH1` (`NUM`) + tap `RT5` $\rightarrow$ Right controller bootloader.
+   - Both activator (`RH1`) and trigger (`RT5`) reside on the physical right half.
+   - Same-half bootloader chords require no key from the opposite half during normal connected split operation.
+
+3. **Full Maintenance (`ADJUST` Layer):**
+   - Hold `NAV + NUM` $\rightarrow$ `ADJUST`.
+   - `LT5` $\rightarrow$ Left bootloader, `LT4` $\rightarrow$ Left system reset.
+   - `RT4` $\rightarrow$ Right system reset, `RT5` $\rightarrow$ Right bootloader.
+
+> ⚠️ **Central Connectivity Caveat:** A peripheral keymap shortcut is not standalone if it cannot communicate with the central. ZMK's split architecture sends the peripheral key event to the central for keymap processing, even for source-local reset behaviors. If the right peripheral is disconnected or cannot reach the central, double-tap the physical reset button on the right nice!nano.
+
+---
+
+## 7. Deliberate Hardware Differences
+
 We deliberately do **not** force artificial parity where hardware differs:
 
 | Feature | Corne (42 keys) | Sofle (60 keys) | Rationale |

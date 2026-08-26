@@ -157,10 +157,10 @@
              */
             bindings = <
 &trans       &none                     &none                     &none                     &none                     &none                                          &none                     &none               &none              &none              &none              &trans
-&bootloader  &kp LC(LA(LS(LG(F16))))   &kp LC(LA(LS(LG(F17))))   &kp LC(LA(LS(LG(F18))))   &kp LC(LA(LS(LG(F19))))   &kp LC(LA(LS(LG(F20))))                        &kp LC(LA(LS(LG(F24))))   &kp F22             &kp F21            &kp F23            &kp F24            &none
+&bootloader  &kp LC(LA(LS(LG(F16))))   &kp LC(LA(LS(LG(F17))))   &kp LC(LA(LS(LG(F18))))   &kp LC(LA(LS(LG(F19))))   &kp LC(LA(LS(LG(F20))))                        &kp F24                   &kp F22             &kp F21            &kp F23            &kp LC(LA(LS(LG(F24)))) &none
 &kp LC(LA(LS(LG(F13)))) &kp LGUI       &kp LALT                  &kp LCTRL                 &kp LEFT_SHIFT            &kp LC(LA(LS(LG(F14))))                        &caps_word                &kp LEFT            &kp DOWN           &kp UP             &kp RIGHT          &none
 &kp LC(LA(LS(LG(F15)))) &kp LC(LA(LS(LG(F21)))) &kp LC(LA(LS(LG(F22)))) &kp LC(LA(LS(LG(F23)))) &none            &none       &trans              &trans         &kp INSERT                &kp HOME            &kp PAGE_DOWN      &kp PAGE_UP        &kp END            &none
-                                       &trans                    &trans                    &kp ESCAPE                &kp SPACE   &kp TAB             &kp ENTER      &kp BACKSPACE             &kp DELETE          &trans             &trans
+                                       &trans                    &trans                    &kp ESCAPE                &none       &kp TAB             &kp ENTER      &kp BACKSPACE             &kp DELETE          &trans             &trans
             >;
 
             sensor-bindings =
@@ -174,7 +174,7 @@
             /* NAV geometry: pointer on home, wheel on secondary bank, F21-F24 editing. */
             bindings = <
 &trans       &none             &none              &none              &none               &none                                          &none               &none               &none              &none              &none              &trans
-&none        &none             &none              &none              &none               &none                                          &kp LC(LA(LS(LG(F24)))) &kp F22         &kp F21            &kp F23            &kp F24            &none
+&none        &none             &none              &none              &none               &none                                          &kp F24             &kp F22             &kp F21            &kp F23            &kp LC(LA(LS(LG(F24)))) &none
 &none        &kp LGUI          &kp LALT           &kp LCTRL          &kp LEFT_SHIFT      &none                                          &mkp MB4            &mmv MOVE_LEFT      &mmv MOVE_DOWN     &mmv MOVE_UP       &mmv MOVE_RIGHT    &mkp MB5
 &none        &none             &none              &none              &none               &none       &trans              &trans         &none               &msc SCRL_LEFT      &msc SCRL_DOWN     &msc SCRL_UP       &msc SCRL_RIGHT    &none
                                &trans             &trans             &none               &none       &none               &mkp MB2       &mkp MB1            &mkp MB3            &trans             &trans

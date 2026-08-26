@@ -232,7 +232,7 @@
   <rect x="1005.0" y="94.0" width="960.0" height="472.0" rx="8" ry="8" fill="#ffffff" stroke="#e2e8f0" stroke-width="1.2" />
   <rect x="1015.0" y="102.0" width="4.5" height="22" rx="2.2" fill="#0284c7" />
   <text x="1027.0" y="119.0" class="panel-title" fill="#0284c7">NAV</text>
-  <text x="1074.0" y="119.0" class="panel-sub">NAV · L1   (Hold L-thumb Space)</text>
+  <text x="1074.0" y="119.0" class="panel-sub">NAV · L1   (Hold LH1 · Space)</text>
   <g class="key system bootloader" data-layer="NAV" data-position="LT5" data-binding="&amp;bootloader">
     <rect x="1010.0" y="134.0" width="72.0" height="96.0" rx="6" ry="6" fill="#fff1f2" stroke="#e11d48" stroke-width="2.0" />
     <text x="1046.0" y="187.5" class="lbl-boot" font-size="15">BOOT</text>
@@ -262,9 +262,9 @@
     <text x="1436.0" y="176.0" class="lbl-multi" font-size="12.5">Reopen</text>
     <text x="1436.0" y="198.0" class="lbl-multi" font-size="12.5">Tab</text>
   </g>
-  <g class="key normal" data-layer="NAV" data-position="RT0" data-binding="&amp;kp LC(LA(LS(LG(F24))))">
+  <g class="key normal" data-layer="NAV" data-position="RT0" data-binding="&amp;kp F24">
     <rect x="1498.0" y="134.0" width="72.0" height="96.0" rx="6" ry="6" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.2" />
-    <text x="1534.0" y="187.5" class="lbl-word" font-size="16">Redo</text>
+    <text x="1534.0" y="187.5" class="lbl-word" font-size="16">Undo</text>
   </g>
   <g class="key normal" data-layer="NAV" data-position="RT1" data-binding="&amp;kp F22">
     <rect x="1576.0" y="134.0" width="72.0" height="96.0" rx="6" ry="6" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.2" />
@@ -278,9 +278,9 @@
     <rect x="1732.0" y="134.0" width="72.0" height="96.0" rx="6" ry="6" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.2" />
     <text x="1768.0" y="187.5" class="lbl-word" font-size="16">Cut</text>
   </g>
-  <g class="key normal" data-layer="NAV" data-position="RT4" data-binding="&amp;kp F24">
+  <g class="key normal" data-layer="NAV" data-position="RT4" data-binding="&amp;kp LC(LA(LS(LG(F24))))">
     <rect x="1810.0" y="134.0" width="72.0" height="96.0" rx="6" ry="6" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.2" />
-    <text x="1846.0" y="187.5" class="lbl-word" font-size="16">Undo</text>
+    <text x="1846.0" y="187.5" class="lbl-word" font-size="16">Redo</text>
   </g>
   <g class="key unused" data-layer="NAV" data-position="RT5" data-binding="&amp;none">
     <rect x="1888.0" y="134.0" width="72.0" height="96.0" rx="6" ry="6" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.0" />
@@ -386,9 +386,10 @@
     <rect x="1244.0" y="446.0" width="72.0" height="96.0" rx="6" ry="6" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.2" />
     <text x="1280.0" y="499.5" class="lbl-word" font-size="16">Esc</text>
   </g>
-  <g class="key normal" data-layer="NAV" data-position="LH1" data-binding="&amp;kp SPACE">
-    <rect x="1322.0" y="446.0" width="72.0" height="96.0" rx="6" ry="6" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.2" />
-    <text x="1358.0" y="499.5" class="lbl-word" font-size="14">Space</text>
+  <g class="key held_activator held-activator" data-layer="NAV" data-position="LH1" data-binding="&amp;none">
+    <rect x="1322.0" y="446.0" width="72.0" height="96.0" rx="6" ry="6" fill="#f8fafc" stroke="#0284c7" stroke-width="1.8" />
+    <text x="1358.0" y="482.5" class="lbl-tap" font-size="14.5">NAV</text>
+    <text x="1358.0" y="520.9" class="lbl-hold-layer" font-size="13" fill="#0284c7">held</text>
   </g>
   <g class="key normal" data-layer="NAV" data-position="LH0" data-binding="&amp;kp TAB">
     <rect x="1400.0" y="446.0" width="72.0" height="96.0" rx="6" ry="6" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.2" />
@@ -411,7 +412,7 @@
   <rect x="1977.0" y="94.0" width="960.0" height="472.0" rx="8" ry="8" fill="#ffffff" stroke="#e2e8f0" stroke-width="1.2" />
   <rect x="1987.0" y="102.0" width="4.5" height="22" rx="2.2" fill="#0d9488" />
   <text x="1999.0" y="119.0" class="panel-title" fill="#0d9488">MOUSE</text>
-  <text x="2076.0" y="119.0" class="panel-sub">MOUSE · L2   (Hold L-thumb Esc)</text>
+  <text x="2076.0" y="119.0" class="panel-sub">MOUSE · L2   (Hold LH2 · Esc)</text>
   <g class="key unused" data-layer="MOUSE" data-position="LT5" data-binding="&amp;none">
     <rect x="1982.0" y="134.0" width="72.0" height="96.0" rx="6" ry="6" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.0" />
   </g>
@@ -430,9 +431,9 @@
   <g class="key unused" data-layer="MOUSE" data-position="LT0" data-binding="&amp;none">
     <rect x="2372.0" y="134.0" width="72.0" height="96.0" rx="6" ry="6" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.0" />
   </g>
-  <g class="key normal" data-layer="MOUSE" data-position="RT0" data-binding="&amp;kp LC(LA(LS(LG(F24))))">
+  <g class="key normal" data-layer="MOUSE" data-position="RT0" data-binding="&amp;kp F24">
     <rect x="2470.0" y="134.0" width="72.0" height="96.0" rx="6" ry="6" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.2" />
-    <text x="2506.0" y="187.5" class="lbl-word" font-size="16">Redo</text>
+    <text x="2506.0" y="187.5" class="lbl-word" font-size="16">Undo</text>
   </g>
   <g class="key normal" data-layer="MOUSE" data-position="RT1" data-binding="&amp;kp F22">
     <rect x="2548.0" y="134.0" width="72.0" height="96.0" rx="6" ry="6" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.2" />
@@ -446,9 +447,9 @@
     <rect x="2704.0" y="134.0" width="72.0" height="96.0" rx="6" ry="6" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.2" />
     <text x="2740.0" y="187.5" class="lbl-word" font-size="16">Cut</text>
   </g>
-  <g class="key normal" data-layer="MOUSE" data-position="RT4" data-binding="&amp;kp F24">
+  <g class="key normal" data-layer="MOUSE" data-position="RT4" data-binding="&amp;kp LC(LA(LS(LG(F24))))">
     <rect x="2782.0" y="134.0" width="72.0" height="96.0" rx="6" ry="6" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.2" />
-    <text x="2818.0" y="187.5" class="lbl-word" font-size="16">Undo</text>
+    <text x="2818.0" y="187.5" class="lbl-word" font-size="16">Redo</text>
   </g>
   <g class="key unused" data-layer="MOUSE" data-position="RT5" data-binding="&amp;none">
     <rect x="2860.0" y="134.0" width="72.0" height="96.0" rx="6" ry="6" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.0" />
@@ -547,8 +548,10 @@
   <g class="key unused" data-layer="MOUSE" data-position="RB5" data-binding="&amp;none">
     <rect x="2860.0" y="338.0" width="72.0" height="96.0" rx="6" ry="6" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.0" />
   </g>
-  <g class="key unused" data-layer="MOUSE" data-position="LH2" data-binding="&amp;none">
-    <rect x="2216.0" y="446.0" width="72.0" height="96.0" rx="6" ry="6" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.0" />
+  <g class="key held_activator held-activator" data-layer="MOUSE" data-position="LH2" data-binding="&amp;none">
+    <rect x="2216.0" y="446.0" width="72.0" height="96.0" rx="6" ry="6" fill="#f8fafc" stroke="#0d9488" stroke-width="1.8" />
+    <text x="2252.0" y="482.5" class="lbl-tap" font-size="14.5">MOUSE</text>
+    <text x="2252.0" y="520.9" class="lbl-hold-layer" font-size="13" fill="#0d9488">held</text>
   </g>
   <g class="key unused" data-layer="MOUSE" data-position="LH1" data-binding="&amp;none">
     <rect x="2294.0" y="446.0" width="72.0" height="96.0" rx="6" ry="6" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.0" />
@@ -615,8 +618,10 @@
   <g class="key unused" data-layer="MEDIA" data-position="RT5" data-binding="&amp;none">
     <rect x="916.0" y="616.0" width="72.0" height="96.0" rx="6" ry="6" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.0" />
   </g>
-  <g class="key unused" data-layer="MEDIA" data-position="LM5" data-binding="&amp;none">
-    <rect x="38.0" y="718.0" width="72.0" height="96.0" rx="6" ry="6" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.0" />
+  <g class="key held_activator held-activator" data-layer="MEDIA" data-position="LM5" data-binding="&amp;none">
+    <rect x="38.0" y="718.0" width="72.0" height="96.0" rx="6" ry="6" fill="#f8fafc" stroke="#ea580c" stroke-width="1.8" />
+    <text x="74.0" y="754.5" class="lbl-tap" font-size="14.5">MEDIA</text>
+    <text x="74.0" y="792.9" class="lbl-hold-layer" font-size="13" fill="#ea580c">held</text>
   </g>
   <g class="key modifier mod" data-layer="MEDIA" data-position="LM4" data-binding="&amp;kp LGUI">
     <rect x="116.0" y="718.0" width="72.0" height="96.0" rx="6" ry="6" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.2" />
@@ -722,7 +727,7 @@
   <rect x="1005.0" y="576.0" width="960.0" height="472.0" rx="8" ry="8" fill="#ffffff" stroke="#e2e8f0" stroke-width="1.2" />
   <rect x="1015.0" y="584.0" width="4.5" height="22" rx="2.2" fill="#d97706" />
   <text x="1027.0" y="601.0" class="panel-title" fill="#d97706">NUM</text>
-  <text x="1074.0" y="601.0" class="panel-sub">NUM · L4   (Hold R-thumb Bsp)</text>
+  <text x="1074.0" y="601.0" class="panel-sub">NUM · L4   (Hold RH1 · Bsp)</text>
   <g class="key normal" data-layer="NUM" data-position="LT5" data-binding="&amp;kp SLASH">
     <rect x="1010.0" y="616.0" width="72.0" height="96.0" rx="6" ry="6" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.2" />
     <text x="1046.0" y="672.5" class="lbl-single" font-size="28">/</text>
@@ -873,8 +878,10 @@
   <g class="key unused" data-layer="NUM" data-position="RH0" data-binding="&amp;none">
     <rect x="1498.0" y="928.0" width="72.0" height="96.0" rx="6" ry="6" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.0" />
   </g>
-  <g class="key unused" data-layer="NUM" data-position="RH1" data-binding="&amp;none">
-    <rect x="1576.0" y="928.0" width="72.0" height="96.0" rx="6" ry="6" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.0" />
+  <g class="key held_activator held-activator" data-layer="NUM" data-position="RH1" data-binding="&amp;none">
+    <rect x="1576.0" y="928.0" width="72.0" height="96.0" rx="6" ry="6" fill="#f8fafc" stroke="#d97706" stroke-width="1.8" />
+    <text x="1612.0" y="964.5" class="lbl-tap" font-size="14.5">NUM</text>
+    <text x="1612.0" y="1002.9" class="lbl-hold-layer" font-size="13" fill="#d97706">held</text>
   </g>
   <g class="key unused" data-layer="NUM" data-position="RH2" data-binding="&amp;none">
     <rect x="1654.0" y="928.0" width="72.0" height="96.0" rx="6" ry="6" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.0" />
@@ -884,7 +891,7 @@
   <rect x="1977.0" y="576.0" width="960.0" height="472.0" rx="8" ry="8" fill="#ffffff" stroke="#e2e8f0" stroke-width="1.2" />
   <rect x="1987.0" y="584.0" width="4.5" height="22" rx="2.2" fill="#9333ea" />
   <text x="1999.0" y="601.0" class="panel-title" fill="#9333ea">SYM</text>
-  <text x="2046.0" y="601.0" class="panel-sub">SYM · L5   (Hold R-thumb Enter)</text>
+  <text x="2046.0" y="601.0" class="panel-sub">SYM · L5   (Hold RH0 · Enter)</text>
   <g class="key normal" data-layer="SYM" data-position="LT5" data-binding="&amp;kp AT_SIGN">
     <rect x="1982.0" y="616.0" width="72.0" height="96.0" rx="6" ry="6" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.2" />
     <text x="2018.0" y="672.5" class="lbl-single" font-size="28">@</text>
@@ -1031,8 +1038,10 @@
     <rect x="2372.0" y="928.0" width="72.0" height="96.0" rx="6" ry="6" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.2" />
     <text x="2408.0" y="984.5" class="lbl-single" font-size="28">_</text>
   </g>
-  <g class="key unused" data-layer="SYM" data-position="RH0" data-binding="&amp;none">
-    <rect x="2470.0" y="928.0" width="72.0" height="96.0" rx="6" ry="6" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.0" />
+  <g class="key held_activator held-activator" data-layer="SYM" data-position="RH0" data-binding="&amp;none">
+    <rect x="2470.0" y="928.0" width="72.0" height="96.0" rx="6" ry="6" fill="#f8fafc" stroke="#9333ea" stroke-width="1.8" />
+    <text x="2506.0" y="964.5" class="lbl-tap" font-size="14.5">SYM</text>
+    <text x="2506.0" y="1002.9" class="lbl-hold-layer" font-size="13" fill="#9333ea">held</text>
   </g>
   <g class="key unused" data-layer="SYM" data-position="RH1" data-binding="&amp;none">
     <rect x="2548.0" y="928.0" width="72.0" height="96.0" rx="6" ry="6" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.0" />
@@ -1045,7 +1054,7 @@
   <rect x="33.0" y="1058.0" width="960.0" height="472.0" rx="8" ry="8" fill="#ffffff" stroke="#e2e8f0" stroke-width="1.2" />
   <rect x="43.0" y="1066.0" width="4.5" height="22" rx="2.2" fill="#db2777" />
   <text x="55.0" y="1083.0" class="panel-title" fill="#db2777">FUN</text>
-  <text x="102.0" y="1083.0" class="panel-sub">FUN · L6   (Hold R-thumb Del)</text>
+  <text x="102.0" y="1083.0" class="panel-sub">FUN · L6   (Hold RH2 · Del)</text>
   <g class="key unused" data-layer="FUN" data-position="LT5" data-binding="&amp;none">
     <rect x="38.0" y="1098.0" width="72.0" height="96.0" rx="6" ry="6" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.0" />
   </g>
@@ -1197,15 +1206,17 @@
   <g class="key unused" data-layer="FUN" data-position="RH1" data-binding="&amp;none">
     <rect x="604.0" y="1410.0" width="72.0" height="96.0" rx="6" ry="6" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.0" />
   </g>
-  <g class="key unused" data-layer="FUN" data-position="RH2" data-binding="&amp;none">
-    <rect x="682.0" y="1410.0" width="72.0" height="96.0" rx="6" ry="6" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.0" />
+  <g class="key held_activator held-activator" data-layer="FUN" data-position="RH2" data-binding="&amp;none">
+    <rect x="682.0" y="1410.0" width="72.0" height="96.0" rx="6" ry="6" fill="#f8fafc" stroke="#db2777" stroke-width="1.8" />
+    <text x="718.0" y="1446.5" class="lbl-tap" font-size="14.5">FUN</text>
+    <text x="718.0" y="1484.9" class="lbl-hold-layer" font-size="13" fill="#db2777">held</text>
   </g>
 </g>
 <g id="layer-host" data-layer="HOST">
   <rect x="1005.0" y="1058.0" width="960.0" height="472.0" rx="8" ry="8" fill="#ffffff" stroke="#e2e8f0" stroke-width="1.2" />
   <rect x="1015.0" y="1066.0" width="4.5" height="22" rx="2.2" fill="#6366f1" />
   <text x="1027.0" y="1083.0" class="panel-title" fill="#6366f1">HOST</text>
-  <text x="1089.0" y="1083.0" class="panel-sub">HOST · L7   (Hold L-thumb Tab)</text>
+  <text x="1089.0" y="1083.0" class="panel-sub">HOST · L7   (Hold LH0 · Tab)</text>
   <g class="key unused" data-layer="HOST" data-position="LT5" data-binding="&amp;none">
     <rect x="1010.0" y="1098.0" width="72.0" height="96.0" rx="6" ry="6" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.0" />
   </g>
@@ -1360,8 +1371,10 @@
   <g class="key unused" data-layer="HOST" data-position="LH1" data-binding="&amp;none">
     <rect x="1322.0" y="1410.0" width="72.0" height="96.0" rx="6" ry="6" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.0" />
   </g>
-  <g class="key unused" data-layer="HOST" data-position="LH0" data-binding="&amp;none">
-    <rect x="1400.0" y="1410.0" width="72.0" height="96.0" rx="6" ry="6" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.0" />
+  <g class="key held_activator held-activator" data-layer="HOST" data-position="LH0" data-binding="&amp;none">
+    <rect x="1400.0" y="1410.0" width="72.0" height="96.0" rx="6" ry="6" fill="#f8fafc" stroke="#6366f1" stroke-width="1.8" />
+    <text x="1436.0" y="1446.5" class="lbl-tap" font-size="14.5">HOST</text>
+    <text x="1436.0" y="1484.9" class="lbl-hold-layer" font-size="13" fill="#6366f1">held</text>
   </g>
   <g class="key normal" data-layer="HOST" data-position="RH0" data-binding="&amp;kp F19">
     <rect x="1498.0" y="1410.0" width="72.0" height="96.0" rx="6" ry="6" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.2" />
@@ -1698,8 +1711,10 @@
   <g class="key unused" data-layer="ADJUST" data-position="LH2" data-binding="&amp;none">
     <rect x="272.0" y="1892.0" width="72.0" height="96.0" rx="6" ry="6" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.0" />
   </g>
-  <g class="key unused" data-layer="ADJUST" data-position="LH1" data-binding="&amp;none">
-    <rect x="350.0" y="1892.0" width="72.0" height="96.0" rx="6" ry="6" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.0" />
+  <g class="key held_activator held-activator" data-layer="ADJUST" data-position="LH1" data-binding="&amp;none">
+    <rect x="350.0" y="1892.0" width="72.0" height="96.0" rx="6" ry="6" fill="#f8fafc" stroke="#c026d3" stroke-width="1.8" />
+    <text x="386.0" y="1928.5" class="lbl-tap" font-size="14.5">NAV</text>
+    <text x="386.0" y="1966.9" class="lbl-hold-layer" font-size="13" fill="#c026d3">held</text>
   </g>
   <g class="key unused" data-layer="ADJUST" data-position="LH0" data-binding="&amp;none">
     <rect x="428.0" y="1892.0" width="72.0" height="96.0" rx="6" ry="6" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.0" />
@@ -1707,8 +1722,10 @@
   <g class="key unused" data-layer="ADJUST" data-position="RH0" data-binding="&amp;none">
     <rect x="526.0" y="1892.0" width="72.0" height="96.0" rx="6" ry="6" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.0" />
   </g>
-  <g class="key unused" data-layer="ADJUST" data-position="RH1" data-binding="&amp;none">
-    <rect x="604.0" y="1892.0" width="72.0" height="96.0" rx="6" ry="6" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.0" />
+  <g class="key held_activator held-activator" data-layer="ADJUST" data-position="RH1" data-binding="&amp;none">
+    <rect x="604.0" y="1892.0" width="72.0" height="96.0" rx="6" ry="6" fill="#f8fafc" stroke="#c026d3" stroke-width="1.8" />
+    <text x="640.0" y="1928.5" class="lbl-tap" font-size="14.5">NUM</text>
+    <text x="640.0" y="1966.9" class="lbl-hold-layer" font-size="13" fill="#c026d3">held</text>
   </g>
   <g class="key unused" data-layer="ADJUST" data-position="RH2" data-binding="&amp;none">
     <rect x="682.0" y="1892.0" width="72.0" height="96.0" rx="6" ry="6" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.0" />

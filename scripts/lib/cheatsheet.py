@@ -59,12 +59,12 @@ class KeyView:
     raw_binding: str
     tap: Optional[str]
     hold: Optional[str]
-    kind: Literal["normal", "unused", "transparent", "transition", "system", "modifier"]
+    kind: Literal["normal", "unused", "transparent", "transition", "system", "modifier", "held_activator"]
     target_layer: Optional[str] = None
     transition_mode: Optional[Literal["hold", "momentary", "persistent", "tap"]] = None
     is_modifier: bool = False
     is_bootloader: bool = False
-
+    is_held_activator: bool = False
 
 @dataclass
 class LayerView:
@@ -77,7 +77,7 @@ class LayerView:
     keys: Dict[str, KeyView] = field(default_factory=dict)
     key_list: List[KeyView] = field(default_factory=list)
     subtitle: str = ""
-
+    activators: List[Tuple[str, Optional[str], Optional[str]]] = field(default_factory=list)
     def get_key(self, pos: str) -> KeyView:
         if pos not in self.keys:
             raise KeyError(f"Position '{pos}' not found in layer '{self.name}'")
@@ -672,42 +672,34 @@ def generate_layer_subtitle(
     base_layer_view: Optional[LayerView] = None,
     conditional_layers: Optional[List[ConditionalLayer]] = None,
 ) -> str:
-    """Generate precise layer subtitle according to specification."""
+    """
+    Generate precise layer subtitle derived from BASE transitions and conditional layers
+    rather than hardcoded manual strings.
+    """
     if layer_name == "BASE":
         return f"BASE · L{layer_idx}   ({description})"
 
-    if layer_name == "NAV":
-        return f"NAV · L{layer_idx}   (Hold L-thumb Space)"
+    # 1. Conditional layers (e.g. ADJUST) derived from keymap if-layers
+    if conditional_layers:
+        for cl in conditional_layers:
+            if normalize_layer_name(cl.then_layer) == layer_name:
+                if_names = [normalize_layer_name(l) for l in cl.if_layers]
+                return f"{layer_name} · L{layer_idx}   (Hold {' + '.join(if_names)})"
 
-    if layer_name == "MOUSE":
-        return f"MOUSE · L{layer_idx}   (Hold L-thumb Esc)"
-
-    if layer_name == "MEDIA":
-        return f"MEDIA · L{layer_idx}   (Hold LM5)"
-
-    if layer_name == "NUM":
-        return f"NUM · L{layer_idx}   (Hold R-thumb Bsp)"
-
-    if layer_name == "SYM":
-        return f"SYM · L{layer_idx}   (Hold R-thumb Enter)"
-
-    if layer_name == "FUN":
-        return f"FUN · L{layer_idx}   (Hold R-thumb Del)"
-
-    if layer_name == "HOST":
-        return f"HOST · L{layer_idx}   (Hold L-thumb Tab)"
-
+    # 2. Single-activator layers derived from BASE transitions
+    if layer_view.activators:
+        pos, tap_lbl, _mode = layer_view.activators[0]
+        if tap_lbl and tap_lbl != layer_name:
+            return f"{layer_name} · L{layer_idx}   (Hold {pos} · {tap_lbl})"
+        return f"{layer_name} · L{layer_idx}   (Hold {pos})"
+    # 3. Dedicated entry layers
     if layer_name == "GAME":
         return f"GAME · L{layer_idx}   (Via ADJUST)"
-
-    if layer_name == "ADJUST":
-        return f"ADJUST · L{layer_idx}   (Hold NAV + NUM)"
 
     if layer_name == "GAME_FN":
         return f"GAME_FN · L{layer_idx}   (Hold Esc / R-thumb FN)"
 
     return f"{layer_name} · L{layer_idx}   ({description})"
-
 
 def build_cheatsheet_model(
     keyboard: str = "corne",
@@ -780,9 +772,53 @@ def build_cheatsheet_model(
         layer_map[layer_name] = layer_view
         layers.append(layer_view)
 
-    # Set subtitles
+    # Derive activation metadata from BASE transitions
     base_layer = layer_map.get("BASE")
+    if base_layer:
+        for pos, k_view in base_layer.keys.items():
+            if k_view.target_layer and k_view.target_layer in layer_map:
+                layer_map[k_view.target_layer].activators.append((pos, k_view.tap, k_view.transition_mode))
+
+    # Present held activators on layers where activation position is consumed (&none)
     for layer_view in layers:
+        # Ordinary functional layer activators
+        if layer_view.activators and layer_view.name != "BASE":
+            for act_pos, _tap_lbl, _mode in layer_view.activators:
+                if act_pos in layer_view.keys:
+                    curr = layer_view.keys[act_pos]
+                    if curr.raw_binding == "&none":
+                        held_view = KeyView(
+                            position=act_pos,
+                            raw_binding=curr.raw_binding,
+                            tap=layer_view.name,
+                            hold="held",
+                            kind="held_activator",
+                            is_held_activator=True,
+                        )
+                        layer_view.keys[act_pos] = held_view
+
+        # ADJUST conditional layer activators (NAV + NUM)
+        if layer_view.name == "ADJUST" and kb_config.conditional_layers:
+            for cl in kb_config.conditional_layers:
+                if normalize_layer_name(cl.then_layer) == "ADJUST":
+                    for if_l in cl.if_layers:
+                        if_name = normalize_layer_name(if_l)
+                        if if_name in layer_map and layer_map[if_name].activators:
+                            for act_pos, _tap_lbl, _mode in layer_map[if_name].activators:
+                                if act_pos in layer_view.keys and layer_view.keys[act_pos].raw_binding == "&none":
+                                    layer_view.keys[act_pos] = KeyView(
+                                        position=act_pos,
+                                        raw_binding=layer_view.keys[act_pos].raw_binding,
+                                        tap=if_name,
+                                        hold="held",
+                                        kind="held_activator",
+                                        is_held_activator=True,
+                                    )
+
+        # Rebuild key_list in geometric order
+        layer_view.key_list = [layer_view.keys[p] for p in geom.positions]
+
+        # Derive layer subtitle
         layer_view.subtitle = generate_layer_subtitle(
             layer_name=layer_view.name,
             layer_idx=layer_view.index,
@@ -791,7 +827,6 @@ def build_cheatsheet_model(
             base_layer_view=base_layer,
             conditional_layers=kb_config.conditional_layers,
         )
-
     return CheatsheetModel(
         keyboard=config.keyboard,
         title=config.title,

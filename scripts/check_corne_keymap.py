@@ -190,26 +190,111 @@ def test_game_fn_layer(cfg: KeyboardConfig) -> None:
     print("PASS: GAME_FN layer invariants verified (1-0, F1-F10, deliberate exit to BASE at RH2).")
 
 
-def test_bootloader_shortcuts(cfg: KeyboardConfig) -> None:
-    """Verify bootloader and reset positions across NAV, NUM, and ADJUST."""
+def test_recovery_topology_and_destructive_bindings(cfg: KeyboardConfig) -> None:
+    """
+    Verify same-half independent recovery routing, conditional maintenance layer,
+    and strict allowlisting of destructive &bootloader / &sys_reset bindings.
+    """
+    base = cfg.layer("BASE")
     nav = cfg.layer("NAV")
     num = cfg.layer("NUM")
     adjust = cfg.layer("ADJUST")
 
-    # NAV left bootloader at LT5
+    # 1. LEFT SAME-HALF RECOVERY:
+    #    BASE LH1 hold activates NAV, NAV LT5 invokes &bootloader.
+    #    Both activator (LH1) and trigger (LT5) must reside on physical LEFT half.
+    base_lh1 = base.pos("LH1")
+    assert_true(
+        "L_NAV" in base_lh1,
+        f"BASE LH1 must activate NAV layer on hold, got: {base_lh1}",
+    )
     assert_eq(nav.pos("LT5"), "&bootloader", "NAV LT5 must be left &bootloader")
+    assert_true("LH1".startswith("L"), "NAV activator LH1 must be on the left half")
+    assert_true("LT5".startswith("L"), "NAV bootloader LT5 must be on the left half")
 
-    # NUM right bootloader at RT5
+    # 2. RIGHT SAME-HALF RECOVERY:
+    #    BASE RH1 hold activates NUM, NUM RT5 invokes &bootloader.
+    #    Both activator (RH1) and trigger (RT5) must reside on physical RIGHT half.
+    base_rh1 = base.pos("RH1")
+    assert_true(
+        "L_NUM" in base_rh1,
+        f"BASE RH1 must activate NUM layer on hold, got: {base_rh1}",
+    )
     assert_eq(num.pos("RT5"), "&bootloader", "NUM RT5 must be right &bootloader")
+    assert_true("RH1".startswith("R"), "NUM activator RH1 must be on the right half")
+    assert_true("RT5".startswith("R"), "NUM bootloader RT5 must be on the right half")
 
-    # ADJUST mirrored recovery positions
+    # 3. FULL MAINTENANCE:
+    #    Conditional layer NAV + NUM -> ADJUST with mirrored reset & bootloader controls.
+    assert_true(
+        len(cfg.conditional_layers) > 0,
+        "Keymap must declare conditional layer for ADJUST",
+    )
+    adjust_cond = next((c for c in cfg.conditional_layers if c.then_layer in ("L_ADJUST", "ADJUST")), None)
+    assert_true(adjust_cond is not None, "Missing conditional layer targeting ADJUST")
+    assert_true(
+        set(adjust_cond.if_layers) == {"L_NAV", "L_NUM"},
+        f"ADJUST conditional layer must require if-layers <L_NAV L_NUM>, got: {adjust_cond.if_layers}",
+    )
+
     assert_eq(adjust.pos("LT5"), "&bootloader", "ADJUST LT5 must be left &bootloader")
     assert_eq(adjust.pos("LT4"), "&sys_reset", "ADJUST LT4 must be left &sys_reset")
     assert_eq(adjust.pos("RT4"), "&sys_reset", "ADJUST RT4 must be right &sys_reset")
     assert_eq(adjust.pos("RT5"), "&bootloader", "ADJUST RT5 must be right &bootloader")
 
-    print("PASS: Bootloader routing invariants verified (NAV LT5, NUM RT5, ADJUST mirrored left/right).")
+    # 4. DESTRUCTIVE BINDING ALLOWLISTING:
+    #    Scan every position of every layer to ensure no unapproved &bootloader or &sys_reset exists.
+    allowed_bootloader = {("NAV", "LT5"), ("NUM", "RT5"), ("ADJUST", "LT5"), ("ADJUST", "RT5")}
+    allowed_sys_reset = {("ADJUST", "LT4"), ("ADJUST", "RT4")}
 
+    for layer_name, layer_obj in cfg.layers.items():
+        for pos_label, binding in layer_obj.all_by_pos().items():
+            if "&bootloader" in binding:
+                assert_in(
+                    (layer_name, pos_label),
+                    allowed_bootloader,
+                    f"Disallowed &bootloader binding found at {layer_name} {pos_label}: '{binding}'",
+                )
+            if "&sys_reset" in binding:
+                assert_in(
+                    (layer_name, pos_label),
+                    allowed_sys_reset,
+                    f"Disallowed &sys_reset binding found at {layer_name} {pos_label}: '{binding}'",
+                )
+
+    print("PASS: Same-half recovery topology and destructive binding allowlist verified.")
+
+
+def test_functional_layer_activators_are_consumed(cfg: KeyboardConfig) -> None:
+    """
+    Verify that all functional layers consume their own activation key (&none)
+    so BASE layer-taps do not leak into repeats or transparent fallthrough.
+    GAME_FN is explicitly exempt due to multiple entry paths and fallthrough semantics.
+    """
+    expected_activators = {
+        "MOUSE": ("LH2", "&none"),
+        "NAV": ("LH1", "&none"),
+        "HOST": ("LH0", "&none"),
+        "SYM": ("RH0", "&none"),
+        "NUM": ("RH1", "&none"),
+        "FUN": ("RH2", "&none"),
+        "MEDIA": ("LM5", "&none"),
+    }
+
+    for l_name, (pos_label, expected_val) in expected_activators.items():
+        actual_val = cfg.layer(l_name).pos(pos_label)
+        assert_eq(
+            actual_val,
+            expected_val,
+            f"Functional layer '{l_name}' must consume its activation key at {pos_label} with {expected_val}, got: '{actual_val}'",
+        )
+
+    # Also verify ADJUST's two activation thumbs (LH1 and RH1) are consumed with &none
+    adjust = cfg.layer("ADJUST")
+    assert_eq(adjust.pos("LH1"), "&none", "ADJUST LH1 must be &none to consume left activator")
+    assert_eq(adjust.pos("RH1"), "&none", "ADJUST RH1 must be &none to consume right activator")
+
+    print("PASS: Functional-layer activator keys verified consumed (&none) across all layers.")
 
 def test_directional_neio_geometry(cfg: KeyboardConfig) -> None:
     """Verify that NEIO (RM1..RM4) maintains strict Left Down Up Right directional geometry across layers."""
@@ -279,13 +364,12 @@ def test_nav_layer(cfg: KeyboardConfig) -> None:
     assert_eq(nav.pos("LB0"), "&none", "NAV LB0 must be &none (spare)")
 
     # Top row right: Clipboard & Editing (RT0..RT5)
-    assert_eq(nav.pos("RT0"), "&kp LC(LA(LS(LG(F24))))", "NAV RT0 must be Redo (Hyper+F24)")
+    assert_eq(nav.pos("RT0"), "&kp F24", "NAV RT0 must be Undo (&kp F24)")
     assert_eq(nav.pos("RT1"), "&kp F22", "NAV RT1 must be Paste (&kp F22)")
     assert_eq(nav.pos("RT2"), "&kp F21", "NAV RT2 must be Copy (&kp F21)")
     assert_eq(nav.pos("RT3"), "&kp F23", "NAV RT3 must be Cut (&kp F23)")
-    assert_eq(nav.pos("RT4"), "&kp F24", "NAV RT4 must be Undo (&kp F24)")
+    assert_eq(nav.pos("RT4"), "&kp LC(LA(LS(LG(F24))))", "NAV RT4 must be Redo (Hyper+F24)")
     assert_eq(nav.pos("RT5"), "&none", "NAV RT5 must be &none")
-
     # Home row right: Caps Word & NEIO Arrow cluster (RM0..RM5)
     assert_eq(nav.pos("RM0"), "&caps_word", "NAV RM0 must be &caps_word")
     assert_eq(nav.pos("RM1"), "&kp LEFT", "NAV RM1 must be &kp LEFT")
@@ -302,14 +386,13 @@ def test_nav_layer(cfg: KeyboardConfig) -> None:
     assert_eq(nav.pos("RB4"), "&kp END", "NAV RB4 must be &kp END")
     assert_eq(nav.pos("RB5"), "&none", "NAV RB5 must be &none")
 
-    # Thumbs: Esc, Space, Tab, Enter, Backspace, Delete
+    # Thumbs: Esc, [NAV held = &none], Tab, Enter, Backspace, Delete
     assert_eq(nav.pos("LH2"), "&kp ESCAPE", "NAV LH2 must be Escape")
-    assert_eq(nav.pos("LH1"), "&kp SPACE", "NAV LH1 must be Space")
+    assert_eq(nav.pos("LH1"), "&none", "NAV LH1 must be &none (NAV held activator consumed)")
     assert_eq(nav.pos("LH0"), "&kp TAB", "NAV LH0 must be Tab")
     assert_eq(nav.pos("RH0"), "&kp ENTER", "NAV RH0 must be Enter")
     assert_eq(nav.pos("RH1"), "&kp BACKSPACE", "NAV RH1 must be Backspace")
     assert_eq(nav.pos("RH2"), "&kp DELETE", "NAV RH2 must be Delete")
-
     print("PASS: Corne NAV layer verified (tabs, app controls, held modifiers, NEIO arrows, paging, thumbs).")
 
 
@@ -332,13 +415,11 @@ def test_cross_platform_bindings(cfg: KeyboardConfig) -> None:
 
     # Semantic editing signals on NAV and MOUSE (RT0..RT4)
     for l_name, l_obj in [("NAV", nav), ("MOUSE", mouse)]:
-        assert_eq(l_obj.pos("RT0"), "&kp LC(LA(LS(LG(F24))))", f"{l_name} RT0 must be Redo (Hyper+F24)")
-        assert_eq(l_obj.pos("RT1"), "&kp F22", f"{l_name} RT1 must be Paste &kp F22)")
-        assert_eq(l_obj.pos("RT2"), "&kp F21", f"{l_name} RT2 must be Copy &kp F21)")
-        assert_eq(l_obj.pos("RT3"), "&kp F23", f"{l_name} RT3 must be Cut &kp F23)")
-        assert_eq(l_obj.pos("RT4"), "&kp F24", f"{l_name} RT4 must be Undo &kp F24)")
-
-    print("PASS: Cross-platform bindings verified (Consumer media HID brightness/volume/transport, semantic F21-F24 and Hyper+F24 editing on NAV/MOUSE).")
+        assert_eq(l_obj.pos("RT0"), "&kp F24", f"{l_name} RT0 must be Undo (&kp F24)")
+        assert_eq(l_obj.pos("RT1"), "&kp F22", f"{l_name} RT1 must be Paste (&kp F22)")
+        assert_eq(l_obj.pos("RT2"), "&kp F21", f"{l_name} RT2 must be Copy (&kp F21)")
+        assert_eq(l_obj.pos("RT3"), "&kp F23", f"{l_name} RT3 must be Cut (&kp F23)")
+        assert_eq(l_obj.pos("RT4"), "&kp LC(LA(LS(LG(F24))))", f"{l_name} RT4 must be Redo (Hyper+F24)")
 
 
 def test_modifier_behaviors(cfg: KeyboardConfig) -> None:
@@ -471,7 +552,11 @@ def test_sym_layer(cfg: KeyboardConfig) -> None:
     print("PASS: Corne SYM Seniply+ geometry verified.")
 
 def test_cross_keyboard_parity(corne_cfg: KeyboardConfig) -> None:
-    """Verify exact parity between Corne and Sofle across all shared NUM and SYM positions."""
+    """
+    Verify exact parity between Corne and Sofle across all 42 shared core positions
+    for all standard shared layers (BASE, NAV, MOUSE, MEDIA, NUM, SYM, FUN, HOST, ADJUST).
+    GAME and GAME_FN are explicitly excluded because gaming architecture intentionally differs.
+    """
     sofle_keymap_path = REPO_ROOT / "config" / "sofle.keymap"
     sofle_cfg = parse_keymap_file(sofle_keymap_path, layout="sofle")
 
@@ -486,7 +571,9 @@ def test_cross_keyboard_parity(corne_cfg: KeyboardConfig) -> None:
         "RH0", "RH1", "RH2",
     ]
 
-    for layer_name in ["NAV", "NUM", "SYM"]:
+    shared_layers = ["BASE", "NAV", "MOUSE", "MEDIA", "NUM", "SYM", "FUN", "HOST", "ADJUST"]
+
+    for layer_name in shared_layers:
         corne_layer = corne_cfg.layer(layer_name)
         sofle_layer = sofle_cfg.layer(layer_name)
         for pos in shared_positions:
@@ -498,7 +585,7 @@ def test_cross_keyboard_parity(corne_cfg: KeyboardConfig) -> None:
                 f"Cross-keyboard parity mismatch on {layer_name} {pos}: Corne={c_val}, Sofle={s_val}",
             )
 
-    print("PASS: Cross-keyboard NAV, NUM, and SYM common geometry parity verified (Corne == Sofle).")
+    print(f"PASS: Cross-keyboard common 42-key geometry parity verified across all {len(shared_layers)} shared layers.")
 
 def test_fun_layer(cfg: KeyboardConfig) -> None:
     """Verify FUN layer exact physical grid (F1-F12, system keys, modifiers, and thumbs)."""
@@ -620,7 +707,8 @@ def main() -> None:
     test_base_layer(cfg)
     test_game_layer(cfg)
     test_game_fn_layer(cfg)
-    test_bootloader_shortcuts(cfg)
+    test_recovery_topology_and_destructive_bindings(cfg)
+    test_functional_layer_activators_are_consumed(cfg)
     test_directional_neio_geometry(cfg)
     test_nav_layer(cfg)
     test_cross_platform_bindings(cfg)

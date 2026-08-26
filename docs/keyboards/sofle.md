@@ -53,7 +53,7 @@ uv run scripts/generate_cheatsheet.py sofle
 | Index | Layer Name | Activation | Primary Purpose |
 |-------|------------|------------|-----------------|
 | 0 | `BASE` | Default | Colemak-DH base layer with dedicated number row, bilateral HRMs, 6 thumb layer-taps, outer modifier thumbs, and encoder bindings. |
-| 1 | `NAV` | Hold `LH1` (Space) | Semantic editing (`F21`–`F24`), cursor navigation, Caps Word (`RM0`), line/page movement, and left bootloader (`LT5`). |
+| 1 | `NAV` | Hold `LH1` (Space) | Semantic editing `RT0..RT4` (Undo, Paste, Copy, Cut, Redo), cursor navigation, Caps Word (`RM0`), line/page movement, left same-half bootloader (`LT5`), consumes activator (`LH1 = &none`). |
 | 2 | `MOUSE` | Hold `LH2` (Esc) | Pointer movement, wheel scrolling, left modifiers, and MB1–MB5 mouse buttons. |
 | 3 | `MEDIA` | Hold `LM5` | Consumer HID display brightness, transport controls, right encoder volume, left encoder track seek, stop/play/mute thumbs. |
 | 4 | `NUM` | Hold `RH1` (Bspc) | Spatial numpad with arithmetic operator rail on left; mirrored modifiers and right bootloader (`RT5`) on right. |
@@ -82,11 +82,11 @@ uv run scripts/generate_cheatsheet.py sofle
 
 ## 6. Bootloader & Recovery Shortcuts
 
-- **Left controller bootloader:** Hold `NAV` and press `LT5` (top-left alpha key).
-- **Right controller bootloader:** Hold `NUM` and press `RT5` (top-right alpha key).
-- **Mirrored software recovery:** Hold `ADJUST` (`NAV + NUM`), press `LT5` (left bootloader) or `RT5` (right bootloader).
-- **Hardware recovery:** Double-tap physical reset button on nice!nano v2.
-
+Same-half bootloader chords require no key from the opposite half during normal connected split operation:
+- **Left controller same-half bootloader:** Hold `NAV` (`LH1`) and press `LT5` (top-left alpha key).
+- **Right controller same-half bootloader:** Hold `NUM` (`RH1`) and press `RT5` (top-right alpha key).
+- **Mirrored maintenance recovery:** Hold `ADJUST` (`NAV + NUM`), press `LT5`/`RT5` (left/right bootloader) or `LT4`/`RT4` (left/right reset).
+- **Hardware disaster recovery:** Double-tap physical reset button on nice!nano v2 (required if peripheral cannot reach central).
 ## 7. Mandatory Settings Reset After Migration
 
 Because modern Sofle firmware completely overhauls layer numbering, switches to ZMK Studio locking, updates hold-tap timing, and enables deep sleep:

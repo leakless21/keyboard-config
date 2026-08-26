@@ -124,8 +124,8 @@ uv run scripts/generate_cheatsheet.py corne --debug
 
 ### A. General Firmware Smoke Test (Both Keyboards)
 1. **BASE Layer:** Type alphabet sentence, punctuation, bilateral HRMs (`A R S T` / `N E I O`).
-2. **NAV Layer:** Left bootloader on `LT5`, directional arrows, line/page jump, Caps Word on `RM0`, editing `F21`–`F24`.
-3. **MOUSE Layer:** Mouse pointer movement (`mmv`), wheel scrolling (`msc`), buttons MB1–MB5, editing `F21`–`F24`.
+2. **NAV Layer:** Left bootloader on `LT5`, directional arrows, line/page jump, Caps Word on `RM0`, editing `RT0..RT4` (Undo, Paste, Copy, Cut, Redo).
+3. **MOUSE Layer:** Mouse pointer movement (`mmv`), wheel scrolling (`msc`), buttons MB1–MB5, editing `RT0..RT4` (Undo, Paste, Copy, Cut, Redo).
 4. **MEDIA Layer:** Display brightness down (`RT2`) / up (`RT3`), Previous/Next track, Volume Down/Up, Stop, Play/Pause, Mute.
 5. **NUM & SYM Layers:** Left spatial numpad / symbols, right mirrored modifiers, right bootloader on `RT5`.
 6. **FUN Layer:** Standard function keys `F1`–`F12`, modified F-keys (`Shift+F5`, `Ctrl+F5`, `Cmd+F5`, `Alt+F5`), Caps Lock fallback on `RT0`.
@@ -152,8 +152,8 @@ uv run scripts/generate_cheatsheet.py corne --debug
   * `F22` $\rightarrow$ Paste (`Cmd+V` / `Ctrl+V`).
   * `F23` $\rightarrow$ Cut (`Cmd+X` / `Ctrl+X`).
   * `F24` $\rightarrow$ Undo (`Cmd+Z` / `Ctrl+Z`).
-  * `Shift+F24` $\rightarrow$ Redo (`Cmd+Shift+Z` / `Ctrl+Y`).
-
+  * `Hyper+F24` $\rightarrow$ Redo (`Cmd+Shift+Z` / `Ctrl+Y`).
+  * `Shift+F21..F24` $\rightarrow$ Selection-safe Copy/Paste/Cut/Undo (Shift stripped before emitting target).
 * **Standard Function Keys (macOS Karabiner Verification):**
   * macOS Function Keys setting **OFF** (media mode): Press `FUN` + `F1`..`F12` $\rightarrow$ Target application receives real `F1`..`F12` (not brightness/media).
   * macOS Function Keys setting **ON** (standard F-keys mode): Press `FUN` + `F1`..`F12` $\rightarrow$ Target application still receives `F1`..`F12`.

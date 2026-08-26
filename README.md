@@ -79,7 +79,7 @@ Single-page, deterministic A4 reference sheets generated directly from firmware 
 | **Select All / Save / Find** | `Hyper+F13..F15` | `Cmd+A` / `Cmd+S` / `Cmd+F` | `Ctrl+A` / `Ctrl+S` / `Ctrl+F` |
 | **Tab Management** | `Hyper+F16..F20` | PrevTab / NextTab / New / Close / Reopen | PrevTab / NextTab / New / Close / Reopen |
 | **Word Cursor & Find Next** | `Hyper+F21..F23` | `Option+Left/Right` / `Cmd+G` | `Ctrl+Left/Right` / `F3` |
-| **Copy / Paste / Cut / Undo** | `F21` / `F22` / `F23` / `F24` | `Cmd+C` / `Cmd+V` / `Cmd+X` / `Cmd+Z` | `Ctrl+C` / `Ctrl+V` / `Ctrl+X` / `Ctrl+Z` |
+| **Undo / Paste / Copy / Cut** | `F24` / `F22` / `F21` / `F23` | `Cmd+Z` / `Cmd+V` / `Cmd+C` / `Cmd+X` | `Ctrl+Z` / `Ctrl+V` / `Ctrl+C` / `Ctrl+X` |
 | **Redo** | `Hyper+F24` | `Cmd+Shift+Z` | `Ctrl+Y` |
 | **Standard F1–F12** | `F1`–`F12` | Karabiner normalization when required | Native HID |
 | **Brightness** | `C_BRI_DN` / `C_BRI_UP` | Native Consumer HID | Native Consumer HID |

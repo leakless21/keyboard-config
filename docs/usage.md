@@ -14,7 +14,7 @@ This guide covers daily keyboard usage, layer navigation, gaming, and the firmwa
 | Thumb Position | Tap Action | Hold Layer | Functionality |
 |----------------|------------|------------|---------------|
 | Left Outer (`LH2`) | `Escape` | `MOUSE` | Pointer movement, wheel scroll, MB1–MB5 buttons, F21–F24 editing |
-| Left Middle (`LH1`) | `Space` | `NAV` | Directional cursor, line/page nav, Caps Word (`RM0`), F21–F24 editing, left bootloader (`LT5`) |
+| Left Middle (`LH1`) | `Space` | `NAV` | Directional cursor, line/page nav, Caps Word (`RM0`), editing (`RT0..RT4`), left same-half bootloader (`LT5`), consumes activator (`LH1 = &none`) |
 | Left Inner (`LH0`) | `Tab` | `HOST` | Semantic F13–F20 workspace protocol, launchers, previous window, resize, service |
 | Right Inner (`RH0`) | `Enter` | `SYM` | Seniply+ symbols (delimiter pairs, `< >`, `- = +`, sigils, `\ / _`), mirrored modifiers |
 | Right Middle (`RH1`) | `Backspace` | `NUM` | Spatial numpad on left with arithmetic rail (`/ * +`), mirrored modifiers, right bootloader (`RT5`) |
@@ -91,7 +91,7 @@ For complete rules on permitted vs forbidden Studio modifications, see [docs/dev
 - [ ] **Thumb & Auxiliary Layers:** NAV, MOUSE, MEDIA (brightness + audio/playback), NUM, SYM, FUN (F1–F12), HOST accessible via thumbs and LM5.
 - [ ] **Encoders (Sofle):** Page scroll / track on left, volume on right; Caps Word and Mute on presses.
 - [ ] **Everyday Application Actions (Left NAV):** Tabs (PrevTab, NextTab, NewTab, CloseTab, ReopenTab), Select All (`Hyper+F13`), Save (`Hyper+F14`), Find (`Hyper+F15`), Word Left/Right (`Hyper+F21/F22`), Find Next (`Hyper+F23`).
-- [ ] **Semantic Editing (Right NAV & MOUSE):** Copy (`F21`), Paste (`F22`), Cut (`F23`), Undo (`F24`), Redo (`Hyper+F24`).
+- [ ] **Semantic Editing (Right NAV & MOUSE):** Undo (`RT0` / `F24`), Paste (`RT1` / `F22`), Copy (`RT2` / `F21`), Cut (`RT3` / `F23`), Redo (`RT4` / `Hyper+F24`).
 - [ ] **Directional Invariant (NEIO):** `N E I O` consistently controls `← ↓ ↑ →` across NAV, pointer on MOUSE, volume/track on MEDIA, and window focus on HOST.
 - [ ] **Gaming:** QWERTY alphas, physical numbers (Sofle) or AUX numbers (Corne), safe non-accidental exit to BASE.
-- [ ] **Bootloaders:** NAV LT5 triggers left bootloader; NUM RT5 triggers right bootloader.
+- [ ] **Bootloaders:** NAV LT5 triggers left same-half bootloader; NUM RT5 triggers right same-half bootloader during connected operation.

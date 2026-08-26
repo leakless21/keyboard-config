@@ -333,12 +333,126 @@ actions:
       macos: "Karabiner: Cmd+Z"
       windows: "AutoHotkey: Ctrl+Z"
 
+  # ===========================================================================
+  # Application & Context Actions (Hyper + F13–F24)
+  # Hyper = Ctrl + Alt + Shift + GUI
+  # ===========================================================================
+  select_all:
+    signal:
+      key: F13
+      modifiers: [ctrl, alt, shift, gui]
+    category: application
+    description: "Select all text or items in active context"
+    host_implementations:
+      macos: "Karabiner: Cmd+A (Select All)"
+      windows: "AutoHotkey: Ctrl+A (Select All)"
+
+  save:
+    signal:
+      key: F14
+      modifiers: [ctrl, alt, shift, gui]
+    category: application
+    description: "Save active file or document"
+    host_implementations:
+      macos: "Karabiner: Cmd+S (Save)"
+      windows: "AutoHotkey: Ctrl+S (Save)"
+
+  find:
+    signal:
+      key: F15
+      modifiers: [ctrl, alt, shift, gui]
+    category: application
+    description: "Open in-context search / find"
+    host_implementations:
+      macos: "Karabiner: Cmd+F (Find)"
+      windows: "AutoHotkey: Ctrl+F (Find)"
+
+  previous_tab:
+    signal:
+      key: F16
+      modifiers: [ctrl, alt, shift, gui]
+    category: navigation
+    description: "Switch to previous tab in active application"
+    host_implementations:
+      macos: "Karabiner: Cmd+Shift+[ (Previous Tab)"
+      windows: "AutoHotkey: Ctrl+Shift+Tab (Previous Tab)"
+
+  next_tab:
+    signal:
+      key: F17
+      modifiers: [ctrl, alt, shift, gui]
+    category: navigation
+    description: "Switch to next tab in active application"
+    host_implementations:
+      macos: "Karabiner: Cmd+Shift+] (Next Tab)"
+      windows: "AutoHotkey: Ctrl+Tab (Next Tab)"
+
+  new_tab:
+    signal:
+      key: F18
+      modifiers: [ctrl, alt, shift, gui]
+    category: navigation
+    description: "Open new tab in active application"
+    host_implementations:
+      macos: "Karabiner: Cmd+T (New Tab)"
+      windows: "AutoHotkey: Ctrl+T (New Tab)"
+
+  close_tab:
+    signal:
+      key: F19
+      modifiers: [ctrl, alt, shift, gui]
+    category: navigation
+    description: "Close active tab in application"
+    host_implementations:
+      macos: "Karabiner: Cmd+W (Close Tab)"
+      windows: "AutoHotkey: Ctrl+W (Close Tab)"
+
+  reopen_tab:
+    signal:
+      key: F20
+      modifiers: [ctrl, alt, shift, gui]
+    category: navigation
+    description: "Reopen last closed tab in application"
+    host_implementations:
+      macos: "Karabiner: Cmd+Shift+T (Reopen Tab)"
+      windows: "AutoHotkey: Ctrl+Shift+T (Reopen Tab)"
+
+  word_left:
+    signal:
+      key: F21
+      modifiers: [ctrl, alt, shift, gui]
+    category: navigation
+    description: "Move text cursor one word to the left"
+    host_implementations:
+      macos: "Karabiner: Option+Left (Word Left)"
+      windows: "AutoHotkey: Ctrl+Left (Word Left)"
+
+  word_right:
+    signal:
+      key: F22
+      modifiers: [ctrl, alt, shift, gui]
+    category: navigation
+    description: "Move text cursor one word to the right"
+    host_implementations:
+      macos: "Karabiner: Option+Right (Word Right)"
+      windows: "AutoHotkey: Ctrl+Right (Word Right)"
+
+  find_next:
+    signal:
+      key: F23
+      modifiers: [ctrl, alt, shift, gui]
+    category: navigation
+    description: "Jump to next search match"
+    host_implementations:
+      macos: "Karabiner: Cmd+G (Find Next)"
+      windows: "AutoHotkey: F3 (Find Next)"
+
   redo:
     signal:
       key: F24
-      modifiers: [shift]
+      modifiers: [ctrl, alt, shift, gui]
     category: editing
     description: "Redo last undone text action"
     host_implementations:
-      macos: "Karabiner: Cmd+Shift+Z"
-      windows: "AutoHotkey: Ctrl+Y"
+      macos: "Karabiner: Cmd+Shift+Z (Redo)"
+      windows: "AutoHotkey: Ctrl+Y (Redo)"

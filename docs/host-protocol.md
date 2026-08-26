@@ -40,7 +40,18 @@ This document is the canonical source of truth for the semantic high-function ke
 | `F22` | Paste text from clipboard | Karabiner: Cmd+V | AutoHotkey: Ctrl+V |
 | `F23` | Cut selected text to clipboard | Karabiner: Cmd+X | AutoHotkey: Ctrl+X |
 | `F24` | Undo last text action | Karabiner: Cmd+Z | AutoHotkey: Ctrl+Z |
-| `Shift+F24` | Redo last undone text action | Karabiner: Cmd+Shift+Z | AutoHotkey: Ctrl+Y |
+| `Ctrl+Alt+Shift+Gui+F13` | Select all text or items in active context | Karabiner: Cmd+A (Select All) | AutoHotkey: Ctrl+A (Select All) |
+| `Ctrl+Alt+Shift+Gui+F14` | Save active file or document | Karabiner: Cmd+S (Save) | AutoHotkey: Ctrl+S (Save) |
+| `Ctrl+Alt+Shift+Gui+F15` | Open in-context search / find | Karabiner: Cmd+F (Find) | AutoHotkey: Ctrl+F (Find) |
+| `Ctrl+Alt+Shift+Gui+F16` | Switch to previous tab in active application | Karabiner: Cmd+Shift+[ (Previous Tab) | AutoHotkey: Ctrl+Shift+Tab (Previous Tab) |
+| `Ctrl+Alt+Shift+Gui+F17` | Switch to next tab in active application | Karabiner: Cmd+Shift+] (Next Tab) | AutoHotkey: Ctrl+Tab (Next Tab) |
+| `Ctrl+Alt+Shift+Gui+F18` | Open new tab in active application | Karabiner: Cmd+T (New Tab) | AutoHotkey: Ctrl+T (New Tab) |
+| `Ctrl+Alt+Shift+Gui+F19` | Close active tab in application | Karabiner: Cmd+W (Close Tab) | AutoHotkey: Ctrl+W (Close Tab) |
+| `Ctrl+Alt+Shift+Gui+F20` | Reopen last closed tab in application | Karabiner: Cmd+Shift+T (Reopen Tab) | AutoHotkey: Ctrl+Shift+T (Reopen Tab) |
+| `Ctrl+Alt+Shift+Gui+F21` | Move text cursor one word to the left | Karabiner: Option+Left (Word Left) | AutoHotkey: Ctrl+Left (Word Left) |
+| `Ctrl+Alt+Shift+Gui+F22` | Move text cursor one word to the right | Karabiner: Option+Right (Word Right) | AutoHotkey: Ctrl+Right (Word Right) |
+| `Ctrl+Alt+Shift+Gui+F23` | Jump to next search match | Karabiner: Cmd+G (Find Next) | AutoHotkey: F3 (Find Next) |
+| `Ctrl+Alt+Shift+Gui+F24` | Redo last undone text action | Karabiner: Cmd+Shift+Z (Redo) | AutoHotkey: Ctrl+Y (Redo) |
 ---
 
 ## 2. Protocol Producers

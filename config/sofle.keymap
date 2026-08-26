@@ -94,6 +94,19 @@
             tapping-term-ms = <200>;
             bindings = <&mo>, <&kp>;
         };
+        /*
+         * Dedicated one-shot sticky modifier for utility modifier rails
+         * (NUM, SYM, FUN). Deliberately NO quick-release so sticky modifiers
+         * can chain reliably in Callum/Seniply-style usage.
+         */
+        skm: sticky_modifier {
+            compatible = "zmk,behavior-sticky-key";
+            #binding-cells = <1>;
+            bindings = <&kp>;
+            release-after-ms = <1000>;
+            lazy;
+            ignore-modifiers;
+        };
     };
 
     combos {
@@ -133,16 +146,21 @@
             label = "NAV";
             display-name = "NAV";
             /*
-             * Right-hand navigation mirrors MOUSE and MEDIA. Functional-layer
-             * thumbs are explicit. LT5 provides same-side left bootloader shortcut.
-             * Semantic F21-F24 editing signals are interpreted by host bridges.
+             * Right-hand navigation mirrors MOUSE and MEDIA with NEIO geometry.
+             * Left-hand carries Seniply/Selenium-inspired everyday application controls:
+             * Top row: tab management (PrevTab, NextTab, NewTab, CloseTab, ReopenTab).
+             * Home row: primary operations (SelectAll, Save) and held modifiers (GUI, Alt, Ctrl, Shift).
+             * Bottom row: secondary navigation (Find, WordLeft, WordRight, FindNext).
+             * Functional-layer thumbs are explicit. LT5 provides same-side left bootloader shortcut.
+             * Semantic F21-F24 editing signals and Hyper+F13-F24 application signals
+             * are interpreted by host bridges.
              */
             bindings = <
-&trans       &none             &none              &none              &none               &none                                          &none               &none               &none              &none              &none              &trans
-&bootloader  &none             &none              &none              &none               &none                                          &kp LS(F24)         &kp F22             &kp F21            &kp F23            &kp F24            &none
-&none        &kp LGUI          &kp LALT           &kp LCTRL          &kp LEFT_SHIFT      &none                                          &caps_word          &kp LEFT            &kp DOWN           &kp UP             &kp RIGHT          &none
-&none        &none             &none              &none              &none               &none       &trans              &trans         &kp INSERT          &kp HOME            &kp PAGE_DOWN      &kp PAGE_UP        &kp END            &none
-                               &trans             &trans             &kp ESCAPE          &kp SPACE   &kp TAB             &kp ENTER      &kp BACKSPACE       &kp DELETE          &trans             &trans
+&trans       &none                     &none                     &none                     &none                     &none                                          &none                     &none               &none              &none              &none              &trans
+&bootloader  &kp LC(LA(LS(LG(F16))))   &kp LC(LA(LS(LG(F17))))   &kp LC(LA(LS(LG(F18))))   &kp LC(LA(LS(LG(F19))))   &kp LC(LA(LS(LG(F20))))                        &kp LC(LA(LS(LG(F24))))   &kp F22             &kp F21            &kp F23            &kp F24            &none
+&kp LC(LA(LS(LG(F13)))) &kp LGUI       &kp LALT                  &kp LCTRL                 &kp LEFT_SHIFT            &kp LC(LA(LS(LG(F14))))                        &caps_word                &kp LEFT            &kp DOWN           &kp UP             &kp RIGHT          &none
+&kp LC(LA(LS(LG(F15)))) &kp LC(LA(LS(LG(F21)))) &kp LC(LA(LS(LG(F22)))) &kp LC(LA(LS(LG(F23)))) &none            &none       &trans              &trans         &kp INSERT                &kp HOME            &kp PAGE_DOWN      &kp PAGE_UP        &kp END            &none
+                                       &trans                    &trans                    &kp ESCAPE                &kp SPACE   &kp TAB             &kp ENTER      &kp BACKSPACE             &kp DELETE          &trans             &trans
             >;
 
             sensor-bindings =
@@ -156,7 +174,7 @@
             /* NAV geometry: pointer on home, wheel on secondary bank, F21-F24 editing. */
             bindings = <
 &trans       &none             &none              &none              &none               &none                                          &none               &none               &none              &none              &none              &trans
-&none        &none             &none              &none              &none               &none                                          &kp LS(F24)         &kp F22             &kp F21            &kp F23            &kp F24            &none
+&none        &none             &none              &none              &none               &none                                          &kp LC(LA(LS(LG(F24)))) &kp F22         &kp F21            &kp F23            &kp F24            &none
 &none        &kp LGUI          &kp LALT           &kp LCTRL          &kp LEFT_SHIFT      &none                                          &mkp MB4            &mmv MOVE_LEFT      &mmv MOVE_DOWN     &mmv MOVE_UP       &mmv MOVE_RIGHT    &mkp MB5
 &none        &none             &none              &none              &none               &none       &trans              &trans         &none               &msc SCRL_LEFT      &msc SCRL_DOWN     &msc SCRL_UP       &msc SCRL_RIGHT    &none
                                &trans             &trans             &none               &none       &none               &mkp MB2       &mkp MB1            &mkp MB3            &trans             &trans
@@ -189,13 +207,13 @@
             display-name = "NUM";
             /*
              * Spatial numpad with arithmetic operator rail on the outer column;
-             * mirrored modifiers on the right.
+             * mirrored one-shot modifiers (&skm) on the right.
              * RT5 provides same-side right bootloader shortcut while holding NUM.
              */
             bindings = <
 &trans       &none             &none              &none              &none               &none                                          &none               &none               &none              &none              &none              &trans
 &kp SLASH    &kp LEFT_BRACKET  &kp NUMBER_7       &kp NUMBER_8       &kp NUMBER_9        &kp RIGHT_BRACKET                              &none               &none               &none              &none              &none              &bootloader
-&kp ASTERISK &kp SEMICOLON     &kp NUMBER_4       &kp NUMBER_5       &kp NUMBER_6        &kp EQUAL                                      &none               &kp RIGHT_SHIFT     &kp RCTRL          &kp RIGHT_ALT      &kp RIGHT_GUI      &none
+&kp ASTERISK &kp SEMICOLON     &kp NUMBER_4       &kp NUMBER_5       &kp NUMBER_6        &kp EQUAL                                      &none               &skm RIGHT_SHIFT    &skm RCTRL         &skm RIGHT_ALT     &skm RIGHT_GUI     &none
 &kp PLUS     &kp GRAVE         &kp NUMBER_1       &kp NUMBER_2       &kp NUMBER_3        &kp BACKSLASH &trans              &trans       &none               &none               &none              &none              &none              &none
                                &trans             &trans             &kp PERIOD          &kp NUMBER_0 &kp MINUS           &none        &none               &none               &trans             &trans
             >;
@@ -211,12 +229,12 @@
             /*
              * Seniply+-inspired symbol layer:
              * paired delimiters, comparison/operators on strong positions,
-             * programming sigils, and mirrored right-hand modifiers.
+             * programming sigils, and mirrored one-shot modifiers (&skm).
              */
             bindings = <
 &trans          &none             &none              &none              &none               &none                                          &none               &none               &none              &none              &none              &trans
 &kp AT_SIGN     &kp HASH          &kp DOLLAR         &kp RIGHT_BRACKET  &kp RIGHT_BRACE     &kp RIGHT_PARENTHESIS                          &none               &none               &none              &none              &none              &none
-&kp EXCLAMATION &kp LESS_THAN     &kp GREATER_THAN   &kp LEFT_BRACKET   &kp LEFT_BRACE      &kp LEFT_PARENTHESIS                           &none               &kp RIGHT_SHIFT     &kp RCTRL          &kp RIGHT_ALT      &kp RIGHT_GUI      &none
+&kp EXCLAMATION &kp LESS_THAN     &kp GREATER_THAN   &kp LEFT_BRACKET   &kp LEFT_BRACE      &kp LEFT_PARENTHESIS                           &none               &skm RIGHT_SHIFT    &skm RCTRL         &skm RIGHT_ALT     &skm RIGHT_GUI     &none
 &kp AMPERSAND   &kp PIPE          &kp ASTERISK       &kp MINUS          &kp EQUAL           &kp PLUS      &trans              &trans       &none               &none               &none              &none              &none              &none
                                   &trans             &trans             &kp BACKSLASH       &kp SLASH     &kp UNDERSCORE      &none        &none               &none               &trans             &trans
             >;
@@ -229,11 +247,11 @@
         FUN {
             label = "FUN";
             display-name = "FUN";
-            /* F-key geometry mirrors NUM; the right hand remains modifiers. */
+            /* F-key geometry mirrors NUM; the right hand carries one-shot modifiers (&skm). */
             bindings = <
 &trans       &none             &none              &none              &none               &none                                          &none               &none               &none              &none              &none              &trans
 &none        &kp F12           &kp F7             &kp F8             &kp F9              &kp PRINTSCREEN                                &kp CAPSLOCK        &none               &none              &none              &none              &none
-&none        &kp F11           &kp F4             &kp F5             &kp F6              &kp SCROLLLOCK                                 &none               &kp RIGHT_SHIFT     &kp RCTRL          &kp RIGHT_ALT      &kp RIGHT_GUI      &none
+&none        &kp F11           &kp F4             &kp F5             &kp F6              &kp SCROLLLOCK                                 &none               &skm RIGHT_SHIFT    &skm RCTRL         &skm RIGHT_ALT     &skm RIGHT_GUI     &none
 &none        &kp F10           &kp F1             &kp F2             &kp F3              &kp PAUSE_BREAK &trans          &trans         &none               &none               &none              &none              &none              &none
                                &trans             &trans             &kp K_APP           &kp SPACE   &kp TAB             &none          &none               &none               &trans             &trans
             >;

@@ -508,11 +508,11 @@ def resolve_binding(
         )
 
     # -------------------------------------------------------------------------
-    # 5. Sticky Keys (&sk)
+    # 5. Sticky Keys (&sk, &skm)
     # -------------------------------------------------------------------------
-    if op == "&sk":
+    if op in ("&sk", "&skm"):
         if len(tokens) < 2:
-            raise ValueError(f"Malformed &sk binding '{raw}' at {layer_name}:{position}")
+            raise ValueError(f"Malformed {op} binding '{raw}' at {layer_name}:{position}")
         mod_name = tokens[1]
         mod_label = MODIFIER_MAP.get(mod_name, format_kp_param(mod_name))
         return KeyView(
@@ -523,7 +523,6 @@ def resolve_binding(
             kind="modifier",
             is_modifier=True,
         )
-
     # -------------------------------------------------------------------------
     # 6. Custom Hold-Tap Behaviors (e.g. host_lt, game_fn_lt, hml, hmr)
     # -------------------------------------------------------------------------

@@ -1,5 +1,5 @@
 {
-  "title": "Keyboard Semantic Host Bridge (F13-F20 Window Management, F21-F24 Editing, Standard F1-F12 Normalization)",
+  "title": "Keyboard Semantic Host Bridge (F13-F20 Window Management, Hyper+F13-F24 Application Actions, F21-F24 Editing, Standard F1-F12 Normalization)",
   "rules": [
     {
       "description": "F13-F20 Semantic Window Management Bridge (F13-F20 -> AeroSpace / macOS chords)",
@@ -922,7 +922,7 @@
       ]
     },
     {
-      "description": "F21-F24 Semantic Editing (F21=Cmd+C, F22=Cmd+V, F23=Cmd+X, F24=Cmd+Z, Shift+F24=Cmd+Shift+Z)",
+      "description": "Hyper+F13-F24 Application & Navigation Bridge (Hyper+F13-F24 -> macOS Application Shortcuts)",
       "manipulators": [
         {
           "type": "basic",
@@ -938,10 +938,13 @@
             }
           ],
           "from": {
-            "key_code": "f24",
+            "key_code": "f13",
             "modifiers": {
               "mandatory": [
-                "shift"
+                "control",
+                "option",
+                "shift",
+                "command"
               ],
               "optional": [
                 "caps_lock"
@@ -950,7 +953,115 @@
           },
           "to": [
             {
-              "key_code": "z",
+              "key_code": "a",
+              "modifiers": [
+                "left_command"
+              ]
+            }
+          ]
+        },
+        {
+          "type": "basic",
+          "conditions": [
+            {
+              "type": "device_if",
+              "identifiers": [
+                {
+                  "is_keyboard": true,
+                  "is_built_in_keyboard": false
+                }
+              ]
+            }
+          ],
+          "from": {
+            "key_code": "f14",
+            "modifiers": {
+              "mandatory": [
+                "control",
+                "option",
+                "shift",
+                "command"
+              ],
+              "optional": [
+                "caps_lock"
+              ]
+            }
+          },
+          "to": [
+            {
+              "key_code": "s",
+              "modifiers": [
+                "left_command"
+              ]
+            }
+          ]
+        },
+        {
+          "type": "basic",
+          "conditions": [
+            {
+              "type": "device_if",
+              "identifiers": [
+                {
+                  "is_keyboard": true,
+                  "is_built_in_keyboard": false
+                }
+              ]
+            }
+          ],
+          "from": {
+            "key_code": "f15",
+            "modifiers": {
+              "mandatory": [
+                "control",
+                "option",
+                "shift",
+                "command"
+              ],
+              "optional": [
+                "caps_lock"
+              ]
+            }
+          },
+          "to": [
+            {
+              "key_code": "f",
+              "modifiers": [
+                "left_command"
+              ]
+            }
+          ]
+        },
+        {
+          "type": "basic",
+          "conditions": [
+            {
+              "type": "device_if",
+              "identifiers": [
+                {
+                  "is_keyboard": true,
+                  "is_built_in_keyboard": false
+                }
+              ]
+            }
+          ],
+          "from": {
+            "key_code": "f16",
+            "modifiers": {
+              "mandatory": [
+                "control",
+                "option",
+                "shift",
+                "command"
+              ],
+              "optional": [
+                "caps_lock"
+              ]
+            }
+          },
+          "to": [
+            {
+              "key_code": "open_bracket",
               "modifiers": [
                 "left_command",
                 "left_shift"
@@ -972,8 +1083,14 @@
             }
           ],
           "from": {
-            "key_code": "f24",
+            "key_code": "f17",
             "modifiers": {
+              "mandatory": [
+                "control",
+                "option",
+                "shift",
+                "command"
+              ],
               "optional": [
                 "caps_lock"
               ]
@@ -981,7 +1098,44 @@
           },
           "to": [
             {
-              "key_code": "z",
+              "key_code": "close_bracket",
+              "modifiers": [
+                "left_command",
+                "left_shift"
+              ]
+            }
+          ]
+        },
+        {
+          "type": "basic",
+          "conditions": [
+            {
+              "type": "device_if",
+              "identifiers": [
+                {
+                  "is_keyboard": true,
+                  "is_built_in_keyboard": false
+                }
+              ]
+            }
+          ],
+          "from": {
+            "key_code": "f18",
+            "modifiers": {
+              "mandatory": [
+                "control",
+                "option",
+                "shift",
+                "command"
+              ],
+              "optional": [
+                "caps_lock"
+              ]
+            }
+          },
+          "to": [
+            {
+              "key_code": "t",
               "modifiers": [
                 "left_command"
               ]
@@ -1002,10 +1156,233 @@
             }
           ],
           "from": {
+            "key_code": "f19",
+            "modifiers": {
+              "mandatory": [
+                "control",
+                "option",
+                "shift",
+                "command"
+              ],
+              "optional": [
+                "caps_lock"
+              ]
+            }
+          },
+          "to": [
+            {
+              "key_code": "w",
+              "modifiers": [
+                "left_command"
+              ]
+            }
+          ]
+        },
+        {
+          "type": "basic",
+          "conditions": [
+            {
+              "type": "device_if",
+              "identifiers": [
+                {
+                  "is_keyboard": true,
+                  "is_built_in_keyboard": false
+                }
+              ]
+            }
+          ],
+          "from": {
+            "key_code": "f20",
+            "modifiers": {
+              "mandatory": [
+                "control",
+                "option",
+                "shift",
+                "command"
+              ],
+              "optional": [
+                "caps_lock"
+              ]
+            }
+          },
+          "to": [
+            {
+              "key_code": "t",
+              "modifiers": [
+                "left_command",
+                "left_shift"
+              ]
+            }
+          ]
+        },
+        {
+          "type": "basic",
+          "conditions": [
+            {
+              "type": "device_if",
+              "identifiers": [
+                {
+                  "is_keyboard": true,
+                  "is_built_in_keyboard": false
+                }
+              ]
+            }
+          ],
+          "from": {
+            "key_code": "f21",
+            "modifiers": {
+              "mandatory": [
+                "control",
+                "option",
+                "shift",
+                "command"
+              ],
+              "optional": [
+                "caps_lock"
+              ]
+            }
+          },
+          "to": [
+            {
+              "key_code": "left_arrow",
+              "modifiers": [
+                "left_alt"
+              ]
+            }
+          ]
+        },
+        {
+          "type": "basic",
+          "conditions": [
+            {
+              "type": "device_if",
+              "identifiers": [
+                {
+                  "is_keyboard": true,
+                  "is_built_in_keyboard": false
+                }
+              ]
+            }
+          ],
+          "from": {
+            "key_code": "f22",
+            "modifiers": {
+              "mandatory": [
+                "control",
+                "option",
+                "shift",
+                "command"
+              ],
+              "optional": [
+                "caps_lock"
+              ]
+            }
+          },
+          "to": [
+            {
+              "key_code": "right_arrow",
+              "modifiers": [
+                "left_alt"
+              ]
+            }
+          ]
+        },
+        {
+          "type": "basic",
+          "conditions": [
+            {
+              "type": "device_if",
+              "identifiers": [
+                {
+                  "is_keyboard": true,
+                  "is_built_in_keyboard": false
+                }
+              ]
+            }
+          ],
+          "from": {
+            "key_code": "f23",
+            "modifiers": {
+              "mandatory": [
+                "control",
+                "option",
+                "shift",
+                "command"
+              ],
+              "optional": [
+                "caps_lock"
+              ]
+            }
+          },
+          "to": [
+            {
+              "key_code": "g",
+              "modifiers": [
+                "left_command"
+              ]
+            }
+          ]
+        },
+        {
+          "type": "basic",
+          "conditions": [
+            {
+              "type": "device_if",
+              "identifiers": [
+                {
+                  "is_keyboard": true,
+                  "is_built_in_keyboard": false
+                }
+              ]
+            }
+          ],
+          "from": {
+            "key_code": "f24",
+            "modifiers": {
+              "mandatory": [
+                "control",
+                "option",
+                "shift",
+                "command"
+              ],
+              "optional": [
+                "caps_lock"
+              ]
+            }
+          },
+          "to": [
+            {
+              "key_code": "z",
+              "modifiers": [
+                "left_command",
+                "left_shift"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "description": "F21-F24 Semantic Clipboard & Editing (F21=Cmd+C, F22=Cmd+V, F23=Cmd+X, F24=Cmd+Z)",
+      "manipulators": [
+        {
+          "type": "basic",
+          "conditions": [
+            {
+              "type": "device_if",
+              "identifiers": [
+                {
+                  "is_keyboard": true,
+                  "is_built_in_keyboard": false
+                }
+              ]
+            }
+          ],
+          "from": {
             "key_code": "f21",
             "modifiers": {
               "optional": [
-                "caps_lock"
+                "any"
               ]
             }
           },
@@ -1035,7 +1412,7 @@
             "key_code": "f22",
             "modifiers": {
               "optional": [
-                "caps_lock"
+                "any"
               ]
             }
           },
@@ -1065,13 +1442,43 @@
             "key_code": "f23",
             "modifiers": {
               "optional": [
-                "caps_lock"
+                "any"
               ]
             }
           },
           "to": [
             {
               "key_code": "x",
+              "modifiers": [
+                "left_command"
+              ]
+            }
+          ]
+        },
+        {
+          "type": "basic",
+          "conditions": [
+            {
+              "type": "device_if",
+              "identifiers": [
+                {
+                  "is_keyboard": true,
+                  "is_built_in_keyboard": false
+                }
+              ]
+            }
+          ],
+          "from": {
+            "key_code": "f24",
+            "modifiers": {
+              "optional": [
+                "any"
+              ]
+            }
+          },
+          "to": [
+            {
+              "key_code": "z",
               "modifiers": [
                 "left_command"
               ]

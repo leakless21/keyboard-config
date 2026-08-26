@@ -62,12 +62,23 @@ Semantic F13–F24 HID Signals
 | `Alt+F14` | AutoHotkey $\rightarrow$ Terminal | Toggle Quake dropdown terminal |
 | `Alt+F15` | AutoHotkey | Launch new independent Windows Terminal (`wt.exe`) |
 | `Alt+F16` | AutoHotkey | Previous Window (`Alt+Tab`) |
+<!-- Editing & Application Actions -->
+| `Hyper+F13` | AutoHotkey | Select All (`Ctrl+A`) |
+| `Hyper+F14` | AutoHotkey | Save (`Ctrl+S`) |
+| `Hyper+F15` | AutoHotkey | Find (`Ctrl+F`) |
+| `Hyper+F16` | AutoHotkey | Previous Tab (`Ctrl+Shift+Tab`) |
+| `Hyper+F17` | AutoHotkey | Next Tab (`Ctrl+Tab`) |
+| `Hyper+F18` | AutoHotkey | New Tab (`Ctrl+T`) |
+| `Hyper+F19` | AutoHotkey | Close Tab (`Ctrl+W`) |
+| `Hyper+F20` | AutoHotkey | Reopen Closed Tab (`Ctrl+Shift+T`) |
+| `Hyper+F21` | AutoHotkey | Word Left (`Ctrl+Left`) |
+| `Hyper+F22` | AutoHotkey | Word Right (`Ctrl+Right`) |
+| `Hyper+F23` | AutoHotkey | Find Next (`F3`) |
+| `Hyper+F24` | AutoHotkey | Redo (`Ctrl+Y`) |
 | `F21` | AutoHotkey | Copy (`Ctrl+C`) |
 | `F22` | AutoHotkey | Paste (`Ctrl+V`) |
 | `F23` | AutoHotkey | Cut (`Ctrl+X`) |
 | `F24` | AutoHotkey | Undo (`Ctrl+Z`) |
-| `Shift+F24` | AutoHotkey | Redo (`Ctrl+Y`) |
-
 ---
 
 ## 4. Smoke Test Checklist

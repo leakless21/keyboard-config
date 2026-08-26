@@ -5,36 +5,59 @@
 ; Keyboard Semantic Host Bridge for Windows (AutoHotkey v2)
 ;
 ; Translates semantic F13-F24 signals from NAV/MOUSE/HOST layers into standard
-; Windows clipboard, launcher, terminal, and window shortcuts.
+; Windows clipboard, application, launcher, terminal, and window shortcuts.
 ;
-; Keyboard emits:      Windows receives:
-;   F21            ->    Ctrl+C         (Copy)
-;   F22            ->    Ctrl+V         (Paste)
-;   F23            ->    Ctrl+X         (Cut)
-;   F24            ->    Ctrl+Z         (Undo)
-;   Shift+F24      ->    Ctrl+Y         (Redo)
-;   Alt+F13        ->    Win+S          (System Launcher / Windows Search)
-;   Alt+F14        ->    Ctrl+Alt+`     (Quick Terminal / Quake summon)
-;   Alt+F15        ->    Run wt.exe     (New independent Windows Terminal)
-;   Alt+F16        ->    Alt+Tab        (Previous Window)
-;   Alt+F17        ->    EVKey toggle   (Language Toggle)
+; Keyboard emits:                Windows receives:
+;   Hyper+F13                  ->    Ctrl+A         (Select All)
+;   Hyper+F14                  ->    Ctrl+S         (Save)
+;   Hyper+F15                  ->    Ctrl+F         (Find)
+;   Hyper+F16                  ->    Ctrl+Shift+Tab (Previous Tab)
+;   Hyper+F17                  ->    Ctrl+Tab       (Next Tab)
+;   Hyper+F18                  ->    Ctrl+T         (New Tab)
+;   Hyper+F19                  ->    Ctrl+W         (Close Tab)
+;   Hyper+F20                  ->    Ctrl+Shift+T   (Reopen Closed Tab)
+;   Hyper+F21                  ->    Ctrl+Left      (Word Left)
+;   Hyper+F22                  ->    Ctrl+Right     (Word Right)
+;   Hyper+F23                  ->    F3             (Find Next)
+;   Hyper+F24                  ->    Ctrl+Y         (Redo)
+;   F21 (with held mods)       ->    Ctrl+C         (Copy)
+;   F22 (with held mods)       ->    Ctrl+V         (Paste)
+;   F23 (with held mods)       ->    Ctrl+X         (Cut)
+;   F24 (with held mods)       ->    Ctrl+Z         (Undo)
+;   Alt+F13                    ->    Win+S          (System Launcher / Windows Search)
+;   Alt+F14                    ->    Ctrl+Alt+`     (Quick Terminal / Quake summon)
+;   Alt+F15                    ->    Run wt.exe     (New independent Windows Terminal)
+;   Alt+F16                    ->    Alt+Tab        (Previous Window)
+;   Alt+F17                    ->    EVKey toggle   (Language Toggle)
 ; =============================================================================
 
-; Redo (Shift+F24) must precede bare F24
-+F24::Send("^y")
+; -----------------------------------------------------------------------------
+; Application & Navigation Actions (Hyper = Ctrl+Alt+Shift+Win)
+; -----------------------------------------------------------------------------
+^!+#F13::Send("^a")
+^!+#F14::Send("^s")
+^!+#F15::Send("^f")
+^!+#F16::Send("^+{Tab}")
+^!+#F17::Send("^{Tab}")
+^!+#F18::Send("^t")
+^!+#F19::Send("^w")
+^!+#F20::Send("^+t")
+^!+#F21::Send("^{Left}")
+^!+#F22::Send("^{Right}")
+^!+#F23::Send("{F3}")
+^!+#F24::Send("^y")
 
-; Undo (F24)
-F24::Send("^z")
+; -----------------------------------------------------------------------------
+; Semantic Clipboard & Editing (Tolerates extra held modifiers)
+; -----------------------------------------------------------------------------
+*F21::Send("^c")
+*F22::Send("^v")
+*F23::Send("^x")
+*F24::Send("^z")
 
-; Copy (F21)
-F21::Send("^c")
-
-; Paste (F22)
-F22::Send("^v")
-
-; Cut (F23)
-F23::Send("^x")
-
+; -----------------------------------------------------------------------------
+; Desktop Actions & Launchers (HOST Layer)
+; -----------------------------------------------------------------------------
 ; System Launcher (Alt+F13 -> Win+S / Windows Search)
 !F13::Send("#s")
 

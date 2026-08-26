@@ -29,7 +29,8 @@ Native macOS Chords (Alt + Cmd shortcuts)
 - Copy `hosts/macos/karabiner.json` to `~/.config/karabiner/assets/complex_modifications/karabiner.json`.
 - In Karabiner-Elements Settings $\rightarrow$ **Complex Modifications** $\rightarrow$ **Add rule**:
   - Enable **"F13-F20 Semantic Window Management Bridge"** (F13–F20 $\rightarrow$ AeroSpace chords).
-  - Enable **"F21-F24 Semantic Editing"** (F21–F24 $\rightarrow$ Cmd+C/V/X/Z).
+  - Enable **"Hyper+F13-F24 Application & Navigation Bridge"** (Hyper+F13–F24 $\rightarrow$ app actions / tabs / cursor navigation).
+  - Enable **"F21-F24 Semantic Clipboard & Editing"** (F21–F24 $\rightarrow$ Cmd+C/V/X/Z with modifier tolerance).
   - Enable **"Standard F1-F12 normalization for external keyboard"** (guarantees application F1–F12).
 ### 2. AeroSpace (Tiling Window Manager)
 - Install [AeroSpace](https://nikitabobko.github.io/AeroSpace/).

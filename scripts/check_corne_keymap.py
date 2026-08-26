@@ -211,8 +211,110 @@ def test_bootloader_shortcuts(cfg: KeyboardConfig) -> None:
     print("PASS: Bootloader routing invariants verified (NAV LT5, NUM RT5, ADJUST mirrored left/right).")
 
 
+def test_directional_neio_geometry(cfg: KeyboardConfig) -> None:
+    """Verify that NEIO (RM1..RM4) maintains strict Left Down Up Right directional geometry across layers."""
+    nav = cfg.layer("NAV")
+    mouse = cfg.layer("MOUSE")
+    media = cfg.layer("MEDIA")
+    host = cfg.layer("HOST")
+
+    # NAV RM1..RM4 = Left Down Up Right
+    assert_eq(nav.pos("RM1"), "&kp LEFT", "NAV RM1 must be Left Arrow (&kp LEFT)")
+    assert_eq(nav.pos("RM2"), "&kp DOWN", "NAV RM2 must be Down Arrow (&kp DOWN)")
+    assert_eq(nav.pos("RM3"), "&kp UP", "NAV RM3 must be Up Arrow (&kp UP)")
+    assert_eq(nav.pos("RM4"), "&kp RIGHT", "NAV RM4 must be Right Arrow (&kp RIGHT)")
+
+    # MOUSE RM1..RM4 = MoveLeft MoveDown MoveUp MoveRight
+    assert_eq(mouse.pos("RM1"), "&mmv MOVE_LEFT", "MOUSE RM1 must be Move Left")
+    assert_eq(mouse.pos("RM2"), "&mmv MOVE_DOWN", "MOUSE RM2 must be Move Down")
+    assert_eq(mouse.pos("RM3"), "&mmv MOVE_UP", "MOUSE RM3 must be Move Up")
+    assert_eq(mouse.pos("RM4"), "&mmv MOVE_RIGHT", "MOUSE RM4 must be Move Right")
+
+    # MEDIA RM1..RM4 = Prev Vol- Vol+ Next
+    assert_eq(media.pos("RM1"), "&kp C_PREVIOUS", "MEDIA RM1 must be C_PREVIOUS")
+    assert_eq(media.pos("RM2"), "&kp C_VOLUME_DOWN", "MEDIA RM2 must be C_VOLUME_DOWN")
+    assert_eq(media.pos("RM3"), "&kp C_VOLUME_UP", "MEDIA RM3 must be C_VOLUME_UP")
+    assert_eq(media.pos("RM4"), "&kp C_NEXT", "MEDIA RM4 must be C_NEXT")
+
+    # HOST directional semantics maintain Left Down Up Right ordering on RM1..RM4 (Focus) and RB1..RB4 (Move)
+    assert_eq(host.pos("RM1"), "&kp LC(F13)", "HOST RM1 must be focus_left (&kp LC(F13))")
+    assert_eq(host.pos("RM2"), "&kp LC(F14)", "HOST RM2 must be focus_down (&kp LC(F14))")
+    assert_eq(host.pos("RM3"), "&kp LC(F15)", "HOST RM3 must be focus_up (&kp LC(F15))")
+    assert_eq(host.pos("RM4"), "&kp LC(F16)", "HOST RM4 must be focus_right (&kp LC(F16))")
+
+    assert_eq(host.pos("RB1"), "&kp LC(LS(F13))", "HOST RB1 must be move_left (&kp LC(LS(F13)))")
+    assert_eq(host.pos("RB2"), "&kp LC(LS(F14))", "HOST RB2 must be move_down (&kp LC(LS(F14)))")
+    assert_eq(host.pos("RB3"), "&kp LC(LS(F15))", "HOST RB3 must be move_up (&kp LC(LS(F15)))")
+    assert_eq(host.pos("RB4"), "&kp LC(LS(F16))", "HOST RB4 must be move_right (&kp LC(LS(F16)))")
+
+    print("PASS: NEIO directional navigation geometry verified across NAV, MOUSE, MEDIA, and HOST.")
+
+
+def test_nav_layer(cfg: KeyboardConfig) -> None:
+    """Verify NAV layer exact physical positions (tabs, app controls, modifiers, NEIO arrows, page navigation)."""
+    nav = cfg.layer("NAV")
+
+    # Top row left: Bootloader & Tab Management (LT5..LT0)
+    assert_eq(nav.pos("LT5"), "&bootloader", "NAV LT5 must be left &bootloader")
+    assert_eq(nav.pos("LT4"), "&kp LC(LA(LS(LG(F16))))", "NAV LT4 must be PrevTab (Hyper+F16)")
+    assert_eq(nav.pos("LT3"), "&kp LC(LA(LS(LG(F17))))", "NAV LT3 must be NextTab (Hyper+F17)")
+    assert_eq(nav.pos("LT2"), "&kp LC(LA(LS(LG(F18))))", "NAV LT2 must be NewTab (Hyper+F18)")
+    assert_eq(nav.pos("LT1"), "&kp LC(LA(LS(LG(F19))))", "NAV LT1 must be CloseTab (Hyper+F19)")
+    assert_eq(nav.pos("LT0"), "&kp LC(LA(LS(LG(F20))))", "NAV LT0 must be ReopenTab (Hyper+F20)")
+
+    # Home row left: SelectAll, held modifiers, Save (LM5..LM0)
+    assert_eq(nav.pos("LM5"), "&kp LC(LA(LS(LG(F13))))", "NAV LM5 must be Select All (Hyper+F13)")
+    assert_eq(nav.pos("LM4"), "&kp LGUI", "NAV LM4 must be plain &kp LGUI")
+    assert_eq(nav.pos("LM3"), "&kp LALT", "NAV LM3 must be plain &kp LALT")
+    assert_eq(nav.pos("LM2"), "&kp LCTRL", "NAV LM2 must be plain &kp LCTRL")
+    assert_eq(nav.pos("LM1"), "&kp LEFT_SHIFT", "NAV LM1 must be plain &kp LEFT_SHIFT")
+    assert_eq(nav.pos("LM0"), "&kp LC(LA(LS(LG(F14))))", "NAV LM0 must be Save (Hyper+F14)")
+
+    # Bottom row left: Find, word navigation, Find Next (LB5..LB0)
+    assert_eq(nav.pos("LB5"), "&kp LC(LA(LS(LG(F15))))", "NAV LB5 must be Find (Hyper+F15)")
+    assert_eq(nav.pos("LB4"), "&kp LC(LA(LS(LG(F21))))", "NAV LB4 must be Word Left (Hyper+F21)")
+    assert_eq(nav.pos("LB3"), "&kp LC(LA(LS(LG(F22))))", "NAV LB3 must be Word Right (Hyper+F22)")
+    assert_eq(nav.pos("LB2"), "&kp LC(LA(LS(LG(F23))))", "NAV LB2 must be Find Next (Hyper+F23)")
+    assert_eq(nav.pos("LB1"), "&none", "NAV LB1 must be &none (spare)")
+    assert_eq(nav.pos("LB0"), "&none", "NAV LB0 must be &none (spare)")
+
+    # Top row right: Clipboard & Editing (RT0..RT5)
+    assert_eq(nav.pos("RT0"), "&kp LC(LA(LS(LG(F24))))", "NAV RT0 must be Redo (Hyper+F24)")
+    assert_eq(nav.pos("RT1"), "&kp F22", "NAV RT1 must be Paste (&kp F22)")
+    assert_eq(nav.pos("RT2"), "&kp F21", "NAV RT2 must be Copy (&kp F21)")
+    assert_eq(nav.pos("RT3"), "&kp F23", "NAV RT3 must be Cut (&kp F23)")
+    assert_eq(nav.pos("RT4"), "&kp F24", "NAV RT4 must be Undo (&kp F24)")
+    assert_eq(nav.pos("RT5"), "&none", "NAV RT5 must be &none")
+
+    # Home row right: Caps Word & NEIO Arrow cluster (RM0..RM5)
+    assert_eq(nav.pos("RM0"), "&caps_word", "NAV RM0 must be &caps_word")
+    assert_eq(nav.pos("RM1"), "&kp LEFT", "NAV RM1 must be &kp LEFT")
+    assert_eq(nav.pos("RM2"), "&kp DOWN", "NAV RM2 must be &kp DOWN")
+    assert_eq(nav.pos("RM3"), "&kp UP", "NAV RM3 must be &kp UP")
+    assert_eq(nav.pos("RM4"), "&kp RIGHT", "NAV RM4 must be &kp RIGHT")
+    assert_eq(nav.pos("RM5"), "&none", "NAV RM5 must be &none")
+
+    # Bottom row right: Secondary navigation / paging (RB0..RB5)
+    assert_eq(nav.pos("RB0"), "&kp INSERT", "NAV RB0 must be &kp INSERT")
+    assert_eq(nav.pos("RB1"), "&kp HOME", "NAV RB1 must be &kp HOME")
+    assert_eq(nav.pos("RB2"), "&kp PAGE_DOWN", "NAV RB2 must be &kp PAGE_DOWN")
+    assert_eq(nav.pos("RB3"), "&kp PAGE_UP", "NAV RB3 must be &kp PAGE_UP")
+    assert_eq(nav.pos("RB4"), "&kp END", "NAV RB4 must be &kp END")
+    assert_eq(nav.pos("RB5"), "&none", "NAV RB5 must be &none")
+
+    # Thumbs: Esc, Space, Tab, Enter, Backspace, Delete
+    assert_eq(nav.pos("LH2"), "&kp ESCAPE", "NAV LH2 must be Escape")
+    assert_eq(nav.pos("LH1"), "&kp SPACE", "NAV LH1 must be Space")
+    assert_eq(nav.pos("LH0"), "&kp TAB", "NAV LH0 must be Tab")
+    assert_eq(nav.pos("RH0"), "&kp ENTER", "NAV RH0 must be Enter")
+    assert_eq(nav.pos("RH1"), "&kp BACKSPACE", "NAV RH1 must be Backspace")
+    assert_eq(nav.pos("RH2"), "&kp DELETE", "NAV RH2 must be Delete")
+
+    print("PASS: Corne NAV layer verified (tabs, app controls, held modifiers, NEIO arrows, paging, thumbs).")
+
+
 def test_cross_platform_bindings(cfg: KeyboardConfig) -> None:
-    """Verify standard Consumer media and semantic editing signals (F21-F24)."""
+    """Verify standard Consumer media and semantic editing signals on MOUSE and NAV."""
     media = cfg.layer("MEDIA")
     nav = cfg.layer("NAV")
     mouse = cfg.layer("MOUSE")
@@ -230,13 +332,49 @@ def test_cross_platform_bindings(cfg: KeyboardConfig) -> None:
 
     # Semantic editing signals on NAV and MOUSE (RT0..RT4)
     for l_name, l_obj in [("NAV", nav), ("MOUSE", mouse)]:
-        assert_eq(l_obj.pos("RT0"), "&kp LS(F24)", f"{l_name} RT0 must be Redo &kp LS(F24)")
+        assert_eq(l_obj.pos("RT0"), "&kp LC(LA(LS(LG(F24))))", f"{l_name} RT0 must be Redo (Hyper+F24)")
         assert_eq(l_obj.pos("RT1"), "&kp F22", f"{l_name} RT1 must be Paste &kp F22)")
         assert_eq(l_obj.pos("RT2"), "&kp F21", f"{l_name} RT2 must be Copy &kp F21)")
         assert_eq(l_obj.pos("RT3"), "&kp F23", f"{l_name} RT3 must be Cut &kp F23)")
         assert_eq(l_obj.pos("RT4"), "&kp F24", f"{l_name} RT4 must be Undo &kp F24)")
 
-    print("PASS: Cross-platform bindings verified (Consumer media HID brightness/volume/transport, semantic F21-F24 editing on NAV/MOUSE).")
+    print("PASS: Cross-platform bindings verified (Consumer media HID brightness/volume/transport, semantic F21-F24 and Hyper+F24 editing on NAV/MOUSE).")
+
+
+def test_modifier_behaviors(cfg: KeyboardConfig) -> None:
+    """Verify modifier architecture: dedicated &sk on BASE, &skm on NUM/SYM/FUN, plain &kp on NAV."""
+    base = cfg.layer("BASE")
+    nav = cfg.layer("NAV")
+    num = cfg.layer("NUM")
+    sym = cfg.layer("SYM")
+    fun = cfg.layer("FUN")
+
+    # BASE sticky shift
+    assert_eq(base.pos("LB5"), "&sk LSHFT", "BASE LB5 must use dedicated capitalization &sk LSHFT")
+
+    # NAV modifiers must be plain &kp
+    assert_eq(nav.pos("LM4"), "&kp LGUI", "NAV LM4 must be plain &kp LGUI")
+    assert_eq(nav.pos("LM3"), "&kp LALT", "NAV LM3 must be plain &kp LALT")
+    assert_eq(nav.pos("LM2"), "&kp LCTRL", "NAV LM2 must be plain &kp LCTRL")
+    assert_eq(nav.pos("LM1"), "&kp LEFT_SHIFT", "NAV LM1 must be plain &kp LEFT_SHIFT")
+
+    # NUM, SYM, FUN must use one-shot modifier &skm on RM1..RM4
+    for l_name, l_obj in [("NUM", num), ("SYM", sym), ("FUN", fun)]:
+        assert_eq(l_obj.pos("RM1"), "&skm RIGHT_SHIFT", f"{l_name} RM1 must be &skm RIGHT_SHIFT")
+        assert_eq(l_obj.pos("RM2"), "&skm RCTRL", f"{l_name} RM2 must be &skm RCTRL")
+        assert_eq(l_obj.pos("RM3"), "&skm RIGHT_ALT", f"{l_name} RM3 must be &skm RIGHT_ALT")
+        assert_eq(l_obj.pos("RM4"), "&skm RIGHT_GUI", f"{l_name} RM4 must be &skm RIGHT_GUI")
+
+    # Validate skm custom behavior definition in DTS
+    assert_in("skm", cfg.behaviors, "DTS missing custom behavior 'skm'")
+    skm_beh = cfg.behaviors["skm"]
+    assert_eq(skm_beh.compatible, "zmk,behavior-sticky-key", "skm must be compatible with zmk,behavior-sticky-key")
+    assert_eq(skm_beh.properties.get("release-after-ms"), ["1000"], "skm release-after-ms must be 1000")
+    assert_true(skm_beh.properties.get("lazy") is True, "skm must have lazy property")
+    assert_true(skm_beh.properties.get("ignore-modifiers") is True, "skm must have ignore-modifiers property")
+    assert_true("quick-release" not in skm_beh.properties, "skm must NOT have quick-release (to allow modifier chaining)")
+
+    print("PASS: Modifier architecture verified (&sk on BASE, &skm on NUM/SYM/FUN rails, plain &kp on NAV, skm behavior properties).")
 
 def test_caps_behavior(cfg: KeyboardConfig) -> None:
     """Verify Caps Word on NAV (RM0) and Caps Lock fallback on FUN (RT0)."""
@@ -283,10 +421,10 @@ def test_num_layer(cfg: KeyboardConfig) -> None:
 
     # Right hand mirrored modifiers and bootloader
     assert_eq(num.pos("RT5"), "&bootloader", "NUM RT5 must be bootloader")
-    assert_eq(num.pos("RM1"), "&kp RIGHT_SHIFT", "NUM RM1 must be Right Shift")
-    assert_eq(num.pos("RM2"), "&kp RCTRL", "NUM RM2 must be Right Ctrl")
-    assert_eq(num.pos("RM3"), "&kp RIGHT_ALT", "NUM RM3 must be Right Alt")
-    assert_eq(num.pos("RM4"), "&kp RIGHT_GUI", "NUM RM4 must be Right GUI")
+    assert_eq(num.pos("RM1"), "&skm RIGHT_SHIFT", "NUM RM1 must be Right Shift (&skm)")
+    assert_eq(num.pos("RM2"), "&skm RCTRL", "NUM RM2 must be Right Ctrl (&skm)")
+    assert_eq(num.pos("RM3"), "&skm RIGHT_ALT", "NUM RM3 must be Right Alt (&skm)")
+    assert_eq(num.pos("RM4"), "&skm RIGHT_GUI", "NUM RM4 must be Right GUI (&skm)")
 
     print("PASS: Corne NUM Seniply+/operator geometry verified.")
 
@@ -325,10 +463,10 @@ def test_sym_layer(cfg: KeyboardConfig) -> None:
     assert_eq(sym.pos("LH0"), "&kp UNDERSCORE", "SYM LH0 must be _")
 
     # Right hand mirrored modifiers
-    assert_eq(sym.pos("RM1"), "&kp RIGHT_SHIFT", "SYM RM1 must be Right Shift")
-    assert_eq(sym.pos("RM2"), "&kp RCTRL", "SYM RM2 must be Right Ctrl")
-    assert_eq(sym.pos("RM3"), "&kp RIGHT_ALT", "SYM RM3 must be Right Alt")
-    assert_eq(sym.pos("RM4"), "&kp RIGHT_GUI", "SYM RM4 must be Right GUI")
+    assert_eq(sym.pos("RM1"), "&skm RIGHT_SHIFT", "SYM RM1 must be Right Shift (&skm)")
+    assert_eq(sym.pos("RM2"), "&skm RCTRL", "SYM RM2 must be Right Ctrl (&skm)")
+    assert_eq(sym.pos("RM3"), "&skm RIGHT_ALT", "SYM RM3 must be Right Alt (&skm)")
+    assert_eq(sym.pos("RM4"), "&skm RIGHT_GUI", "SYM RM4 must be Right GUI (&skm)")
 
     print("PASS: Corne SYM Seniply+ geometry verified.")
 
@@ -348,7 +486,7 @@ def test_cross_keyboard_parity(corne_cfg: KeyboardConfig) -> None:
         "RH0", "RH1", "RH2",
     ]
 
-    for layer_name in ["NUM", "SYM"]:
+    for layer_name in ["NAV", "NUM", "SYM"]:
         corne_layer = corne_cfg.layer(layer_name)
         sofle_layer = sofle_cfg.layer(layer_name)
         for pos in shared_positions:
@@ -360,7 +498,7 @@ def test_cross_keyboard_parity(corne_cfg: KeyboardConfig) -> None:
                 f"Cross-keyboard parity mismatch on {layer_name} {pos}: Corne={c_val}, Sofle={s_val}",
             )
 
-    print("PASS: Cross-keyboard NUM and SYM common geometry parity verified (Corne == Sofle).")
+    print("PASS: Cross-keyboard NAV, NUM, and SYM common geometry parity verified (Corne == Sofle).")
 
 def test_fun_layer(cfg: KeyboardConfig) -> None:
     """Verify FUN layer exact physical grid (F1-F12, system keys, modifiers, and thumbs)."""
@@ -389,10 +527,10 @@ def test_fun_layer(cfg: KeyboardConfig) -> None:
 
     # Right hand CapsLock fallback and mirrored modifiers
     assert_eq(fun.pos("RT0"), "&kp CAPSLOCK", "FUN RT0 must be CapsLock fallback")
-    assert_eq(fun.pos("RM1"), "&kp RIGHT_SHIFT", "FUN RM1 must be Right Shift")
-    assert_eq(fun.pos("RM2"), "&kp RCTRL", "FUN RM2 must be Right Ctrl")
-    assert_eq(fun.pos("RM3"), "&kp RIGHT_ALT", "FUN RM3 must be Right Alt")
-    assert_eq(fun.pos("RM4"), "&kp RIGHT_GUI", "FUN RM4 must be Right GUI")
+    assert_eq(fun.pos("RM1"), "&skm RIGHT_SHIFT", "FUN RM1 must be Right Shift (&skm)")
+    assert_eq(fun.pos("RM2"), "&skm RCTRL", "FUN RM2 must be Right Ctrl (&skm)")
+    assert_eq(fun.pos("RM3"), "&skm RIGHT_ALT", "FUN RM3 must be Right Alt (&skm)")
+    assert_eq(fun.pos("RM4"), "&skm RIGHT_GUI", "FUN RM4 must be Right GUI (&skm)")
 
     # Left thumbs
     assert_eq(fun.pos("LH2"), "&kp K_APP", "FUN LH2 must be App / Menu key")
@@ -483,7 +621,10 @@ def main() -> None:
     test_game_layer(cfg)
     test_game_fn_layer(cfg)
     test_bootloader_shortcuts(cfg)
+    test_directional_neio_geometry(cfg)
+    test_nav_layer(cfg)
     test_cross_platform_bindings(cfg)
+    test_modifier_behaviors(cfg)
     test_caps_behavior(cfg)
     test_num_layer(cfg)
     test_sym_layer(cfg)
@@ -493,7 +634,6 @@ def main() -> None:
     test_studio_configuration(cfg)
     test_conf_constraints()
     print("\nALL CORNE STATIC KEYMAP INVARIANTS PASSED.")
-
 
 if __name__ == "__main__":
     main()

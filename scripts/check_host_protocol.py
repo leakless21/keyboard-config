@@ -73,11 +73,26 @@ EXPECTED_HOST_SIGNALS = [
 ]
 
 EXPECTED_EDITING_SIGNALS = [
-    "&kp F21",      # Copy
-    "&kp F22",      # Paste
-    "&kp F23",      # Cut
-    "&kp F24",      # Undo
-    "&kp LS(F24)",  # Redo
+    "&kp F21",                  # Copy
+    "&kp F22",                  # Paste
+    "&kp F23",                  # Cut
+    "&kp F24",                  # Undo
+    "&kp LC(LA(LS(LG(F24))))",  # Redo
+]
+
+EXPECTED_APP_SIGNALS = [
+    "&kp LC(LA(LS(LG(F13))))",  # Select All
+    "&kp LC(LA(LS(LG(F14))))",  # Save
+    "&kp LC(LA(LS(LG(F15))))",  # Find
+    "&kp LC(LA(LS(LG(F16))))",  # Previous Tab
+    "&kp LC(LA(LS(LG(F17))))",  # Next Tab
+    "&kp LC(LA(LS(LG(F18))))",  # New Tab
+    "&kp LC(LA(LS(LG(F19))))",  # Close Tab
+    "&kp LC(LA(LS(LG(F20))))",  # Reopen Tab
+    "&kp LC(LA(LS(LG(F21))))",  # Word Left
+    "&kp LC(LA(LS(LG(F22))))",  # Word Right
+    "&kp LC(LA(LS(LG(F23))))",  # Find Next
+    "&kp LC(LA(LS(LG(F24))))",  # Redo
 ]
 
 
@@ -98,11 +113,13 @@ def validate_keymap_producer(path: Path, board_name: str) -> None:
         assert_in(sig, nav_bindings, f"{board_name}: Missing editing signal '{sig}' in NAV layer")
         assert_in(sig, mouse_bindings, f"{board_name}: Missing editing signal '{sig}' in MOUSE layer")
 
+    for sig in EXPECTED_APP_SIGNALS:
+        assert_in(sig, nav_bindings, f"{board_name}: Missing application signal '{sig}' in NAV layer")
+
     print(
         f"PASS: Firmware Producer ({board_name}) validated "
-        f"({len(EXPECTED_HOST_SIGNALS)} HOST signals + {len(EXPECTED_EDITING_SIGNALS)} editing signals)."
+        f"({len(EXPECTED_HOST_SIGNALS)} HOST signals + {len(EXPECTED_EDITING_SIGNALS)} editing signals + {len(EXPECTED_APP_SIGNALS)} app signals)."
     )
-
 
 # -----------------------------------------------------------------------------
 # Layer B: macOS Host (Karabiner & AeroSpace)
@@ -122,13 +139,19 @@ def validate_karabiner_translator(karabiner_data: dict) -> None:
 
     # Classify manipulators into distinct architectural groups
     semantic_host_manipulators = []
+    semantic_app_manipulators = []
     semantic_editing_manipulators = []
     standard_f_manipulators = []
     unexpected_manipulators = []
 
     for m in all_manipulators:
         key_code = m.get("from", {}).get("key_code", "")
-        if key_code in [f"f{i}" for i in range(13, 21)]:
+        mandatory_mods = set(m.get("from", {}).get("modifiers", {}).get("mandatory", []))
+        is_hyper = mandatory_mods == {"control", "option", "shift", "command"}
+
+        if is_hyper and key_code in [f"f{i}" for i in range(13, 25)]:
+            semantic_app_manipulators.append(m)
+        elif key_code in [f"f{i}" for i in range(13, 21)]:
             semantic_host_manipulators.append(m)
         elif key_code in [f"f{i}" for i in range(21, 25)]:
             semantic_editing_manipulators.append(m)
@@ -148,9 +171,14 @@ def validate_karabiner_translator(karabiner_data: dict) -> None:
         f"Layer B (Karabiner): Expected exactly 28 HOST manipulators, found {len(semantic_host_manipulators)}",
     )
     assert_eq(
+        len(semantic_app_manipulators),
+        12,
+        f"Layer B (Karabiner): Expected exactly 12 Hyper application manipulators, found {len(semantic_app_manipulators)}",
+    )
+    assert_eq(
         len(semantic_editing_manipulators),
-        5,
-        f"Layer B (Karabiner): Expected exactly 5 editing manipulators, found {len(semantic_editing_manipulators)}",
+        4,
+        f"Layer B (Karabiner): Expected exactly 4 editing manipulators, found {len(semantic_editing_manipulators)}",
     )
     assert_eq(
         len(standard_f_manipulators),
@@ -159,9 +187,18 @@ def validate_karabiner_translator(karabiner_data: dict) -> None:
     )
     assert_eq(
         len(all_manipulators),
-        45,
-        f"Layer B (Karabiner): Expected exactly 45 canonical manipulators (28 HOST + 5 editing + 12 standard F), found {len(all_manipulators)}",
+        56,
+        f"Layer B (Karabiner): Expected exactly 56 canonical manipulators (28 HOST + 12 Hyper app + 4 editing + 12 standard F), found {len(all_manipulators)}",
     )
+
+    # Verify that all editing manipulators specify optional: ['any'] to tolerate extra held modifiers
+    for m in semantic_editing_manipulators:
+        opt_mods = m.get("from", {}).get("modifiers", {}).get("optional", [])
+        assert_in(
+            "any",
+            opt_mods,
+            f"Layer B (Karabiner): Editing manipulator {m.get('from')} must specify optional: ['any'] to tolerate held modifiers",
+        )
 
     # Check device scoping conditions across all manipulators
     for idx, m in enumerate(all_manipulators):
@@ -267,13 +304,25 @@ def validate_karabiner_translator(karabiner_data: dict) -> None:
         ("f19", set(), "f", {"left_alt"}),                               # FULL -> Alt+F
         ("f20", set(), "spacebar", {"left_alt", "left_shift"}),          # FLOAT -> Alt+Shift+Space
         # Semantic editing
-        ("f24", {"shift"}, "z", {"left_command", "left_shift"}),         # Redo -> Cmd+Shift+Z
-        ("f24", set(), "z", {"left_command"}),                           # Undo -> Cmd+Z
-        ("f21", set(), "c", {"left_command"}),                           # Copy -> Cmd+C
-        ("f22", set(), "v", {"left_command"}),                           # Paste -> Cmd+V
-        ("f23", set(), "x", {"left_command"}),                           # Cut -> Cmd+X
+        # Hyper application actions (12)
+        ("f13", {"control", "option", "shift", "command"}, "a", {"left_command"}),
+        ("f14", {"control", "option", "shift", "command"}, "s", {"left_command"}),
+        ("f15", {"control", "option", "shift", "command"}, "f", {"left_command"}),
+        ("f16", {"control", "option", "shift", "command"}, "open_bracket", {"left_command", "left_shift"}),
+        ("f17", {"control", "option", "shift", "command"}, "close_bracket", {"left_command", "left_shift"}),
+        ("f18", {"control", "option", "shift", "command"}, "t", {"left_command"}),
+        ("f19", {"control", "option", "shift", "command"}, "w", {"left_command"}),
+        ("f20", {"control", "option", "shift", "command"}, "t", {"left_command", "left_shift"}),
+        ("f21", {"control", "option", "shift", "command"}, "left_arrow", {"left_alt"}),
+        ("f22", {"control", "option", "shift", "command"}, "right_arrow", {"left_alt"}),
+        ("f23", {"control", "option", "shift", "command"}, "g", {"left_command"}),
+        ("f24", {"control", "option", "shift", "command"}, "z", {"left_command", "left_shift"}),
+        # Semantic editing clipboard actions (4)
+        ("f21", set(), "c", {"left_command"}),
+        ("f22", set(), "v", {"left_command"}),
+        ("f23", set(), "x", {"left_command"}),
+        ("f24", set(), "z", {"left_command"}),
     ]
-
     for from_key, from_mods, to_key, to_mods in expected_translations:
         found = False
         for m in all_manipulators:
@@ -358,13 +407,27 @@ def validate_aerospace_consumer(data: dict) -> None:
 # -----------------------------------------------------------------------------
 
 def validate_windows_ahk(content: str) -> None:
-    """Verify AutoHotkey translates all required editing and desktop signals."""
+    """Verify AutoHotkey translates all required editing, app, and desktop signals."""
     required_ahk_bindings = [
-        ("+F24::", "^y", "Redo -> Ctrl+Y"),
-        ("F24::", "^z", "Undo -> Ctrl+Z"),
-        ("F21::", "^c", "Copy -> Ctrl+C"),
-        ("F22::", "^v", "Paste -> Ctrl+V"),
-        ("F23::", "^x", "Cut -> Ctrl+X"),
+        # Hyper application actions (12)
+        ("^!+#F13::", "^a", "Select All -> Ctrl+A"),
+        ("^!+#F14::", "^s", "Save -> Ctrl+S"),
+        ("^!+#F15::", "^f", "Find -> Ctrl+F"),
+        ("^!+#F16::", "+{Tab}", "Previous Tab -> Ctrl+Shift+Tab"),
+        ("^!+#F17::", "^{Tab}", "Next Tab -> Ctrl+Tab"),
+        ("^!+#F18::", "^t", "New Tab -> Ctrl+T"),
+        ("^!+#F19::", "^w", "Close Tab -> Ctrl+W"),
+        ("^!+#F20::", "^+t", "Reopen Tab -> Ctrl+Shift+T"),
+        ("^!+#F21::", "^{Left}", "Word Left -> Ctrl+Left"),
+        ("^!+#F22::", "^{Right}", "Word Right -> Ctrl+Right"),
+        ("^!+#F23::", "{F3}", "Find Next -> F3"),
+        ("^!+#F24::", "^y", "Redo -> Ctrl+Y"),
+        # Semantic editing clipboard fallbacks (with wildcard * modifier tolerance)
+        ("*F21::", "^c", "Copy -> Ctrl+C"),
+        ("*F22::", "^v", "Paste -> Ctrl+V"),
+        ("*F23::", "^x", "Cut -> Ctrl+X"),
+        ("*F24::", "^z", "Undo -> Ctrl+Z"),
+        # Desktop launchers & controls
         ("!F13::", "#s", "Launcher -> Win+S"),
         ("!F14::", "wt", "Quick Terminal"),
         ("!F15::", "wt.exe", "New Terminal -> wt.exe"),
@@ -376,14 +439,16 @@ def validate_windows_ahk(content: str) -> None:
         if trigger not in content:
             fail(f"Windows AutoHotkey: Missing hotkey trigger '{trigger}' for {desc}")
 
-    # Ensure +F24 appears before bare F24
-    idx_shift_f24 = content.find("+F24::")
-    idx_bare_f24 = content.find("F24::")
-    if idx_shift_f24 == -1 or idx_bare_f24 == -1 or idx_shift_f24 > idx_bare_f24:
-        fail("Windows AutoHotkey: +F24:: (Redo) must precede bare F24:: (Undo)")
+    # Ensure Hyper triggers appear before wildcard/bare triggers
+    for key in ["F21", "F22", "F23", "F24"]:
+        hyper_trigger = f"^!+#{key}::"
+        wildcard_trigger = f"*{key}::"
+        idx_hyper = content.find(hyper_trigger)
+        idx_wildcard = content.find(wildcard_trigger)
+        if idx_hyper == -1 or idx_wildcard == -1 or idx_hyper > idx_wildcard:
+            fail(f"Windows AutoHotkey: {hyper_trigger} must precede {wildcard_trigger}")
 
-    print("PASS: Windows AutoHotkey Bridge validated (editing F21-F24, desktop actions Alt+F13-F17, and hotkey precedence).")
-
+    print("PASS: Windows AutoHotkey Bridge validated (12 Hyper app actions, editing F21-F24 with * modifier tolerance, desktop Alt+F13-F17).")
 
 def validate_glazewm_consumer(data: dict) -> None:
     """Verify GlazeWM binds all semantic window management signals."""

@@ -45,6 +45,12 @@ except ImportError:
     from scripts.lib.validation import fail, load_json
 
 DOCS_GENERATED_DIR = REPO_ROOT / "docs" / "generated"
+def format_path(p: Path) -> str:
+    try:
+        return str(p.relative_to(REPO_ROOT))
+    except ValueError:
+        return str(p)
+
 
 
 def compute_sha256(data_or_path: Path | bytes | str) -> str:
@@ -201,14 +207,14 @@ def generate_single_cheatsheet(
 
     # Normal generation mode: write SVG
     svg_path.write_text(svg_content, encoding="utf-8")
-    print(f"Generated: {svg_path.relative_to(REPO_ROOT)}")
+    print(f"Generated: {format_path(svg_path)}")
 
     # PDF generation
     pdf_sha = ""
     if not svg_only:
         if generate_pdf(svg_path, pdf_path):
             pdf_sha = compute_sha256(pdf_path)
-            print(f"Generated: {pdf_path.relative_to(REPO_ROOT)}")
+            print(f"Generated: {format_path(pdf_path)}")
         else:
             if shutil.which("rsvg-convert") is None:
                 print("NOTE: 'rsvg-convert' not found. Skipped PDF generation.", file=sys.stderr)
@@ -220,7 +226,7 @@ def generate_single_cheatsheet(
     # Optional PNG generation
     if png:
         if generate_png(svg_path, png_path):
-            print(f"Generated: {png_path.relative_to(REPO_ROOT)}")
+            print(f"Generated: {format_path(png_path)}")
         else:
             print(f"WARNING: PNG generation failed for '{kb}' (rsvg-convert required).", file=sys.stderr)
 
@@ -237,7 +243,7 @@ def generate_single_cheatsheet(
     }
 
     manifest_path.write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
-    print(f"Generated: {manifest_path.relative_to(REPO_ROOT)}")
+    print(f"Generated: {format_path(manifest_path)}")
     return 0
 
 

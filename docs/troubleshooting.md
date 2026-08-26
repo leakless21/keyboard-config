@@ -81,9 +81,24 @@ Used when runtime experiments in ZMK Studio override the Git keymap:
 4. Click **"Restore Stock Settings"** (or Discard Changes).
 5. The runtime flash partition is cleared, and active bindings immediately revert to the compiled Git firmware.
 
+> ⚠️ **Critical Troubleshooting Note:** If ZMK Studio has ever saved a modified keymap, use **Restore Stock Settings** after flashing a firmware keymap change.
+> Studio stores runtime keymap changes persistently and will otherwise override later `.keymap` changes.
+> Do **not** use a full settings reset (`settings-reset.uf2`) just to update the keymap, as that wipes Bluetooth pairing and split bonding.
+
 ---
 
-## 3. Host Bridge Diagnostics
+## 3. Usage & Compatibility Caveats
+
+### Caps Word & Vietnamese Telex IME
+- **Behavior:** Caps Word (`RM0` on NAV or Left Encoder push on Sofle) automatically capitalizes subsequent alpha characters until a word boundary (Space, Enter, punctuation) is typed.
+- **Vietnamese Telex Interaction:** In Vietnamese Telex IMEs, alpha keys (such as `s`, `f`, `r`, `x`, `j`, `w`, `a`, `e`, `o`) also double as diacritic and tone commands. When Caps Word sends shifted keycodes, certain IMEs may interpret them differently than unshifted characters. Caps Word is primarily optimized for uppercase identifiers (e.g., `CONSTANTS_IN_CODE`). If typing Vietnamese text, prefer standard Shift / Sticky Shift (`&sk LSHFT`).
+
+### Application Tab Shortcuts
+- **Semantic Abstraction:** The firmware emits semantic `Hyper+F16` (`Previous Tab`) and `Hyper+F17` (`Next Tab`).
+- **macOS App Customization:** While macOS browsers, Finder, Ghostty, and editors use `Cmd+Shift+[` and `Cmd+Shift+]` by default, any app-specific shortcut variations should be handled in `hosts/macos/karabiner.json` using application filters rather than altering firmware keymaps.
+---
+
+## 4. Host Bridge Diagnostics
 
 ### macOS
 * **Verify Karabiner complex modifications:** Check that `~/.config/karabiner/assets/complex_modifications/karabiner.json` is enabled in Karabiner-Elements Settings $\rightarrow$ Complex Modifications.

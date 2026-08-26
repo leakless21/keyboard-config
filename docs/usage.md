@@ -82,8 +82,7 @@ ZMK Studio is enabled with hardware locking (`CONFIG_ZMK_STUDIO_LOCKING=y`) to e
 2. **Studio Experiment:** Runtime overrides stored in flash memory; active keymap differs from Git.
 3. **Promoted:** Desired changes copied to Git $\rightarrow$ built $\rightarrow$ "Restore Stock Settings" in Studio $\rightarrow$ flash new `.uf2`.
 
-> ⚠️ **Warning:** Flashing a new `.keymap` does NOT replace Studio runtime overrides stored in flash memory. You must click **"Restore Stock Settings"** in ZMK Studio before verifying new Git builds.
-
+> ⚠️ **Warning:** Flashing a new `.keymap` does NOT replace Studio runtime overrides stored in flash memory. You must click **"Restore Stock Settings"** in ZMK Studio after flashing new firmware. Do **not** use a full settings reset (`settings-reset.uf2`), as that wipes Bluetooth pairing data.
 For complete rules on permitted vs forbidden Studio modifications, see [docs/development.md](development.md).
 
 ## 4. Smoke-Test Checklist
@@ -91,7 +90,8 @@ For complete rules on permitted vs forbidden Studio modifications, see [docs/dev
 - [ ] **Base Typing:** Colemak-DH alphas, punctuation, bilateral HRMs.
 - [ ] **Thumb & Auxiliary Layers:** NAV, MOUSE, MEDIA (brightness + audio/playback), NUM, SYM, FUN (F1–F12), HOST accessible via thumbs and LM5.
 - [ ] **Encoders (Sofle):** Page scroll / track on left, volume on right; Caps Word and Mute on presses.
-- [ ] **Semantic Editing:** Copy (`F21`), Paste (`F22`), Cut (`F23`), Undo (`F24`), Redo (`Shift+F24`).
-- [ ] **HOST Navigation:** Workspaces 1–5 (`F13`–`F17`), directional focus/move, launchers & desktop actions (`Alt+F13`–`Alt+F17`), Previous Window (`Alt+F16`), Language Toggle (`Alt+F17`).
+- [ ] **Everyday Application Actions (Left NAV):** Tabs (PrevTab, NextTab, NewTab, CloseTab, ReopenTab), Select All (`Hyper+F13`), Save (`Hyper+F14`), Find (`Hyper+F15`), Word Left/Right (`Hyper+F21/F22`), Find Next (`Hyper+F23`).
+- [ ] **Semantic Editing (Right NAV & MOUSE):** Copy (`F21`), Paste (`F22`), Cut (`F23`), Undo (`F24`), Redo (`Hyper+F24`).
+- [ ] **Directional Invariant (NEIO):** `N E I O` consistently controls `← ↓ ↑ →` across NAV, pointer on MOUSE, volume/track on MEDIA, and window focus on HOST.
 - [ ] **Gaming:** QWERTY alphas, physical numbers (Sofle) or AUX numbers (Corne), safe non-accidental exit to BASE.
 - [ ] **Bootloaders:** NAV LT5 triggers left bootloader; NUM RT5 triggers right bootloader.

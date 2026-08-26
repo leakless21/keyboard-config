@@ -36,11 +36,12 @@ Spotlight                  Windows Search
    - Handled natively by modern operating systems without third-party daemon translation.
    - **`MEDIA` is the project's portable laptop-Fn equivalent**, grouping brightness, volume, and playback controls without requiring proprietary OEM Fn firmware scancodes.
 
-3. **Semantic Protocol (`F13`–`F24`):**
-   - Abstract desktop and window management actions (`F13`–`F20`) and desktop editing commands (`F21`–`F24`).
+3. **Semantic Protocol (`F13`–`F24` & `Hyper + F13`–`F24`):**
+   - Abstract desktop and window management actions (`F13`–`F20`), desktop clipboard editing commands (`F21`–`F24`), and application/tab management controls (`Hyper + F13`–`F24`).
    - Translated by lightweight host bridges (Karabiner on macOS, AutoHotkey on Windows).
+   - **Hyper Namespace (`Ctrl + Alt + Shift + GUI`):** Application semantics reside in the dedicated Hyper namespace. Because Hyper asserts all four ordinary modifiers, holding user modifiers (e.g. Shift for selection) cannot accidentally transmute one semantic command into another.
+   - **Held Modifier Tolerance for Clipboard:** Host bridges match `F21`–`F24` (Copy, Paste, Cut, Undo) regardless of extra held modifiers, solving modifier-collision edge cases.
    - `LANG` (`Alt+F17`) is a cross-platform semantic language/input-source action (`Ctrl+Space` on macOS, EVKey toggle on Windows). It is **not** a raw Apple `GLOBE` key, ensuring identical muscle memory across platforms.
-
 ### Non-Negotiable Invariants
 
 1. **Firmware remains OS-neutral:**
@@ -65,52 +66,92 @@ Spotlight                  Windows Search
    - `FUN` serves as the true F1–F12 application function-key layer.
 ---
 
-## 2. Shared Multi-Keyboard Layout Principles
+## 2. Layout Ancestry & Design Influences
 
-While Corne and Sofle differ in physical dimensions and hardware features, they share the exact same core design grammar:
+The layout architecture harmonizes proven concepts across modern ergonomic keyboard design:
 
 ```text
-                                 ┌──────── Corne (42 keys, ultra-compact)
-                                 │
-Shared 5-Column Core Principles ──┼──────── Sofle (60 keys, number row + encoders)
-                                 │
-                                 ▼
-                     • Colemak-DH Alpha Core
-                     • Bilateral Positional HRMs (A R S T / N E I O)
-                     • 6-Layer Primary Thumb Architecture
-                     • Directional Home-Row Navigation (N E I O → ← ↓ ↑ →)
-                     • Semantic F13–F24 HOST & Editing Signals
+BASE / Core         Miryoku influenced (Colemak-DH, 36-key core, 6-layer thumb model)
+NAV                 Seniply Extend + Selenium concepts, NEIO directional geometry strictly retained
+SYM                 Seniply+ inspired (paired delimiters, comparison/operators on strong columns)
+HRMs                urob-style positional & timeless pattern (side-aware hold-taps)
+Utility Modifiers   Callum / Seniply inspired (dedicated one-shot &skm on NUM/SYM/FUN rails)
+HOST                Custom semantic desktop & window management protocol
 ```
 
-### Bilateral Positional Home-Row Modifiers (HRMs)
-Both keyboards use symmetrical, side-aware balanced hold-taps (`hml` on the left hand, `hmr` on the right hand):
-- **Timing:** 280 ms tapping term, 175 ms quick-tap, 150 ms prior idle requirement, `hold-trigger-on-release`.
-- **Positional Gating:** Left-hand HRMs hold only when triggered by opposite (right-hand) keys + thumb keys; right-hand HRMs mirror this.
-- **Mod Order:**
-  - Left hand (`A R S T`): `GUI`, `ALT`, `CTRL`, `SHIFT`
-  - Right hand (`N E I O`): `SHIFT`, `CTRL`, `ALT`, `GUI`
+### Rejection of Selenium's Physical-HJKL/MNEI Arrow Geometry
+While the Selenium layout proposal explores placing physical arrows on `M N E I` to mimic QWERTY's `H J K L`, this was **deliberately rejected**:
+- **NEIO Cross-Layer Invariant:** Maintaining `N E I O` as `← ↓ ↑ →` across `NAV`, `MOUSE`, `MEDIA`, and `HOST` establishes an unbroken internal spatial grammar.
+- Dismantling `NEIO` would break the elegant spatial harmony between home-row arrows (`N E I O` $\rightarrow$ `← ↓ ↑ →`) and bottom-row paging (`H , . /` $\rightarrow$ `Home PgDn PgUp End`).
 
-### Six Functional Thumb Layer-Taps
-The three primary thumb keys on each half activate the six core layers:
-- Left Outer: `Tap Esc` $\rightarrow$ `Hold MOUSE`
-- Left Middle: `Tap Space` $\rightarrow$ `Hold NAV`
-- Left Inner: `Tap Tab` $\rightarrow$ `Hold HOST` (`host_lt`: 200 ms balanced, no idle requirement)
-- Right Inner: `Tap Enter` $\rightarrow$ `Hold SYM`
-- Right Middle: `Tap Backspace` $\rightarrow$ `Hold NUM`
-- Right Outer: `Tap Delete` $\rightarrow$ `Hold FUN`
-
-### Spatial & Functional Geometry
-- **Outer-Left Home Key (`LM5`):** Momentary hold for `MEDIA` (`&mo L_MEDIA`).
-- **NAV / MOUSE / MEDIA:** Share the right-hand directional geometry (`RM1`–`RM4` $\rightarrow$ `← ↓ ↑ →`, pointer movement, volume/track controls).
-- **NUM:** Miryoku-derived 5-column numpad core + Corne/Sofle outer-column arithmetic rail (`/ * +`), with mirrored right-hand modifiers.
-- **SYM:** Seniply+-inspired 6-column symbol grammar with paired delimiters, direct comparisons/operators, programming sigils, and mirrored right-hand modifiers.
-- **FUN:** Retains Miryoku-style 5-column F1–F12 function key grid with mirrored right-hand modifiers.
-- **Shared Core vs. 6-Column Extensions:** The core 5 columns maintain portable Miryoku ancestry; both Corne and Sofle utilize the available 6th column for high-value extensions (arithmetic rail on NUM, extended symbol grammar on SYM).
-- **HOST:** Left home visits workspaces 1–5; left top moves window to workspace 1–5; left bottom launches search & terminals; right hand controls directional focus/move and modal states.
 ---
 
-## 3. Deliberate Hardware Differences
+## 3. Directional Invariant & NEIO Spatial Grammar
 
+> **Invariant:** `NEIO` (`RM1..RM4`) is the canonical four-direction home-row geometry across every functional layer.
+
+| Layer | Column 1 (`N` / `RM1`) | Column 2 (`E` / `RM2`) | Column 3 (`I` / `RM3`) | Column 4 (`O` / `RM4`) | Spatial Meaning |
+|---|---|---|---|---|---|
+| **`NAV`** | `←` (`LEFT`) | `↓` (`DOWN`) | `↑` (`UP`) | `→` (`RIGHT`) | Text cursor navigation |
+| **`MOUSE`** | `Pointer ←` (`MOVE_LEFT`) | `Pointer ↓` (`MOVE_DOWN`) | `Pointer ↑` (`MOVE_UP`) | `Pointer →` (`MOVE_RIGHT`) | Mouse pointer movement |
+| **`MEDIA`** | `Prev` (`C_PREVIOUS`) | `Vol−` (`C_VOLUME_DOWN`) | `Vol+` (`C_VOLUME_UP`) | `Next` (`C_NEXT`) | Audio playback & volume |
+| **`HOST`** | `Focus ←` (`LC(F13)`) | `Focus ↓` (`LC(F14)`) | `Focus ↑` (`LC(F15)`) | `Focus →` (`LC(F16)`) | Directional window focus |
+| **`HOST (Move)`** | `Move ←` (`LC(LS(F13))`) | `Move ↓` (`LC(LS(F14))`) | `Move ↑` (`LC(LS(F15))`) | `Move →` (`LC(LS(F16))`) | Directional window moving |
+
+Underneath `NEIO`, the bottom row (`RB1..RB4`) carries secondary directional navigation:
+```text
+N       E       I       O
+←       ↓       ↑       →
+(RM1)   (RM2)   (RM3)   (RM4)
+
+H       ,       .       /
+Home    PgDn    PgUp    End
+(RB1)   (RB2)   (RB3)   (RB4)
+```
+Outer bottom column `RB0` carries `Insert`.
+Outer top column `RT0..RT4` carries `Redo`, `Paste`, `Copy`, `Cut`, `Undo`.
+Outer middle column `RM0` carries `Caps Word`.
+
+## 4. Left NAV: Everyday Application & Tab Management Area
+
+The left side of the `NAV` layer is dedicated to high-frequency everyday application controls:
+
+```text
+LEFT NAV
+┌──────────────┬─────────────┬─────────────┬────────────┬──────────────┬───────────────┐
+│ BOOT (LT5)   │ PrevTab     │ NextTab     │ NewTab     │ CloseTab     │ ReopenTab     │
+├──────────────┼─────────────┼─────────────┼────────────┼──────────────┼───────────────┤
+│ Sel All      │ GUI         │ Alt         │ Ctrl       │ Shift        │ Save          │
+├──────────────┼─────────────┼─────────────┼────────────┼──────────────┼───────────────┤
+│ Find         │ Word ←      │ Word →      │ Find Next  │ —            │ —             │
+└──────────────┴─────────────┴─────────────┴────────────┴──────────────┴───────────────┘
+```
+
+1. **Top Row (Tabs):** One-handed browser/editor tab management (`PrevTab`, `NextTab`, `NewTab`, `CloseTab`, `ReopenTab`) operable while the right hand remains on a mouse.
+2. **Home Row (Operations & Held Modifiers):** `Select All` on `LM5`, `Save` on `LM0`, and standard held modifiers (`GUI`, `Alt`, `Ctrl`, `Shift` on `LM4..LM1`) for text selection (`Shift + NEIO`) and application navigation (`Ctrl/Alt/GUI + NEIO`).
+3. **Bottom Row (Secondary Navigation):** `Find` on `LB5`, cursor word jumps (`Word Left`, `Word Right` on `LB4..LB3`), and `Find Next` on `LB2`. Spare positions (`LB1`, `LB0`) remain deliberately unassigned.
+
+
+## 5. Modifier Architecture: Dedicated `&sk` vs `&skm`
+
+ZMK allows customizing sticky key behaviors, but globally adding `quick-release` to `&sk` interferes with sticky key chaining (e.g. chaining `Ctrl + Shift` in Callum-style usage).
+
+This configuration explicitly separates sticky modifier roles:
+
+1. **Dedicated Capitalization `&sk` (BASE layer `LB5`):**
+   - Configured with `quick-release`, `lazy`, and `ignore-modifiers`.
+   - Optimized specifically for fast single-letter capitalization.
+
+2. **One-Shot Utility Modifiers `&skm` (NUM, SYM, FUN rails `RM1..RM4`):**
+   - Configured with `lazy` and `ignore-modifiers`, but **deliberately NO `quick-release`**.
+   - Enables Callum-style single-tap or chained-tap modifier chords (e.g., `SYM` $\rightarrow$ tap `Ctrl` $\rightarrow$ tap `Shift` $\rightarrow$ release `SYM` $\rightarrow$ tap target key).
+
+3. **NAV Layer Modifiers (`LM4..LM1`):**
+   - Retained as plain `&kp` modifiers so holding `Shift` + `NEIO` arrows for continuous text selection remains maximally predictable.
+
+---
+
+## 6. Deliberate Hardware Differences
 We deliberately do **not** force artificial parity where hardware differs:
 
 | Feature | Corne (42 keys) | Sofle (60 keys) | Rationale |

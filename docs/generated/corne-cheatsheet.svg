@@ -237,22 +237,32 @@
     <rect x="1010.0" y="134.0" width="72.0" height="96.0" rx="6" ry="6" fill="#fff1f2" stroke="#e11d48" stroke-width="2.0" />
     <text x="1046.0" y="187.5" class="lbl-boot" font-size="15">BOOT</text>
   </g>
-  <g class="key unused" data-layer="NAV" data-position="LT4" data-binding="&amp;none">
-    <rect x="1088.0" y="134.0" width="72.0" height="96.0" rx="6" ry="6" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.0" />
+  <g class="key normal" data-layer="NAV" data-position="LT4" data-binding="&amp;kp LC(LA(LS(LG(F16))))">
+    <rect x="1088.0" y="134.0" width="72.0" height="96.0" rx="6" ry="6" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.2" />
+    <text x="1124.0" y="176.0" class="lbl-multi" font-size="13.5">Prev</text>
+    <text x="1124.0" y="198.0" class="lbl-multi" font-size="13.5">Tab</text>
   </g>
-  <g class="key unused" data-layer="NAV" data-position="LT3" data-binding="&amp;none">
-    <rect x="1166.0" y="134.0" width="72.0" height="96.0" rx="6" ry="6" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.0" />
+  <g class="key normal" data-layer="NAV" data-position="LT3" data-binding="&amp;kp LC(LA(LS(LG(F17))))">
+    <rect x="1166.0" y="134.0" width="72.0" height="96.0" rx="6" ry="6" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.2" />
+    <text x="1202.0" y="176.0" class="lbl-multi" font-size="13.5">Next</text>
+    <text x="1202.0" y="198.0" class="lbl-multi" font-size="13.5">Tab</text>
   </g>
-  <g class="key unused" data-layer="NAV" data-position="LT2" data-binding="&amp;none">
-    <rect x="1244.0" y="134.0" width="72.0" height="96.0" rx="6" ry="6" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.0" />
+  <g class="key normal" data-layer="NAV" data-position="LT2" data-binding="&amp;kp LC(LA(LS(LG(F18))))">
+    <rect x="1244.0" y="134.0" width="72.0" height="96.0" rx="6" ry="6" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.2" />
+    <text x="1280.0" y="176.0" class="lbl-multi" font-size="13.5">New</text>
+    <text x="1280.0" y="198.0" class="lbl-multi" font-size="13.5">Tab</text>
   </g>
-  <g class="key unused" data-layer="NAV" data-position="LT1" data-binding="&amp;none">
-    <rect x="1322.0" y="134.0" width="72.0" height="96.0" rx="6" ry="6" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.0" />
+  <g class="key normal" data-layer="NAV" data-position="LT1" data-binding="&amp;kp LC(LA(LS(LG(F19))))">
+    <rect x="1322.0" y="134.0" width="72.0" height="96.0" rx="6" ry="6" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.2" />
+    <text x="1358.0" y="176.0" class="lbl-multi" font-size="13.5">Close</text>
+    <text x="1358.0" y="198.0" class="lbl-multi" font-size="13.5">Tab</text>
   </g>
-  <g class="key unused" data-layer="NAV" data-position="LT0" data-binding="&amp;none">
-    <rect x="1400.0" y="134.0" width="72.0" height="96.0" rx="6" ry="6" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.0" />
+  <g class="key normal" data-layer="NAV" data-position="LT0" data-binding="&amp;kp LC(LA(LS(LG(F20))))">
+    <rect x="1400.0" y="134.0" width="72.0" height="96.0" rx="6" ry="6" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.2" />
+    <text x="1436.0" y="176.0" class="lbl-multi" font-size="12.5">Reopen</text>
+    <text x="1436.0" y="198.0" class="lbl-multi" font-size="12.5">Tab</text>
   </g>
-  <g class="key normal" data-layer="NAV" data-position="RT0" data-binding="&amp;kp LS(F24)">
+  <g class="key normal" data-layer="NAV" data-position="RT0" data-binding="&amp;kp LC(LA(LS(LG(F24))))">
     <rect x="1498.0" y="134.0" width="72.0" height="96.0" rx="6" ry="6" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.2" />
     <text x="1534.0" y="187.5" class="lbl-word" font-size="16">Redo</text>
   </g>
@@ -275,8 +285,10 @@
   <g class="key unused" data-layer="NAV" data-position="RT5" data-binding="&amp;none">
     <rect x="1888.0" y="134.0" width="72.0" height="96.0" rx="6" ry="6" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.0" />
   </g>
-  <g class="key unused" data-layer="NAV" data-position="LM5" data-binding="&amp;none">
-    <rect x="1010.0" y="236.0" width="72.0" height="96.0" rx="6" ry="6" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.0" />
+  <g class="key normal" data-layer="NAV" data-position="LM5" data-binding="&amp;kp LC(LA(LS(LG(F13))))">
+    <rect x="1010.0" y="236.0" width="72.0" height="96.0" rx="6" ry="6" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.2" />
+    <text x="1046.0" y="278.0" class="lbl-multi" font-size="13.5">Sel</text>
+    <text x="1046.0" y="300.0" class="lbl-multi" font-size="13.5">All</text>
   </g>
   <g class="key modifier mod" data-layer="NAV" data-position="LM4" data-binding="&amp;kp LGUI">
     <rect x="1088.0" y="236.0" width="72.0" height="96.0" rx="6" ry="6" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.2" />
@@ -294,8 +306,9 @@
     <rect x="1322.0" y="236.0" width="72.0" height="96.0" rx="6" ry="6" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.2" />
     <text x="1358.0" y="289.5" class="lbl-word" font-size="14">Shift</text>
   </g>
-  <g class="key unused" data-layer="NAV" data-position="LM0" data-binding="&amp;none">
-    <rect x="1400.0" y="236.0" width="72.0" height="96.0" rx="6" ry="6" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.0" />
+  <g class="key normal" data-layer="NAV" data-position="LM0" data-binding="&amp;kp LC(LA(LS(LG(F14))))">
+    <rect x="1400.0" y="236.0" width="72.0" height="96.0" rx="6" ry="6" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.2" />
+    <text x="1436.0" y="289.5" class="lbl-word" font-size="16">Save</text>
   </g>
   <g class="key system" data-layer="NAV" data-position="RM0" data-binding="&amp;caps_word">
     <rect x="1498.0" y="236.0" width="72.0" height="96.0" rx="6" ry="6" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.2" />
@@ -306,13 +319,13 @@
     <rect x="1576.0" y="236.0" width="72.0" height="96.0" rx="6" ry="6" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.2" />
     <text x="1612.0" y="292.5" class="lbl-single" font-size="28">←</text>
   </g>
-  <g class="key normal" data-layer="NAV" data-position="RM2" data-binding="&amp;kp DOWN_ARROW">
+  <g class="key normal" data-layer="NAV" data-position="RM2" data-binding="&amp;kp DOWN">
     <rect x="1654.0" y="236.0" width="72.0" height="96.0" rx="6" ry="6" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.2" />
-    <text x="1690.0" y="292.5" class="lbl-single" font-size="28">↓</text>
+    <text x="1690.0" y="289.5" class="lbl-word" font-size="16">DOWN</text>
   </g>
-  <g class="key normal" data-layer="NAV" data-position="RM3" data-binding="&amp;kp UP_ARROW">
+  <g class="key normal" data-layer="NAV" data-position="RM3" data-binding="&amp;kp UP">
     <rect x="1732.0" y="236.0" width="72.0" height="96.0" rx="6" ry="6" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.2" />
-    <text x="1768.0" y="292.5" class="lbl-single" font-size="28">↑</text>
+    <text x="1768.0" y="289.5" class="lbl-word" font-size="16">UP</text>
   </g>
   <g class="key normal" data-layer="NAV" data-position="RM4" data-binding="&amp;kp RIGHT">
     <rect x="1810.0" y="236.0" width="72.0" height="96.0" rx="6" ry="6" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.2" />
@@ -321,17 +334,24 @@
   <g class="key unused" data-layer="NAV" data-position="RM5" data-binding="&amp;none">
     <rect x="1888.0" y="236.0" width="72.0" height="96.0" rx="6" ry="6" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.0" />
   </g>
-  <g class="key unused" data-layer="NAV" data-position="LB5" data-binding="&amp;none">
-    <rect x="1010.0" y="338.0" width="72.0" height="96.0" rx="6" ry="6" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.0" />
+  <g class="key normal" data-layer="NAV" data-position="LB5" data-binding="&amp;kp LC(LA(LS(LG(F15))))">
+    <rect x="1010.0" y="338.0" width="72.0" height="96.0" rx="6" ry="6" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.2" />
+    <text x="1046.0" y="391.5" class="lbl-word" font-size="16">Find</text>
   </g>
-  <g class="key unused" data-layer="NAV" data-position="LB4" data-binding="&amp;none">
-    <rect x="1088.0" y="338.0" width="72.0" height="96.0" rx="6" ry="6" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.0" />
+  <g class="key normal" data-layer="NAV" data-position="LB4" data-binding="&amp;kp LC(LA(LS(LG(F21))))">
+    <rect x="1088.0" y="338.0" width="72.0" height="96.0" rx="6" ry="6" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.2" />
+    <text x="1124.0" y="380.0" class="lbl-multi" font-size="13.5">Word</text>
+    <text x="1124.0" y="402.0" class="lbl-multi" font-size="13.5">←</text>
   </g>
-  <g class="key unused" data-layer="NAV" data-position="LB3" data-binding="&amp;none">
-    <rect x="1166.0" y="338.0" width="72.0" height="96.0" rx="6" ry="6" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.0" />
+  <g class="key normal" data-layer="NAV" data-position="LB3" data-binding="&amp;kp LC(LA(LS(LG(F22))))">
+    <rect x="1166.0" y="338.0" width="72.0" height="96.0" rx="6" ry="6" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.2" />
+    <text x="1202.0" y="380.0" class="lbl-multi" font-size="13.5">Word</text>
+    <text x="1202.0" y="402.0" class="lbl-multi" font-size="13.5">→</text>
   </g>
-  <g class="key unused" data-layer="NAV" data-position="LB2" data-binding="&amp;none">
-    <rect x="1244.0" y="338.0" width="72.0" height="96.0" rx="6" ry="6" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.0" />
+  <g class="key normal" data-layer="NAV" data-position="LB2" data-binding="&amp;kp LC(LA(LS(LG(F23))))">
+    <rect x="1244.0" y="338.0" width="72.0" height="96.0" rx="6" ry="6" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.2" />
+    <text x="1280.0" y="380.0" class="lbl-multi" font-size="13.5">Find</text>
+    <text x="1280.0" y="402.0" class="lbl-multi" font-size="13.5">Next</text>
   </g>
   <g class="key unused" data-layer="NAV" data-position="LB1" data-binding="&amp;none">
     <rect x="1322.0" y="338.0" width="72.0" height="96.0" rx="6" ry="6" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.0" />
@@ -410,7 +430,7 @@
   <g class="key unused" data-layer="MOUSE" data-position="LT0" data-binding="&amp;none">
     <rect x="2372.0" y="134.0" width="72.0" height="96.0" rx="6" ry="6" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.0" />
   </g>
-  <g class="key normal" data-layer="MOUSE" data-position="RT0" data-binding="&amp;kp LS(F24)">
+  <g class="key normal" data-layer="MOUSE" data-position="RT0" data-binding="&amp;kp LC(LA(LS(LG(F24))))">
     <rect x="2470.0" y="134.0" width="72.0" height="96.0" rx="6" ry="6" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.2" />
     <text x="2506.0" y="187.5" class="lbl-word" font-size="16">Redo</text>
   </g>
@@ -773,21 +793,25 @@
   <g class="key unused" data-layer="NUM" data-position="RM0" data-binding="&amp;none">
     <rect x="1498.0" y="718.0" width="72.0" height="96.0" rx="6" ry="6" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.0" />
   </g>
-  <g class="key modifier mod" data-layer="NUM" data-position="RM1" data-binding="&amp;kp RIGHT_SHIFT">
+  <g class="key modifier mod" data-layer="NUM" data-position="RM1" data-binding="&amp;skm RIGHT_SHIFT">
     <rect x="1576.0" y="718.0" width="72.0" height="96.0" rx="6" ry="6" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.2" />
-    <text x="1612.0" y="771.5" class="lbl-word" font-size="14">RShift</text>
+    <text x="1612.0" y="754.5" class="lbl-tap" font-size="12.5">RShift</text>
+    <text x="1612.0" y="792.9" class="lbl-hold" font-size="13">Sticky</text>
   </g>
-  <g class="key modifier mod" data-layer="NUM" data-position="RM2" data-binding="&amp;kp RCTRL">
+  <g class="key modifier mod" data-layer="NUM" data-position="RM2" data-binding="&amp;skm RCTRL">
     <rect x="1654.0" y="718.0" width="72.0" height="96.0" rx="6" ry="6" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.2" />
-    <text x="1690.0" y="771.5" class="lbl-word" font-size="14">RCtrl</text>
+    <text x="1690.0" y="754.5" class="lbl-tap" font-size="14.5">RCtrl</text>
+    <text x="1690.0" y="792.9" class="lbl-hold" font-size="13">Sticky</text>
   </g>
-  <g class="key modifier mod" data-layer="NUM" data-position="RM3" data-binding="&amp;kp RIGHT_ALT">
+  <g class="key modifier mod" data-layer="NUM" data-position="RM3" data-binding="&amp;skm RIGHT_ALT">
     <rect x="1732.0" y="718.0" width="72.0" height="96.0" rx="6" ry="6" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.2" />
-    <text x="1768.0" y="771.5" class="lbl-word" font-size="16">RAlt</text>
+    <text x="1768.0" y="754.5" class="lbl-tap" font-size="14.5">RAlt</text>
+    <text x="1768.0" y="792.9" class="lbl-hold" font-size="13">Sticky</text>
   </g>
-  <g class="key modifier mod" data-layer="NUM" data-position="RM4" data-binding="&amp;kp RIGHT_GUI">
+  <g class="key modifier mod" data-layer="NUM" data-position="RM4" data-binding="&amp;skm RIGHT_GUI">
     <rect x="1810.0" y="718.0" width="72.0" height="96.0" rx="6" ry="6" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.2" />
-    <text x="1846.0" y="771.5" class="lbl-word" font-size="16">RCmd</text>
+    <text x="1846.0" y="754.5" class="lbl-tap" font-size="14.5">RCmd</text>
+    <text x="1846.0" y="792.9" class="lbl-hold" font-size="13">Sticky</text>
   </g>
   <g class="key unused" data-layer="NUM" data-position="RM5" data-binding="&amp;none">
     <rect x="1888.0" y="718.0" width="72.0" height="96.0" rx="6" ry="6" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.0" />
@@ -930,21 +954,25 @@
   <g class="key unused" data-layer="SYM" data-position="RM0" data-binding="&amp;none">
     <rect x="2470.0" y="718.0" width="72.0" height="96.0" rx="6" ry="6" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.0" />
   </g>
-  <g class="key modifier mod" data-layer="SYM" data-position="RM1" data-binding="&amp;kp RIGHT_SHIFT">
+  <g class="key modifier mod" data-layer="SYM" data-position="RM1" data-binding="&amp;skm RIGHT_SHIFT">
     <rect x="2548.0" y="718.0" width="72.0" height="96.0" rx="6" ry="6" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.2" />
-    <text x="2584.0" y="771.5" class="lbl-word" font-size="14">RShift</text>
+    <text x="2584.0" y="754.5" class="lbl-tap" font-size="12.5">RShift</text>
+    <text x="2584.0" y="792.9" class="lbl-hold" font-size="13">Sticky</text>
   </g>
-  <g class="key modifier mod" data-layer="SYM" data-position="RM2" data-binding="&amp;kp RCTRL">
+  <g class="key modifier mod" data-layer="SYM" data-position="RM2" data-binding="&amp;skm RCTRL">
     <rect x="2626.0" y="718.0" width="72.0" height="96.0" rx="6" ry="6" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.2" />
-    <text x="2662.0" y="771.5" class="lbl-word" font-size="14">RCtrl</text>
+    <text x="2662.0" y="754.5" class="lbl-tap" font-size="14.5">RCtrl</text>
+    <text x="2662.0" y="792.9" class="lbl-hold" font-size="13">Sticky</text>
   </g>
-  <g class="key modifier mod" data-layer="SYM" data-position="RM3" data-binding="&amp;kp RIGHT_ALT">
+  <g class="key modifier mod" data-layer="SYM" data-position="RM3" data-binding="&amp;skm RIGHT_ALT">
     <rect x="2704.0" y="718.0" width="72.0" height="96.0" rx="6" ry="6" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.2" />
-    <text x="2740.0" y="771.5" class="lbl-word" font-size="16">RAlt</text>
+    <text x="2740.0" y="754.5" class="lbl-tap" font-size="14.5">RAlt</text>
+    <text x="2740.0" y="792.9" class="lbl-hold" font-size="13">Sticky</text>
   </g>
-  <g class="key modifier mod" data-layer="SYM" data-position="RM4" data-binding="&amp;kp RIGHT_GUI">
+  <g class="key modifier mod" data-layer="SYM" data-position="RM4" data-binding="&amp;skm RIGHT_GUI">
     <rect x="2782.0" y="718.0" width="72.0" height="96.0" rx="6" ry="6" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.2" />
-    <text x="2818.0" y="771.5" class="lbl-word" font-size="16">RCmd</text>
+    <text x="2818.0" y="754.5" class="lbl-tap" font-size="14.5">RCmd</text>
+    <text x="2818.0" y="792.9" class="lbl-hold" font-size="13">Sticky</text>
   </g>
   <g class="key unused" data-layer="SYM" data-position="RM5" data-binding="&amp;none">
     <rect x="2860.0" y="718.0" width="72.0" height="96.0" rx="6" ry="6" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.0" />
@@ -1087,21 +1115,25 @@
   <g class="key unused" data-layer="FUN" data-position="RM0" data-binding="&amp;none">
     <rect x="526.0" y="1200.0" width="72.0" height="96.0" rx="6" ry="6" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.0" />
   </g>
-  <g class="key modifier mod" data-layer="FUN" data-position="RM1" data-binding="&amp;kp RIGHT_SHIFT">
+  <g class="key modifier mod" data-layer="FUN" data-position="RM1" data-binding="&amp;skm RIGHT_SHIFT">
     <rect x="604.0" y="1200.0" width="72.0" height="96.0" rx="6" ry="6" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.2" />
-    <text x="640.0" y="1253.5" class="lbl-word" font-size="14">RShift</text>
+    <text x="640.0" y="1236.5" class="lbl-tap" font-size="12.5">RShift</text>
+    <text x="640.0" y="1274.9" class="lbl-hold" font-size="13">Sticky</text>
   </g>
-  <g class="key modifier mod" data-layer="FUN" data-position="RM2" data-binding="&amp;kp RCTRL">
+  <g class="key modifier mod" data-layer="FUN" data-position="RM2" data-binding="&amp;skm RCTRL">
     <rect x="682.0" y="1200.0" width="72.0" height="96.0" rx="6" ry="6" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.2" />
-    <text x="718.0" y="1253.5" class="lbl-word" font-size="14">RCtrl</text>
+    <text x="718.0" y="1236.5" class="lbl-tap" font-size="14.5">RCtrl</text>
+    <text x="718.0" y="1274.9" class="lbl-hold" font-size="13">Sticky</text>
   </g>
-  <g class="key modifier mod" data-layer="FUN" data-position="RM3" data-binding="&amp;kp RIGHT_ALT">
+  <g class="key modifier mod" data-layer="FUN" data-position="RM3" data-binding="&amp;skm RIGHT_ALT">
     <rect x="760.0" y="1200.0" width="72.0" height="96.0" rx="6" ry="6" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.2" />
-    <text x="796.0" y="1253.5" class="lbl-word" font-size="16">RAlt</text>
+    <text x="796.0" y="1236.5" class="lbl-tap" font-size="14.5">RAlt</text>
+    <text x="796.0" y="1274.9" class="lbl-hold" font-size="13">Sticky</text>
   </g>
-  <g class="key modifier mod" data-layer="FUN" data-position="RM4" data-binding="&amp;kp RIGHT_GUI">
+  <g class="key modifier mod" data-layer="FUN" data-position="RM4" data-binding="&amp;skm RIGHT_GUI">
     <rect x="838.0" y="1200.0" width="72.0" height="96.0" rx="6" ry="6" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.2" />
-    <text x="874.0" y="1253.5" class="lbl-word" font-size="16">RCmd</text>
+    <text x="874.0" y="1236.5" class="lbl-tap" font-size="14.5">RCmd</text>
+    <text x="874.0" y="1274.9" class="lbl-hold" font-size="13">Sticky</text>
   </g>
   <g class="key unused" data-layer="FUN" data-position="RM5" data-binding="&amp;none">
     <rect x="916.0" y="1200.0" width="72.0" height="96.0" rx="6" ry="6" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.0" />

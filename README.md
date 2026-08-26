@@ -76,8 +76,11 @@ Single-page, deterministic A4 reference sheets generated directly from firmware 
 | **New Terminal** | `Alt+F15` | Ghostty window (`Alt+Enter`) | Windows Terminal (`wt.exe`) |
 | **Previous Window** | `Alt+F16` | AeroSpace (`Alt+```) | Windows (`Alt+Tab`) |
 | **Language Toggle** | `Alt+F17` | Input Source (`Ctrl+Space`) | EVKey Toggle (`Ctrl+Shift`) |
-| **Copy / Paste / Cut** | `F21` / `F22` / `F23` | `Cmd+C` / `Cmd+V` / `Cmd+X` | `Ctrl+C` / `Ctrl+V` / `Ctrl+X` |
-| **Undo / Redo** | `F24` / `Shift+F24` | `Cmd+Z` / `Cmd+Shift+Z` | `Ctrl+Z` / `Ctrl+Y` |
+| **Select All / Save / Find** | `Hyper+F13..F15` | `Cmd+A` / `Cmd+S` / `Cmd+F` | `Ctrl+A` / `Ctrl+S` / `Ctrl+F` |
+| **Tab Management** | `Hyper+F16..F20` | PrevTab / NextTab / New / Close / Reopen | PrevTab / NextTab / New / Close / Reopen |
+| **Word Cursor & Find Next** | `Hyper+F21..F23` | `Option+Left/Right` / `Cmd+G` | `Ctrl+Left/Right` / `F3` |
+| **Copy / Paste / Cut / Undo** | `F21` / `F22` / `F23` / `F24` | `Cmd+C` / `Cmd+V` / `Cmd+X` / `Cmd+Z` | `Ctrl+C` / `Ctrl+V` / `Ctrl+X` / `Ctrl+Z` |
+| **Redo** | `Hyper+F24` | `Cmd+Shift+Z` | `Ctrl+Y` |
 | **Standard F1–F12** | `F1`–`F12` | Karabiner normalization when required | Native HID |
 | **Brightness** | `C_BRI_DN` / `C_BRI_UP` | Native Consumer HID | Native Consumer HID |
 

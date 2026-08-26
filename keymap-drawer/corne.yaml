@@ -45,33 +45,33 @@ layers:
   - {t: DELETE, h: FUN}
   NAV:
   - '&bootloader'
-  - ''
-  - ''
-  - ''
-  - ''
-  - ''
+  - Prev Tab
+  - Next Tab
+  - New Tab
+  - Close Tab
+  - Reopen Tab
   - Redo
   - Paste
   - Copy
   - Cut
   - Undo
   - ''
-  - ''
+  - Sel All
   - LGUI
   - LALT
   - LCTRL
   - LEFT SHIFT
-  - ''
+  - Save
   - Caps Word
   - LEFT
-  - DOWN ARROW
-  - UP ARROW
+  - DOWN
+  - UP
   - RIGHT
   - ''
-  - ''
-  - ''
-  - ''
-  - ''
+  - Find
+  - Word ←
+  - Word →
+  - Find Next
   - ''
   - ''
   - INSERT
@@ -192,10 +192,10 @@ layers:
   - '6'
   - '='
   - ''
-  - RIGHT SHIFT
-  - RCTRL
-  - RIGHT ALT
-  - RIGHT GUI
+  - {t: RIGHT SHIFT, h: sticky}
+  - {t: RCTRL, h: sticky}
+  - {t: RIGHT ALT, h: sticky}
+  - {t: RIGHT GUI, h: sticky}
   - ''
   - +
   - '`'
@@ -235,10 +235,10 @@ layers:
   - '{'
   - (
   - ''
-  - RIGHT SHIFT
-  - RCTRL
-  - RIGHT ALT
-  - RIGHT GUI
+  - {t: RIGHT SHIFT, h: sticky}
+  - {t: RCTRL, h: sticky}
+  - {t: RIGHT ALT, h: sticky}
+  - {t: RIGHT GUI, h: sticky}
   - ''
   - '&'
   - '|'
@@ -278,10 +278,10 @@ layers:
   - F6
   - SCROLLLOCK
   - ''
-  - RIGHT SHIFT
-  - RCTRL
-  - RIGHT ALT
-  - RIGHT GUI
+  - {t: RIGHT SHIFT, h: sticky}
+  - {t: RCTRL, h: sticky}
+  - {t: RIGHT ALT, h: sticky}
+  - {t: RIGHT GUI, h: sticky}
   - ''
   - ''
   - F10

@@ -60,6 +60,10 @@ Used to clear runtime overrides applied via ZMK Studio:
 2. Open ZMK Studio and connect to keyboard.
 3. Click **"Restore Stock Settings"** to revert all keys to the compiled Git firmware.
 
+> ⚠️ **Important:** If ZMK Studio has ever saved a modified keymap, use **Restore Stock Settings** after flashing a firmware keymap change.
+> ZMK Studio stores runtime keymap changes persistently in flash memory and will otherwise override later `.keymap` changes.
+> Do **not** use a full settings reset (`settings-reset.uf2`) just to update the keymap, as that clears Bluetooth split bonds and pairing keys. ZMK provides Studio's **Restore Stock Settings** specifically for this purpose.
+
 For detailed diagnostic flowcharts, see [docs/troubleshooting.md](troubleshooting.md).
 ---
 

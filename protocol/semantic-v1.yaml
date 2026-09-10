@@ -208,7 +208,7 @@ actions:
       key: F18
       modifiers: [shift]
     category: modal
-    description: "Cycle window size forward (OmniWM) / modal resize (GlazeWM)"
+    description: "Primary window/container size adjustment"
     host_implementations:
       macos: "OmniWM: cycle-size forward (Shift+F18)"
       windows: "GlazeWM: wm-enable-binding-mode --name resize"
@@ -218,7 +218,7 @@ actions:
       key: F18
       modifiers: [alt]
     category: modal
-    description: "Toggle overview (OmniWM) / service mode (GlazeWM)"
+    description: "Secondary WM management / overview action"
     host_implementations:
       macos: "OmniWM: toggle-overview (Option+F18)"
       windows: "GlazeWM: wm-enable-binding-mode --name service"
@@ -259,9 +259,9 @@ actions:
       key: F14
       modifiers: [alt]
     category: launcher
-    description: "Toggle quick dropdown scratchpad terminal (Quake mode)"
+    description: "Toggle persistent quick / Quake terminal"
     host_implementations:
-      macos: "Karabiner: Ctrl+` (Ghostty Quick Terminal)"
+      macos: "OmniWM: toggle-quake-terminal (Option+F14)"
       windows: "AutoHotkey: Windows Terminal _quake dropdown"
 
   new_terminal:
@@ -271,7 +271,7 @@ actions:
     category: launcher
     description: "Launch new independent terminal window"
     host_implementations:
-      macos: "Karabiner: Alt+Enter (Ghostty new window)"
+      macos: "Karabiner: AppleScript -> Ghostty new window"
       windows: "AutoHotkey: wt.exe new window"
 
   previous_window:

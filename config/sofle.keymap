@@ -270,7 +270,7 @@
              * there. Left bottom row holds system and terminal launchers.
              * Right home row has Previous Window and directional focus;
              * right bottom row has directional move. Right top row has
-             * modal controls (Resize, Service) and Esc. Right thumbs carry
+             * modal controls (Width, Overview) and Esc. Right thumbs carry
              * context actions (Fullscreen, Previous WS, Float).
              */
             bindings = <

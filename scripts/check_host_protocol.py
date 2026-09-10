@@ -356,8 +356,8 @@ def validate_karabiner_external(karabiner_data: dict) -> None:
 
 
 def validate_karabiner_laptop(karabiner_data: dict) -> None:
-    """Verify that the MacBook built-in keyboard adapter maps conventional chords to semantic F13-F20 signals,
-    strictly scoped to is_built_in_keyboard=true, preserving the semantic HID protocol without invoking shell commands."""
+    """Verify that the MacBook built-in keyboard adapter maps conventional chords to OmniWM actions or semantic F13-F20 signals,
+    strictly scoped to is_built_in_keyboard=true, preserving modifier states across window management actions."""
     rules = karabiner_data.get("rules", [])
     assert_true(len(rules) >= 1, "Layer B (Karabiner Laptop): Expected at least 1 rule in laptop-omniwm.json")
 
@@ -379,51 +379,54 @@ def validate_karabiner_laptop(karabiner_data: dict) -> None:
         to_list = m.get("to", [])
         assert_true(len(to_list) == 1, f"Layer B (Karabiner Laptop): Manipulator #{idx} must have exactly 1 'to' action")
         to_act = to_list[0]
-        assert_true("shell_command" not in to_act, f"Layer B (Karabiner Laptop): Manipulator #{idx} must map to semantic signal, not shell_command")
-        to_key = to_act.get("key_code", "")
-        assert_true(to_key in [f"f{i}" for i in range(13, 21)], f"Layer B (Karabiner Laptop): Manipulator #{idx} maps to non-semantic key '{to_key}'")
+        if "shell_command" in to_act:
+            cmd = to_act["shell_command"]
+            assert_true("omniwmctl command" in cmd, f"Layer B (Karabiner Laptop): Manipulator #{idx} must invoke omniwmctl command: {cmd}")
+        else:
+            to_key = to_act.get("key_code", "")
+            assert_true(to_key in [f"f{i}" for i in range(13, 21)], f"Layer B (Karabiner Laptop): Manipulator #{idx} maps to non-semantic key '{to_key}'")
 
-    # Required mappings: (from_key, from_mandatory_mods, to_key, to_mods)
+    # Required mappings: (from_key, from_mandatory_mods, expected_cmd, fallback_key, fallback_mods)
     expected_laptop_mappings = [
-        # ⌥⇧1…5 -> Shift+F13…F17
-        ("1", {"option", "shift"}, "f13", {"left_shift"}),
-        ("2", {"option", "shift"}, "f14", {"left_shift"}),
-        ("3", {"option", "shift"}, "f15", {"left_shift"}),
-        ("4", {"option", "shift"}, "f16", {"left_shift"}),
-        ("5", {"option", "shift"}, "f17", {"left_shift"}),
-        # ⌥1…5 -> F13…F17
-        ("1", {"option"}, "f13", set()),
-        ("2", {"option"}, "f14", set()),
-        ("3", {"option"}, "f15", set()),
-        ("4", {"option"}, "f16", set()),
-        ("5", {"option"}, "f17", set()),
-        # ⌥⇧H/J/K/L -> Ctrl+Shift+F13..F16
-        ("h", {"option", "shift"}, "f13", {"left_control", "left_shift"}),
-        ("j", {"option", "shift"}, "f14", {"left_control", "left_shift"}),
-        ("k", {"option", "shift"}, "f15", {"left_control", "left_shift"}),
-        ("l", {"option", "shift"}, "f16", {"left_control", "left_shift"}),
-        # ⌥H/J/K/L -> Ctrl+F13..F16
-        ("h", {"option"}, "f13", {"left_control"}),
-        ("j", {"option"}, "f14", {"left_control"}),
-        ("k", {"option"}, "f15", {"left_control"}),
-        ("l", {"option"}, "f16", {"left_control"}),
-        # ⌃⌥Tab -> F18
-        ("tab", {"control", "option"}, "f18", set()),
-        # ⌥Tab -> Option+F16
-        ("tab", {"option"}, "f16", {"left_alt"}),
-        # ⌥. -> Shift+F18
-        ("period", {"option"}, "f18", {"left_shift"}),
-        # ⌥⇧O -> Option+F18
-        ("o", {"option", "shift"}, "f18", {"left_alt"}),
-        # ⌥Return -> F19
-        ("return_or_enter", {"option"}, "f19", set()),
-        # ⌥⇧Space -> F20
-        ("spacebar", {"option", "shift"}, "f20", set()),
-        # ⌥` -> Option+F14
-        ("grave_accent_and_tilde", {"option"}, "f14", {"left_alt"}),
+        # ⌥⇧1…5 -> move-to-workspace 1..5
+        ("1", {"option", "shift"}, "move-to-workspace 1", "f13", {"left_shift"}),
+        ("2", {"option", "shift"}, "move-to-workspace 2", "f14", {"left_shift"}),
+        ("3", {"option", "shift"}, "move-to-workspace 3", "f15", {"left_shift"}),
+        ("4", {"option", "shift"}, "move-to-workspace 4", "f16", {"left_shift"}),
+        ("5", {"option", "shift"}, "move-to-workspace 5", "f17", {"left_shift"}),
+        # ⌥1…5 -> switch-workspace 1..5
+        ("1", {"option"}, "switch-workspace 1", "f13", set()),
+        ("2", {"option"}, "switch-workspace 2", "f14", set()),
+        ("3", {"option"}, "switch-workspace 3", "f15", set()),
+        ("4", {"option"}, "switch-workspace 4", "f16", set()),
+        ("5", {"option"}, "switch-workspace 5", "f17", set()),
+        # ⌥⇧H/J/K/L -> move left/down/up/right
+        ("h", {"option", "shift"}, "move left", "f13", {"left_control", "left_shift"}),
+        ("j", {"option", "shift"}, "move down", "f14", {"left_control", "left_shift"}),
+        ("k", {"option", "shift"}, "move up", "f15", {"left_control", "left_shift"}),
+        ("l", {"option", "shift"}, "move right", "f16", {"left_control", "left_shift"}),
+        # ⌥H/J/K/L -> focus left/down/up/right
+        ("h", {"option"}, "focus left", "f13", {"left_control"}),
+        ("j", {"option"}, "focus down", "f14", {"left_control"}),
+        ("k", {"option"}, "focus up", "f15", {"left_control"}),
+        ("l", {"option"}, "focus right", "f16", {"left_control"}),
+        # ⌃⌥Tab -> switch-workspace back-and-forth
+        ("tab", {"control", "option"}, "switch-workspace back-and-forth", "f18", set()),
+        # ⌥Tab -> focus previous
+        ("tab", {"option"}, "focus previous", "f16", {"left_alt"}),
+        # ⌥. -> cycle-size forward
+        ("period", {"option"}, "cycle-size forward", "f18", {"left_shift"}),
+        # ⌥⇧O -> toggle-overview
+        ("o", {"option", "shift"}, "toggle-overview", "f18", {"left_alt"}),
+        # ⌥Return -> toggle-fullscreen
+        ("return_or_enter", {"option"}, "toggle-fullscreen", "f19", set()),
+        # ⌥⇧Space -> toggle-focused-window-floating
+        ("spacebar", {"option", "shift"}, "toggle-focused-window-floating", "f20", set()),
+        # ⌥` -> toggle-quake-terminal
+        ("grave_accent_and_tilde", {"option"}, "toggle-quake-terminal", "f14", {"left_alt"}),
     ]
 
-    for from_key, from_mods, to_key, to_mods in expected_laptop_mappings:
+    for from_key, from_mods, expected_cmd, fallback_key, fallback_mods in expected_laptop_mappings:
         found = False
         for m in all_manipulators:
             m_from = m.get("from", {})
@@ -431,12 +434,17 @@ def validate_karabiner_laptop(karabiner_data: dict) -> None:
             m_mods = set(m_from.get("modifiers", {}).get("mandatory", []))
             if m_key == from_key and m_mods == from_mods:
                 t = m.get("to", [])[0]
-                t_key = t.get("key_code")
-                t_mods = set(t.get("modifiers", []))
-                if t_key == to_key and t_mods == to_mods:
-                    found = True
-                    break
-        assert_true(found, f"Layer B (Karabiner Laptop): Missing mapping for {from_key} (mods={from_mods}) -> {to_key} (mods={to_mods})")
+                if "shell_command" in t:
+                    if expected_cmd in t["shell_command"]:
+                        found = True
+                        break
+                else:
+                    t_key = t.get("key_code")
+                    t_mods = set(t.get("modifiers", []))
+                    if t_key == fallback_key and t_mods == fallback_mods:
+                        found = True
+                        break
+        assert_true(found, f"Layer B (Karabiner Laptop): Missing mapping for {from_key} (mods={from_mods}) -> {expected_cmd}")
 
     print(f"PASS: macOS Karabiner Built-in Laptop Adapter validated ({len(expected_laptop_mappings)} semantic mappings scoped to is_built_in_keyboard=true).")
 

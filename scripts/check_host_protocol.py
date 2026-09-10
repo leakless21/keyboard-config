@@ -6,9 +6,11 @@ Validates the full architecture:
   Producers:
     - Corne firmware (config/corne.keymap)
     - Sofle firmware (config/sofle.keymap)
-  macOS Consumers:
-    - Karabiner-Elements translation (hosts/macos/karabiner.json)
-    - AeroSpace window manager (hosts/macos/aerospace.toml)
+  macOS Host:
+    - Karabiner-Elements external adapter (hosts/macos/karabiner/external-semantic.json)
+    - Karabiner-Elements laptop adapter (hosts/macos/karabiner/laptop-omniwm.json)
+    - OmniWM window manager & native Quake terminal (hosts/macos/omniwm/settings.toml)
+    - SketchyBar status bar (hosts/macos/sketchybar)
   Windows Consumers:
     - AutoHotkey v2 bridge (hosts/windows/keyboard.ahk)
     - GlazeWM window manager (hosts/windows/glazewm.yaml)
@@ -41,7 +43,8 @@ except ImportError:
     from scripts.lib.validation import assert_eq, assert_in, assert_true, fail, load_json, load_toml, load_yaml
 CORNE_KEYMAP_PATH = REPO_ROOT / "config" / "corne.keymap"
 SOFLE_KEYMAP_PATH = REPO_ROOT / "config" / "sofle.keymap"
-KARABINER_PATH = REPO_ROOT / "hosts" / "macos" / "karabiner.json"
+KARABINER_EXTERNAL_PATH = REPO_ROOT / "hosts" / "macos" / "karabiner" / "external-semantic.json"
+KARABINER_LAPTOP_PATH = REPO_ROOT / "hosts" / "macos" / "karabiner" / "laptop-omniwm.json"
 OMNIWM_PATH = REPO_ROOT / "hosts" / "macos" / "omniwm" / "settings.toml"
 SKETCHYBAR_DIR = REPO_ROOT / "hosts" / "macos" / "sketchybar"
 AHK_PATH = REPO_ROOT / "hosts" / "windows" / "keyboard.ahk"
@@ -127,12 +130,12 @@ def validate_keymap_producer(path: Path, board_name: str) -> None:
 # Layer B: macOS Host (Karabiner, OmniWM & SketchyBar)
 # -----------------------------------------------------------------------------
 
-def validate_karabiner_translator(karabiner_data: dict) -> None:
-    """Verify that Karabiner maps application/editing/launcher signals and standard F1-F12 normalization,
-    and CRITICALLY does NOT intercept raw window management signals intended directly for OmniWM."""
+def validate_karabiner_external(karabiner_data: dict) -> None:
+    """Verify that Karabiner external adapter maps application/editing/launcher signals and standard F1-F12 normalization,
+    and CRITICALLY does NOT intercept raw window management or Quake signals intended directly for OmniWM."""
     rules = karabiner_data.get("rules", [])
     if len(rules) < 3:
-        fail("Layer B (Karabiner): Expected at least 3 rules in karabiner.json")
+        fail("Layer B (Karabiner External): Expected at least 3 rules in external-semantic.json")
 
     all_manipulators = []
     for r in rules:
@@ -152,7 +155,7 @@ def validate_karabiner_translator(karabiner_data: dict) -> None:
 
         if is_hyper and key_code in [f"f{i}" for i in range(13, 25)]:
             semantic_app_manipulators.append(m)
-        elif mandatory_mods == {"option"} and key_code in ["f13", "f14", "f15", "f17"]:
+        elif mandatory_mods == {"option"} and key_code in ["f13", "f15", "f17"]:
             semantic_launcher_manipulators.append(m)
         elif key_code in [f"f{i}" for i in range(21, 25)]:
             semantic_editing_manipulators.append(m)
@@ -164,35 +167,35 @@ def validate_karabiner_translator(karabiner_data: dict) -> None:
     assert_eq(
         len(unexpected_manipulators),
         0,
-        f"Layer B (Karabiner): Found unexpected manipulators: {unexpected_manipulators}",
+        f"Layer B (Karabiner External): Found unexpected manipulators: {unexpected_manipulators}",
     )
     assert_eq(
         len(semantic_launcher_manipulators),
-        4,
-        f"Layer B (Karabiner): Expected exactly 4 desktop launcher manipulators (Alt+F13, F14, F15, F17), found {len(semantic_launcher_manipulators)}",
+        3,
+        f"Layer B (Karabiner External): Expected exactly 3 desktop launcher manipulators (Alt+F13, F15, F17), found {len(semantic_launcher_manipulators)}",
     )
     assert_eq(
         len(semantic_app_manipulators),
         12,
-        f"Layer B (Karabiner): Expected exactly 12 Hyper application manipulators, found {len(semantic_app_manipulators)}",
+        f"Layer B (Karabiner External): Expected exactly 12 Hyper application manipulators, found {len(semantic_app_manipulators)}",
     )
     assert_eq(
         len(semantic_editing_manipulators),
         8,
-        f"Layer B (Karabiner): Expected exactly 8 editing manipulators (4 Shift-safe + 4 bare), found {len(semantic_editing_manipulators)}",
+        f"Layer B (Karabiner External): Expected exactly 8 editing manipulators (4 Shift-safe + 4 bare), found {len(semantic_editing_manipulators)}",
     )
     assert_eq(
         len(standard_f_manipulators),
         12,
-        f"Layer B (Karabiner): Expected exactly 12 standard F-key normalizers, found {len(standard_f_manipulators)}",
+        f"Layer B (Karabiner External): Expected exactly 12 standard F-key normalizers, found {len(standard_f_manipulators)}",
     )
     assert_eq(
         len(all_manipulators),
-        36,
-        f"Layer B (Karabiner): Expected exactly 36 canonical manipulators (4 launcher + 12 Hyper app + 8 editing + 12 standard F), found {len(all_manipulators)}",
+        35,
+        f"Layer B (Karabiner External): Expected exactly 35 canonical manipulators (3 launcher + 12 Hyper app + 8 editing + 12 standard F), found {len(all_manipulators)}",
     )
 
-    # CRITICAL INVARIANT: Karabiner must NOT intercept raw OmniWM signals!
+    # CRITICAL INVARIANT: Karabiner external adapter must NOT intercept OmniWM signals!
     disallowed_karabiner_signals = [
         # Raw workspace switching (F13-F17)
         ("f13", set()), ("f14", set()), ("f15", set()), ("f16", set()), ("f17", set()),
@@ -209,12 +212,21 @@ def validate_karabiner_translator(karabiner_data: dict) -> None:
         ("f19", set()),                    # Fullscreen
         ("f20", set()),                    # Float
         ("f16", {"option"}),               # Previous window (Alt+F16)
+        ("f14", {"option"}),               # Quake Terminal (Alt+F14) -> Native OmniWM!
     ]
     for k_dis, m_dis in disallowed_karabiner_signals:
         for m in all_manipulators:
             m_from = m.get("from", {})
             if m_from.get("key_code") == k_dis and set(m_from.get("modifiers", {}).get("mandatory", [])) == m_dis:
-                fail(f"Layer B (Karabiner): Karabiner must NOT intercept raw OmniWM signal ({k_dis}, {m_dis})")
+                fail(f"Layer B (Karabiner External): Karabiner must NOT intercept OmniWM signal ({k_dis}, {m_dis})")
+
+    # Verify Alt+F15 uses Ghostty automation shell command
+    f15_manips = [m for m in semantic_launcher_manipulators if m.get("from", {}).get("key_code") == "f15"]
+    assert_eq(len(f15_manips), 1, "Layer B (Karabiner External): Expected exactly 1 Alt+F15 manipulator")
+    to_f15 = f15_manips[0].get("to", [])
+    assert_true(len(to_f15) == 1 and "shell_command" in to_f15[0], "Layer B (Karabiner External): Alt+F15 must use shell_command")
+    shell_cmd = to_f15[0]["shell_command"]
+    assert_true("Ghostty" in shell_cmd and "new window" in shell_cmd, "Layer B (Karabiner External): Alt+F15 shell_command must trigger Ghostty new window")
 
     # Verify Shift-safe editing handlers appear before bare editing handlers
     shift_safe_keys = []
@@ -224,16 +236,16 @@ def validate_karabiner_translator(karabiner_data: dict) -> None:
         mods = m.get("from", {}).get("modifiers", {})
         mand = mods.get("mandatory", [])
         opt = mods.get("optional", [])
-        assert_eq(opt, ["caps_lock"], f"Layer B (Karabiner): Editing manipulator for {k} must have optional: [caps_lock]")
+        assert_eq(opt, ["caps_lock"], f"Layer B (Karabiner External): Editing manipulator for {k} must have optional: [caps_lock]")
         if mand == ["shift"]:
             shift_safe_keys.append(k)
         elif not mand:
             bare_keys.append(k)
         else:
-            fail(f"Layer B (Karabiner): Unexpected mandatory modifiers {mand} on editing manipulator {k}")
+            fail(f"Layer B (Karabiner External): Unexpected mandatory modifiers {mand} on editing manipulator {k}")
 
-    assert_eq(shift_safe_keys, ["f21", "f22", "f23", "f24"], "Layer B (Karabiner): Expected 4 Shift-safe editing handlers in order")
-    assert_eq(bare_keys, ["f21", "f22", "f23", "f24"], "Layer B (Karabiner): Expected 4 bare editing handlers in order")
+    assert_eq(shift_safe_keys, ["f21", "f22", "f23", "f24"], "Layer B (Karabiner External): Expected 4 Shift-safe editing handlers in order")
+    assert_eq(bare_keys, ["f21", "f22", "f23", "f24"], "Layer B (Karabiner External): Expected 4 bare editing handlers in order")
 
     for idx, m in enumerate(all_manipulators):
         conditions = m.get("conditions", [])
@@ -246,7 +258,7 @@ def validate_karabiner_translator(karabiner_data: dict) -> None:
                         has_device_if = True
         if not has_device_if:
             fail(
-                f"Layer B (Karabiner): Manipulator #{idx} ({m.get("from")}) "
+                f"Layer B (Karabiner External): Manipulator #{idx} ({m.get('from')}) "
                 f"must be scoped with device_if excluding built-in keyboard (is_built_in_keyboard: false)"
             )
 
@@ -257,7 +269,7 @@ def validate_karabiner_translator(karabiner_data: dict) -> None:
         assert_eq(
             len(matching),
             1,
-            f"Layer B (Karabiner): Expected exactly 1 normalizer for {f_key}, found {len(matching)}",
+            f"Layer B (Karabiner External): Expected exactly 1 normalizer for {f_key}, found {len(matching)}",
         )
         norm_m = matching[0]
 
@@ -266,14 +278,14 @@ def validate_karabiner_translator(karabiner_data: dict) -> None:
         assert_in(
             "any",
             optional_mods,
-            f"Layer B (Karabiner): {f_key} from.modifiers.optional must contain any to preserve opposite-hand mods",
+            f"Layer B (Karabiner External): {f_key} from.modifiers.optional must contain any to preserve opposite-hand mods",
         )
 
         # to must map to same f-key with "fn" modifier
         to_list = norm_m.get("to", [])
         assert_true(
             len(to_list) == 1 and to_list[0].get("key_code") == f_key and set(to_list[0].get("modifiers", [])) == {"fn"},
-            f"Layer B (Karabiner): {f_key} must map to {f_key} with modifiers [fn]",
+            f"Layer B (Karabiner External): {f_key} must map to {f_key} with modifiers [fn]",
         )
 
         # conditions must evaluate system.use_fkeys_as_standard_function_keys == false
@@ -288,14 +300,12 @@ def validate_karabiner_translator(karabiner_data: dict) -> None:
                 has_sys_fkey_cond = True
         assert_true(
             has_sys_fkey_cond,
-            f"Layer B (Karabiner): {f_key} normalizer missing system.use_fkeys_as_standard_function_keys variable_if condition",
+            f"Layer B (Karabiner External): {f_key} normalizer missing system.use_fkeys_as_standard_function_keys variable_if condition",
         )
 
     expected_translations: List[Tuple[str, Set[str], str, Set[str]]] = [
-        # Desktop launchers & controls
+        # Desktop launchers & controls (Alt+F15 handled via AppleScript shell_command above)
         ("f13", {"option"}, "spacebar", {"left_command"}),               # LAUNCHER -> Cmd+Space
-        ("f14", {"option"}, "grave_accent_and_tilde", {"left_control"}),  # QTERM -> Ctrl+`
-        ("f15", {"option"}, "return_or_enter", {"left_alt"}),            # TERM -> Alt+Enter
         ("f17", {"option"}, "spacebar", {"left_control"}),               # LANG -> Ctrl+Space
         # Semantic editing (4 Shift-safe variants + 4 bare variants)
         ("f21", {"shift"}, "c", {"left_command"}),
@@ -338,13 +348,99 @@ def validate_karabiner_translator(karabiner_data: dict) -> None:
                         break
         if not found:
             fail(
-                f"Layer B (Karabiner): Missing translation for from=({from_key}, mods={from_mods}) "
+                f"Layer B (Karabiner External): Missing translation for from=({from_key}, mods={from_mods}) "
                 f"-> to=({to_key}, mods={to_mods})"
             )
 
     print(
-        f"PASS: macOS Karabiner Translation validated ({len(expected_translations)} semantic mappings + {len(standard_f_manipulators)} standard F-key normalizers with device_if scoping; no raw WM signals intercepted)."
+        f"PASS: macOS Karabiner External Adapter validated ({len(expected_translations) + 1} semantic mappings + {len(standard_f_manipulators)} standard F-key normalizers with device_if scoping; no raw WM or Quake signals intercepted)."
     )
+
+
+def validate_karabiner_laptop(karabiner_data: dict) -> None:
+    """Verify that the MacBook built-in keyboard adapter maps conventional chords to semantic F13-F20 signals,
+    strictly scoped to is_built_in_keyboard=true, preserving the semantic HID protocol without invoking shell commands."""
+    rules = karabiner_data.get("rules", [])
+    assert_true(len(rules) >= 1, "Layer B (Karabiner Laptop): Expected at least 1 rule in laptop-omniwm.json")
+
+    all_manipulators = [m for r in rules for m in r.get("manipulators", [])]
+    assert_eq(len(all_manipulators), 25, f"Layer B (Karabiner Laptop): Expected exactly 25 manipulators, found {len(all_manipulators)}")
+
+    # Every manipulator must be scoped to is_built_in_keyboard: true
+    for idx, m in enumerate(all_manipulators):
+        conditions = m.get("conditions", [])
+        has_builtin_scope = False
+        for c in conditions:
+            if c.get("type") == "device_if":
+                identifiers = c.get("identifiers", [])
+                for ident in identifiers:
+                    if ident.get("is_built_in_keyboard") is True:
+                        has_builtin_scope = True
+        assert_true(has_builtin_scope, f"Layer B (Karabiner Laptop): Manipulator #{idx} missing is_built_in_keyboard: true scoping")
+
+        to_list = m.get("to", [])
+        assert_true(len(to_list) == 1, f"Layer B (Karabiner Laptop): Manipulator #{idx} must have exactly 1 'to' action")
+        to_act = to_list[0]
+        assert_true("shell_command" not in to_act, f"Layer B (Karabiner Laptop): Manipulator #{idx} must map to semantic signal, not shell_command")
+        to_key = to_act.get("key_code", "")
+        assert_true(to_key in [f"f{i}" for i in range(13, 21)], f"Layer B (Karabiner Laptop): Manipulator #{idx} maps to non-semantic key '{to_key}'")
+
+    # Required mappings: (from_key, from_mandatory_mods, to_key, to_mods)
+    expected_laptop_mappings = [
+        # ⌥⇧1…5 -> Shift+F13…F17
+        ("1", {"option", "shift"}, "f13", {"left_shift"}),
+        ("2", {"option", "shift"}, "f14", {"left_shift"}),
+        ("3", {"option", "shift"}, "f15", {"left_shift"}),
+        ("4", {"option", "shift"}, "f16", {"left_shift"}),
+        ("5", {"option", "shift"}, "f17", {"left_shift"}),
+        # ⌥1…5 -> F13…F17
+        ("1", {"option"}, "f13", set()),
+        ("2", {"option"}, "f14", set()),
+        ("3", {"option"}, "f15", set()),
+        ("4", {"option"}, "f16", set()),
+        ("5", {"option"}, "f17", set()),
+        # ⌥⇧H/J/K/L -> Ctrl+Shift+F13..F16
+        ("h", {"option", "shift"}, "f13", {"left_control", "left_shift"}),
+        ("j", {"option", "shift"}, "f14", {"left_control", "left_shift"}),
+        ("k", {"option", "shift"}, "f15", {"left_control", "left_shift"}),
+        ("l", {"option", "shift"}, "f16", {"left_control", "left_shift"}),
+        # ⌥H/J/K/L -> Ctrl+F13..F16
+        ("h", {"option"}, "f13", {"left_control"}),
+        ("j", {"option"}, "f14", {"left_control"}),
+        ("k", {"option"}, "f15", {"left_control"}),
+        ("l", {"option"}, "f16", {"left_control"}),
+        # ⌃⌥Tab -> F18
+        ("tab", {"control", "option"}, "f18", set()),
+        # ⌥Tab -> Option+F16
+        ("tab", {"option"}, "f16", {"left_alt"}),
+        # ⌥. -> Shift+F18
+        ("period", {"option"}, "f18", {"left_shift"}),
+        # ⌥⇧O -> Option+F18
+        ("o", {"option", "shift"}, "f18", {"left_alt"}),
+        # ⌥Return -> F19
+        ("return_or_enter", {"option"}, "f19", set()),
+        # ⌥⇧Space -> F20
+        ("spacebar", {"option", "shift"}, "f20", set()),
+        # ⌥` -> Option+F14
+        ("grave_accent_and_tilde", {"option"}, "f14", {"left_alt"}),
+    ]
+
+    for from_key, from_mods, to_key, to_mods in expected_laptop_mappings:
+        found = False
+        for m in all_manipulators:
+            m_from = m.get("from", {})
+            m_key = m_from.get("key_code")
+            m_mods = set(m_from.get("modifiers", {}).get("mandatory", []))
+            if m_key == from_key and m_mods == from_mods:
+                t = m.get("to", [])[0]
+                t_key = t.get("key_code")
+                t_mods = set(t.get("modifiers", []))
+                if t_key == to_key and t_mods == to_mods:
+                    found = True
+                    break
+        assert_true(found, f"Layer B (Karabiner Laptop): Missing mapping for {from_key} (mods={from_mods}) -> {to_key} (mods={to_mods})")
+
+    print(f"PASS: macOS Karabiner Built-in Laptop Adapter validated ({len(expected_laptop_mappings)} semantic mappings scoped to is_built_in_keyboard=true).")
 
 
 def validate_omniwm_consumer(data: dict) -> None:
@@ -408,11 +504,15 @@ def validate_omniwm_consumer(data: dict) -> None:
         "toggleFullscreen": "F19",
         "toggleFocusedWindowFloating": "F20",
         "focusPrevious": "Option+F16",
+        "toggleQuakeTerminal": "Option+F14",
     }
 
     for hk_id, expected_binding in required_bindings.items():
         actual = hk_map.get(hk_id)
         assert_eq(actual, expected_binding, f"OmniWM: Hotkey {hk_id} expected binding {expected_binding}, got {actual}")
+
+    quake_cfg = data.get("quakeTerminal", {})
+    assert_true(quake_cfg.get("enabled") is True, "OmniWM: quakeTerminal.enabled must be true")
 
     # Verify no duplicate active bindings among hotkeys
     active_bindings = [h.get("binding") for h in hotkeys if h.get("binding") != "Unassigned"]
@@ -421,7 +521,7 @@ def validate_omniwm_consumer(data: dict) -> None:
 
     print(
         f"PASS: macOS OmniWM Consumer validated ({len(required_bindings)} required hotkey bindings, "
-        f"5 semantic workspaces, Niri settings, ipcEnabled=true, workspaceBar=false)."
+        f"5 semantic workspaces, Niri settings, native Quake terminal, ipcEnabled=true, workspaceBar=false)."
     )
 
 
@@ -434,6 +534,8 @@ def validate_sketchybar_artifacts() -> None:
         "colors.lua",
         "icons.lua",
         "lib/json.lua",
+        "lib/shell.lua",
+        "lib/app_icons.lua",
         "items/workspaces.lua",
         "items/workspaces_updater.lua",
         "items/front_app.lua",
@@ -596,9 +698,11 @@ def main() -> None:
     validate_keymap_producer(SOFLE_KEYMAP_PATH, "Sofle")
 
     # 2. macOS Host
-    karabiner_data = load_json(KARABINER_PATH)
+    karabiner_ext_data = load_json(KARABINER_EXTERNAL_PATH)
+    karabiner_laptop_data = load_json(KARABINER_LAPTOP_PATH)
     omniwm_data = load_toml(OMNIWM_PATH)
-    validate_karabiner_translator(karabiner_data)
+    validate_karabiner_external(karabiner_ext_data)
+    validate_karabiner_laptop(karabiner_laptop_data)
     validate_omniwm_consumer(omniwm_data)
     validate_sketchybar_artifacts()
 

@@ -98,16 +98,17 @@ Used when runtime experiments in ZMK Studio override the Git keymap:
 
 ### Application Tab Shortcuts
 - **Semantic Abstraction:** The firmware emits semantic `Hyper+F16` (`Previous Tab`) and `Hyper+F17` (`Next Tab`).
-- **macOS App Customization:** While macOS browsers, Finder, Ghostty, and editors use `Cmd+Shift+[` and `Cmd+Shift+]` by default, any app-specific shortcut variations should be handled in `hosts/macos/karabiner.json` using application filters rather than altering firmware keymaps.
+- **macOS App Customization:** While macOS browsers, Finder, Ghostty, and editors use `Cmd+Shift+[` and `Cmd+Shift+]` by default, any app-specific shortcut variations should be handled in `hosts/macos/karabiner/` using application filters rather than altering firmware keymaps.
 ---
 
 ## 4. Host Bridge Diagnostics
 
 ### macOS
-* **Verify Karabiner complex modifications:** Check that `~/.config/karabiner/assets/complex_modifications/karabiner.json` is enabled in Karabiner-Elements Settings $\rightarrow$ Complex Modifications.
+* **Verify Karabiner complex modifications:** Check that rules from `hosts/macos/karabiner/external-semantic.json` and `hosts/macos/karabiner/laptop-omniwm.json` are installed in `~/.config/karabiner/assets/complex_modifications/` and enabled in Karabiner-Elements Settings $\rightarrow$ Complex Modifications.
 * **Verify OmniWM status:** Run `omniwmctl ping` or `omniwmctl query active-workspace` in terminal.
+* **Verify Quake terminal:** Press `Option+F14` on Corne (or `Option+` ` on MacBook) and verify OmniWM's embedded Quake terminal toggles. Verify `quakeTerminal.enabled = true` in `~/.config/omniwm/settings.toml`. Note that OmniWM stores manually adjusted Quake frames in runtime state; to reset to defaults, clear the runtime state frame.
 * **Verify SketchyBar status:** Run `sketchybar --query bar` or `brew services list`.
-* **Verify Ghostty:** Check that `ghostty.config` contains `quick-terminal-position = top` and `quick-terminal-screen = main`.
+* **Verify Ghostty:** Press `Option+F15` on Corne and verify a new independent Ghostty window is launched via AppleScript automation. Check that `ghostty.config` contains standalone terminal window settings.
 
 ### Windows
 * **Verify AutoHotkey v2:** Look for the green `H` icon in the Windows notification tray. Right-click $\rightarrow$ **Open** $\rightarrow$ **View** $\rightarrow$ **Key history and script info** to verify received F-keys.

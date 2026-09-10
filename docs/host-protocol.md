@@ -27,13 +27,13 @@ This document is the canonical source of truth for the semantic high-function ke
 | `Ctrl+Shift+F15` | Move active window up | OmniWM: move up (Ctrl+Shift+F15) | GlazeWM: move --direction up |
 | `Ctrl+Shift+F16` | Move active window to the right | OmniWM: move right (Ctrl+Shift+F16) | GlazeWM: move --direction right |
 | `F18` | Focus previous / recent workspace | OmniWM: switch-workspace back-and-forth (F18) | GlazeWM: focus --recent-workspace |
-| `Shift+F18` | Cycle window size forward (OmniWM) / modal resize (GlazeWM) | OmniWM: cycle-size forward (Shift+F18) | GlazeWM: wm-enable-binding-mode --name resize |
-| `Alt+F18` | Toggle overview (OmniWM) / service mode (GlazeWM) | OmniWM: toggle-overview (Option+F18) | GlazeWM: wm-enable-binding-mode --name service |
+| `Shift+F18` | Primary window/container size adjustment | OmniWM: cycle-size forward (Shift+F18) | GlazeWM: wm-enable-binding-mode --name resize |
+| `Alt+F18` | Secondary WM management / overview action | OmniWM: toggle-overview (Option+F18) | GlazeWM: wm-enable-binding-mode --name service |
 | `F19` | Toggle active window fullscreen | OmniWM: toggle-fullscreen (F19) | GlazeWM: toggle-fullscreen |
 | `F20` | Toggle active window float / tile | OmniWM: toggle-focused-window-floating (F20) | GlazeWM: toggle-floating --centered |
 | `Alt+F13` | Summon system search / launcher (Spotlight / Windows Search) | Karabiner: Cmd+Space (Spotlight) | AutoHotkey: Win+S (Windows Search) |
-| `Alt+F14` | Toggle quick dropdown scratchpad terminal (Quake mode) | Karabiner: Ctrl+` (Ghostty Quick Terminal) | AutoHotkey: Windows Terminal _quake dropdown |
-| `Alt+F15` | Launch new independent terminal window | Karabiner: Alt+Enter (Ghostty new window) | AutoHotkey: wt.exe new window |
+| `Alt+F14` | Toggle persistent quick / Quake terminal | OmniWM: toggle-quake-terminal (Option+F14) | AutoHotkey: Windows Terminal _quake dropdown |
+| `Alt+F15` | Launch new independent terminal window | Karabiner: AppleScript -> Ghostty new window | AutoHotkey: wt.exe new window |
 | `Alt+F16` | Switch to previous active window across workspaces | OmniWM: focus previous (Option+F16) | AutoHotkey: Alt+Tab (Previous Window) |
 | `Alt+F17` | Toggle primary input language / input method | Karabiner: Ctrl+Space (switch input source) | AutoHotkey: trigger configured EVKey E/V toggle |
 | `F21` | Copy selected text to clipboard | Karabiner: Cmd+C | AutoHotkey: Ctrl+C |
@@ -52,7 +52,6 @@ This document is the canonical source of truth for the semantic high-function ke
 | `Ctrl+Alt+Shift+Gui+F22` | Move text cursor one word to the right | Karabiner: Option+Right (Word Right) | AutoHotkey: Ctrl+Right (Word Right) |
 | `Ctrl+Alt+Shift+Gui+F23` | Jump to next search match | Karabiner: Cmd+G (Find Next) | AutoHotkey: F3 (Find Next) |
 | `Ctrl+Alt+Shift+Gui+F24` | Redo last undone text action | Karabiner: Cmd+Shift+Z (Redo) | AutoHotkey: Ctrl+Y (Redo) |
-
 ---
 
 ## 2. Protocol Producers

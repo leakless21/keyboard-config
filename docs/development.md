@@ -137,14 +137,14 @@ uv run scripts/generate_cheatsheet.py corne --debug
 * **Move Window:** Tap `Ctrl+Shift+F13`–`Ctrl+Shift+F16` $\rightarrow$ Directional window move ← ↓ ↑ →.
 * **Context & Modals:**
   * `F18` $\rightarrow$ Previous / recent workspace.
-  * `Shift+F18` $\rightarrow$ Enter Resize mode (exit with `Esc` / `Enter`).
-  * `Alt+F18` $\rightarrow$ Enter Service mode (exit with `Esc` / `Enter`).
+  * `Shift+F18` $\rightarrow$ Primary window/container size adjustment (Width cycle on OmniWM / Resize mode on GlazeWM).
+  * `Alt+F18` $\rightarrow$ Secondary WM management / overview action (OmniWM Overview / GlazeWM Service mode).
   * `F19` $\rightarrow$ Toggle fullscreen.
   * `F20` $\rightarrow$ Toggle floating / tiling.
 * **Launchers & Desktop Actions:**
   * `Alt+F13` $\rightarrow$ System Search (Spotlight / Windows Search).
-  * `Alt+F14` $\rightarrow$ Quick Terminal (Ghostty dropdown / Windows Terminal Quake).
-  * `Alt+F15` $\rightarrow$ New Terminal window (`Ghostty` / `wt.exe`).
+  * `Alt+F14` $\rightarrow$ Persistent Quick / Quake Terminal (OmniWM embedded Quake / Windows Terminal Quake).
+  * `Alt+F15` $\rightarrow$ New standalone Terminal window (Ghostty via AppleScript automation / `wt.exe`).
   * `Alt+F16` $\rightarrow$ Previous active window across workspaces.
   * `Alt+F17` $\rightarrow$ Language toggle (macOS input source `Ctrl+Space` / Windows EVKey toggle).
 * **Editing:**

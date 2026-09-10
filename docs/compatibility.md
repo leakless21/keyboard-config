@@ -14,8 +14,8 @@ This document tracks tested, validated versions of all upstream firmware modules
 | **keymap-drawer** | `0.23.0` (`a44809b8cc718cbff646641f49a8f71a9368336d`) | 2026-08-22 | Keymap diagram rendering | `.github/workflows/draw-keymap.yml` |
 | **OmniWM** | `0.6.8+` (schema v3) | 2026-09-10 | macOS Tiling & Scrolling Window Manager | `hosts/macos/omniwm/settings.toml` |
 | **SketchyBar** | `2.24.0+` | 2026-09-10 | macOS Status Bar & Workspace Presenter | `hosts/macos/sketchybar/` |
-| **Karabiner-Elements** | `15.3.0+` | 2026-08-22 | macOS HID Translation Bridge | `hosts/macos/karabiner.json` |
-| **Ghostty** | `1.1.0+` | 2026-08-22 | macOS Terminal & Scratchpad | `hosts/macos/ghostty.config` |
+| **Karabiner-Elements** | `15.3.0+` | 2026-09-10 | macOS HID Translation Bridge & Laptop Adapter | `hosts/macos/karabiner/` |
+| **Ghostty** | `1.1.0+` | 2026-09-10 | macOS Standalone Terminal | `hosts/macos/ghostty.config` |
 | **GlazeWM** | `3.9.0+` (modern schema) | 2026-08-22 | Windows Tiling Window Manager | `hosts/windows/glazewm.yaml` |
 | **AutoHotkey** | `v2.0.18+` | 2026-08-22 | Windows Desktop Bridge | `hosts/windows/keyboard.ahk` |
 | **Windows Terminal** | `1.22.0+` | 2026-08-22 | Windows Terminal & Quake mode | `hosts/windows/windows-terminal-actions.jsonc` |
@@ -50,7 +50,7 @@ Always upgrade **one external component at a time** to maintain deterministic re
 
 ### C. Upgrading OmniWM, SketchyBar, or Karabiner (macOS)
 1. Review upstream release notes.
-2. If necessary, adjust `hosts/macos/omniwm/settings.toml`, `hosts/macos/sketchybar/`, or `hosts/macos/karabiner.json`.
+2. If necessary, adjust `hosts/macos/omniwm/settings.toml`, `hosts/macos/sketchybar/`, or `hosts/macos/karabiner/`.
 3. Run protocol validation:
    ```bash
    uv run scripts/check_host_protocol.py

@@ -15,7 +15,7 @@ This guide covers daily keyboard usage, layer navigation, gaming, and the firmwa
 |----------------|------------|------------|---------------|
 | Left Outer (`LH2`) | `Escape` | `MOUSE` | Pointer movement, wheel scroll, MB1–MB5 buttons, F21–F24 editing |
 | Left Middle (`LH1`) | `Space` | `NAV` | Directional cursor, line/page nav, Caps Word (`RM0`), editing (`RT0..RT4`), left same-half bootloader (`LT5`), consumes activator (`LH1 = &none`) |
-| Left Inner (`LH0`) | `Tab` | `HOST` | Semantic F13–F20 workspace protocol, launchers, previous window, resize, service |
+| Left Inner (`LH0`) | `Tab` | `HOST` | Semantic F13–F20 workspace protocol, launchers, previous window, width, overview |
 | Right Inner (`RH0`) | `Enter` | `SYM` | Seniply+ symbols (delimiter pairs, `< >`, `- = +`, sigils, `\ / _`), mirrored modifiers |
 | Right Middle (`RH1`) | `Backspace` | `NUM` | Spatial numpad on left with arithmetic rail (`/ * +`), mirrored modifiers, right bootloader (`RT5`) |
 | Right Outer (`RH2`) | `Delete` | `FUN` | Standard application function keys F1–F12 across all hosts, Caps Lock fallback (`RT0`), mirrored modifiers |

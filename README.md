@@ -72,8 +72,8 @@ Single-page, deterministic A4 reference sheets generated directly from firmware 
 | **Fullscreen** | `F19` | OmniWM `toggle-fullscreen` | GlazeWM `f19` |
 | **Float / Tile** | `F20` | OmniWM `toggle-focused-window-floating` | GlazeWM `f20` |
 | **System Launcher** | `Alt+F13` | Spotlight (`Cmd+Space`) | Windows Search (`Win+S`) |
-| **Quick Terminal** | `Alt+F14` | Ghostty dropdown (`Ctrl+```) | Windows Terminal Quake (`Ctrl+Alt+```) |
-| **New Terminal** | `Alt+F15` | Ghostty window (`Alt+Enter`) | Windows Terminal (`wt.exe`) |
+| **Quick Terminal** | `Alt+F14` | OmniWM Quake terminal (`Option+F14`) | Windows Terminal Quake (`Ctrl+Alt+```) |
+| **New Terminal** | `Alt+F15` | Ghostty new window (AppleScript) | Windows Terminal (`wt.exe`) |
 | **Previous Window** | `Alt+F16` | OmniWM (`focus previous`) | Windows (`Alt+Tab`) |
 | **Language Toggle** | `Alt+F17` | Input Source (`Ctrl+Space`) | EVKey Toggle (`Ctrl+Shift`) |
 | **Select All / Save / Find** | `Hyper+F13..F15` | `Cmd+A` / `Cmd+S` / `Cmd+F` | `Ctrl+A` / `Ctrl+S` / `Ctrl+F` |
@@ -103,8 +103,13 @@ keyboard-config/
 │   └── sofle.yaml            # Sofle cheatsheet styling and palette
 ├── hosts/
 │   ├── macos/
-│   │   ├── karabiner.json    # Device-scoped complex modifications bridge
-│   │   └── ghostty.config    # Terminal & scratchpad config
+│   │   ├── omniwm/
+│   │   │   └── settings.toml # OmniWM WM & Quake terminal settings
+│   │   ├── sketchybar/       # Event-driven notch-aware status bar
+│   │   ├── karabiner/
+│   │   │   ├── external-semantic.json # External keyboard semantic bridge
+│   │   │   └── laptop-omniwm.json     # Built-in MacBook keyboard adapter
+│   │   └── ghostty.config    # Canonical standalone terminal config
 │   └── windows/
 │       ├── keyboard.ahk      # AutoHotkey v2 bridge
 │       ├── glazewm.yaml      # Tiling window manager config

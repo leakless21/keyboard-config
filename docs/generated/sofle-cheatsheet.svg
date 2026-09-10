@@ -1747,11 +1747,11 @@
   </g>
   <g class="key normal" data-layer="HOST" data-position="RT1" data-binding="&amp;kp LS(F18)">
     <rect x="1628.0" y="1175.0" width="62.0" height="74.0" rx="5" ry="5" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.2" />
-    <text x="1659.0" y="1217.5" class="lbl-word" font-size="14">Resize</text>
+    <text x="1659.0" y="1217.5" class="lbl-word" font-size="14">Width</text>
   </g>
   <g class="key normal" data-layer="HOST" data-position="RT2" data-binding="&amp;kp LA(F18)">
     <rect x="1695.0" y="1175.0" width="62.0" height="74.0" rx="5" ry="5" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.2" />
-    <text x="1726.0" y="1217.5" class="lbl-word" font-size="14">Service</text>
+    <text x="1726.0" y="1217.5" class="lbl-word" font-size="12.5">Overview</text>
   </g>
   <g class="key unused" data-layer="HOST" data-position="RT3" data-binding="&amp;none">
     <rect x="1762.0" y="1175.0" width="62.0" height="74.0" rx="5" ry="5" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.0" />

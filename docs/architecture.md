@@ -19,7 +19,7 @@ Keyboard Hardware (Corne / Sofle)
   ┌─────────────┴─────────────┐
   ▼                           ▼
 macOS                      Windows
-OmniWM + SketchyBar        AutoHotkey v2
+OmniWM + Native Menu Bar   AutoHotkey v2
 Karabiner-Elements         GlazeWM
 Ghostty                    Windows Terminal
 Spotlight                  Windows Search

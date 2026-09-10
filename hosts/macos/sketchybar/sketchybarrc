@@ -1,7 +1,0 @@
-#!/usr/bin/env sh
-# Entry point for SketchyBar configuration
-
-export CONFIG_DIR="${CONFIG_DIR:-$(cd "$(dirname "$0")" && pwd)}"
-
-# Execute Lua init
-exec /opt/homebrew/bin/lua "$CONFIG_DIR/init.lua"

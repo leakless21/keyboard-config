@@ -1,6 +1,6 @@
 # macOS Host Integration Guide
 
-This guide documents the canonical macOS host configuration for the semantic keyboard protocol using **OmniWM**, **SketchyBar**, **Karabiner-Elements**, and **Ghostty**.
+This guide documents the canonical macOS host configuration for the semantic keyboard protocol using **OmniWM**, **Karabiner-Elements**, and **Ghostty** alongside the **native macOS menu bar**.
 
 ---
 
@@ -24,13 +24,10 @@ This guide documents the canonical macOS host configuration for the semantic key
           OmniWM                     Karabiner
      WM + Quake Terminal          OS/app semantics
              │                           │
-             │                       Spotlight
-             │                       Ghostty new window
-             │                       language
-             │                       editing/tabs
-             │
-             └──── IPC ──────► SketchyBar
-                               visual state
+      (window & layout)              Spotlight
+                                     Ghostty new window
+                                     language
+                                     editing/tabs
 ```
 
 ### Key Architectural Invariants
@@ -43,12 +40,10 @@ This guide documents the canonical macOS host configuration for the semantic key
 3. **Karabiner is Divided into Modular Adapters:**
    - `hosts/macos/karabiner/external-semantic.json`: Scoped to external keyboards (`is_built_in_keyboard: false`). Translates OS launchers (Spotlight, Ghostty window, Language), Hyper app actions, semantic editing (F21–F24), and F1–F12 normalizers. Does **not** intercept raw WM or Quake signals.
    - `hosts/macos/karabiner/laptop-omniwm.json`: Scoped to the built-in keyboard (`is_built_in_keyboard: true`). Adapts standard MacBook chords into the exact same semantic F13–F20 signals consumed by OmniWM.
-4. **SketchyBar is Notch-Aware and Event-Driven:**
-   - Visualizes multi-monitor workspace state with compact pills.
-   - Front application sits at `q` (left of notch) and media sits at `e` (right of notch), coexisting seamlessly without mutual hiding.
-   - Application glyphs rendered using **SketchyBar App Font** (`sketchybar-app-font`).
-   - Simplified, low-overhead status items: Wi-Fi (icon only), Volume (icon only), Battery (icon + %), Clock (HH:mm, 60s frequency).
-   - Robust POSIX shell escaping for all dynamic strings (`hosts/macos/sketchybar/lib/shell.lua`).
+4. **Native macOS Menu Bar Architecture:**
+   - The setup intentionally uses the native macOS menu bar for all system status (Wi-Fi, Battery, Clock, Audio, Control Center) and application menus.
+   - SketchyBar was deliberately removed to simplify host configuration and avoid brittle status bar hacks or background polling daemons.
+   - Do not add a replacement status bar (such as Ice, Bartender, SwiftBar, or Übersicht) unless explicitly requested. OmniWM independently provides window management and workspace switching.
 
 ---
 
@@ -135,23 +130,6 @@ In Karabiner-Elements Settings $\rightarrow$ **Complex Modifications** $\rightar
 1. Enable rules from **"Keyboard Semantic Host Bridge - External"** for external keyboards.
 2. Enable rules from **"MacBook Built-in Keyboard OmniWM Adapter"** for the built-in keyboard.
 
-### 5. SketchyBar Setup
-- Install dependencies:
-  ```bash
-  brew tap felixkratz/formulae
-  brew trust felixkratz/formulae
-  brew install sketchybar lua
-  brew install --cask font-sketchybar-app-font font-jetbrains-mono-nerd-font
-  ```
-- Symlink configuration:
-  ```bash
-  ln -sfn "$(pwd)/hosts/macos/sketchybar" ~/.config/sketchybar
-  ```
-- Start SketchyBar service:
-  ```bash
-  brew services restart sketchybar
-  ```
-
 ---
 
 ## 3. Workspaces & Niri Layout
@@ -204,28 +182,21 @@ Configured in `hosts/macos/omniwm/settings.toml`:
 
 ---
 
-## 5. SketchyBar Notch-Aware Layout
+## 5. Native macOS Menu Bar Architecture
 
-### Bar Geometry
-- **Height:** 32px
-- **Notch Height & Width:** `notch_display_height=32`, `notch_width=180`
-- **Color:** Transparent (`0x00000000`), no global bar background or blur strip; backgrounds are drawn exclusively around logical item groups.
+The desktop environment purposefully relies on the native macOS menu bar rather than third-party replacement bars:
 
-### Layout Across Displays
-- **Internal Notched Display:**
-  - `front_app` is placed at `q` (left of notch): displays current app icon + clean name (e.g. ` Ghostty`).
-  - `media` is placed at `e` (right of notch): displays `♫ Song Title` when playing.
-  - Notch area remains clear. Both items coexist without mutual hiding.
-- **External Display:**
-  - `front_app` dynamically relocates to `center`.
-  - `media` renders compactly adjacent or drawing=off when idle.
+```text
+Desktop
+├── OmniWM         scrolling window manager
+├── macOS menu bar native system/status controls
+├── Spotlight      application/search launcher
+└── Corne          primary power-user keyboard interface
+```
 
-### Compact Workspace Rendering Rules
-- **ACTIVE:** Number + semantic name + app icons (e.g. `[2 DEV   󰨞]`, lavender pill).
-- **OCCUPIED:** Number + app icons only (e.g. `[1 ]`, surface0 pill, no redundant name).
-- **EMPTY:** Number only (e.g. `[4]`, transparent background).
-
-### Typography
-- **SF Pro:** Regular labels and titles.
-- **JetBrains Mono Nerd Font:** Status and control glyphs.
-- **SketchyBar App Font:** Automatic application icons via ligature lookup (`hosts/macos/sketchybar/lib/app_icons.lua`).
+### Architectural Policy
+- **Native Status Handlers:** Clock, Battery, Wi-Fi, Sound, Bluetooth, Focus/Do Not Disturb, and Control Center remain fully managed by macOS natively.
+- **Application Menus:** Native application menus (File, Edit, View, Window, Help) remain visible and accessible without IPC simulation.
+- **Restraint:** No bar replacement (SketchyBar, Ice, Bartender, SwiftBar, Übersicht) should be introduced.
+- **OmniWM Decoupling:** OmniWM focuses entirely on window layout, workspace switching, and the Quake terminal, without publishing state to an external status bar.
+- **Menu Bar Visibility:** Menu bar autohide should remain disabled for standard desktop operation (`defaults write NSGlobalDomain _HIHideMenuBar -bool false`).

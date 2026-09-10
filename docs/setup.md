@@ -14,7 +14,7 @@ This repository is a unified **ZMK firmware** configuration with shared semantic
 | `config/sofle.keymap` / `config/sofle.conf` | Sofle 60-key keymap with encoders and Kconfig settings |
 | `config/west.yml` | Single canonical West manifest pinning ZMK and helpers |
 | `build.yaml` | GitHub Actions matrix for Corne, Sofle, and settings-reset |
-| `hosts/macos/` | macOS adapters: OmniWM, SketchyBar, Karabiner, Ghostty |
+| `hosts/macos/` | macOS adapters: OmniWM, Karabiner, Ghostty |
 | `hosts/windows/` | Windows adapters: AutoHotkey v2, GlazeWM, Windows Terminal |
 | `keymap-drawer/` | Generated SVG and YAML layout diagrams |
 

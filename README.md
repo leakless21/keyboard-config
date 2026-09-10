@@ -8,9 +8,21 @@
 
 ```text
 Corne ─┐
-       ├── Semantic Keyboard Protocol (F13–F24) ─┬── macOS   (OmniWM + SketchyBar + Karabiner + Ghostty)
+       ├── Semantic Keyboard Protocol (F13–F24) ─┬── macOS   (OmniWM + Karabiner + Ghostty)
 Sofle ─┘                                        └── Windows (AutoHotkey + GlazeWM + Windows Terminal)
 ```
+
+### Desktop Target Architecture (macOS)
+
+```text
+Desktop
+├── OmniWM         scrolling window manager
+├── macOS menu bar native system/status controls
+├── Spotlight      application/search launcher
+└── Corne          primary power-user keyboard interface
+```
+
+> **Architectural Note:** The macOS desktop setup intentionally uses the native macOS menu bar for all system status, clock, battery, Wi-Fi, Control Center, and application menus. SketchyBar was deliberately removed to simplify host management and maintain native system integration. Do not add a replacement status bar (such as Ice, Bartender, SwiftBar, or Übersicht) unless explicitly requested. OmniWM independently provides window management and workspace switching.
 
 Both keyboards share a single, OS-neutral design language:
 * Portable Colemak-DH base layer with modern bilateral home-row mods.
@@ -105,7 +117,6 @@ keyboard-config/
 │   ├── macos/
 │   │   ├── omniwm/
 │   │   │   └── settings.toml # OmniWM WM & Quake terminal settings
-│   │   ├── sketchybar/       # Event-driven notch-aware status bar
 │   │   ├── karabiner/
 │   │   │   ├── external-semantic.json # External keyboard semantic bridge
 │   │   │   └── laptop-omniwm.json     # Built-in MacBook keyboard adapter

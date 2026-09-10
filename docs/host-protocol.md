@@ -64,9 +64,9 @@ Both keyboards implement the full protocol:
 
 1. **macOS Host Adapters:**
    - **`hosts/macos/omniwm/settings.toml`:** OmniWM window manager configuration consuming raw `F13`–`F20` signals for Niri workspaces, directional focus/movement, cycle size, overview, fullscreen, and float.
-   - **`hosts/macos/sketchybar/`:** SketchyBar configuration driven by OmniWM IPC events for workspace state, app icons, and system status.
-   - **`hosts/macos/karabiner.json`:** Device-scoped complex rules translating desktop launchers, Hyper+F13–F24 application actions, F21–F24 editing, and F1–F12 normalization (raw WM signals pass directly to OmniWM).
+   - **`hosts/macos/karabiner/`:** Device-scoped complex rules translating desktop launchers, Hyper+F13–F24 application actions, F21–F24 editing, and F1–F12 normalization (raw WM signals pass directly to OmniWM).
    - **`hosts/macos/ghostty.config`:** Ghostty terminal configuration with dropdown toggle.
+   - **macOS Native Menu Bar:** Native system status (Wi-Fi, Battery, Clock, Audio) and application menus.
 
 2. **Windows Host Adapters:**
    - **`hosts/windows/keyboard.ahk`:** AutoHotkey v2 script translating clipboard, launcher, and terminal signals.

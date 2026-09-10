@@ -10,7 +10,6 @@ Validates the full architecture:
     - Karabiner-Elements external adapter (hosts/macos/karabiner/external-semantic.json)
     - Karabiner-Elements laptop adapter (hosts/macos/karabiner/laptop-omniwm.json)
     - OmniWM window manager & native Quake terminal (hosts/macos/omniwm/settings.toml)
-    - SketchyBar status bar (hosts/macos/sketchybar)
   Windows Consumers:
     - AutoHotkey v2 bridge (hosts/windows/keyboard.ahk)
     - GlazeWM window manager (hosts/windows/glazewm.yaml)
@@ -46,7 +45,6 @@ SOFLE_KEYMAP_PATH = REPO_ROOT / "config" / "sofle.keymap"
 KARABINER_EXTERNAL_PATH = REPO_ROOT / "hosts" / "macos" / "karabiner" / "external-semantic.json"
 KARABINER_LAPTOP_PATH = REPO_ROOT / "hosts" / "macos" / "karabiner" / "laptop-omniwm.json"
 OMNIWM_PATH = REPO_ROOT / "hosts" / "macos" / "omniwm" / "settings.toml"
-SKETCHYBAR_DIR = REPO_ROOT / "hosts" / "macos" / "sketchybar"
 AHK_PATH = REPO_ROOT / "hosts" / "windows" / "keyboard.ahk"
 GLAZEWM_PATH = REPO_ROOT / "hosts" / "windows" / "glazewm.yaml"
 
@@ -127,7 +125,7 @@ def validate_keymap_producer(path: Path, board_name: str) -> None:
     )
 
 # -----------------------------------------------------------------------------
-# Layer B: macOS Host (Karabiner, OmniWM & SketchyBar)
+# Layer B: macOS Host (Karabiner & OmniWM)
 # -----------------------------------------------------------------------------
 
 def validate_karabiner_external(karabiner_data: dict) -> None:
@@ -448,12 +446,12 @@ def validate_omniwm_consumer(data: dict) -> None:
     assert_eq(data.get("schemaVersion"), 3, "OmniWM: schemaVersion must be 3")
 
     general = data.get("general", {})
-    assert_true(general.get("ipcEnabled") is True, "OmniWM: general.ipcEnabled must be true for SketchyBar IPC")
+    assert_true(general.get("ipcEnabled") is True, "OmniWM: general.ipcEnabled must be true for CLI/IPC control")
     assert_eq(general.get("defaultLayoutType"), "niri", "OmniWM: general.defaultLayoutType must be niri")
     assert_true(general.get("hotkeysEnabled") is True, "OmniWM: general.hotkeysEnabled must be true")
 
     ws_bar = data.get("workspaceBar", {})
-    assert_true(ws_bar.get("enabled") is False, "OmniWM: workspaceBar.enabled must be false (SketchyBar handles bar)")
+    assert_true(ws_bar.get("enabled") is False, "OmniWM: workspaceBar.enabled must be false (native macOS menu bar handles status)")
 
     niri = data.get("niri", {})
     assert_eq(niri.get("visibleContainerCount"), 2, "OmniWM: niri.visibleContainerCount must be 2")
@@ -523,36 +521,6 @@ def validate_omniwm_consumer(data: dict) -> None:
         f"PASS: macOS OmniWM Consumer validated ({len(required_bindings)} required hotkey bindings, "
         f"5 semantic workspaces, Niri settings, native Quake terminal, ipcEnabled=true, workspaceBar=false)."
     )
-
-
-def validate_sketchybar_artifacts() -> None:
-    """Verify that all required SketchyBar configuration files exist and are executable where appropriate."""
-    required_files = [
-        "sketchybarrc",
-        "init.lua",
-        "bar.lua",
-        "colors.lua",
-        "icons.lua",
-        "lib/json.lua",
-        "lib/shell.lua",
-        "lib/app_icons.lua",
-        "items/workspaces.lua",
-        "items/workspaces_updater.lua",
-        "items/front_app.lua",
-        "items/front_app_updater.lua",
-        "items/media.lua",
-        "items/media_updater.lua",
-        "items/status.lua",
-        "items/status_updater.lua",
-        "helpers/omniwm_watch.sh",
-    ]
-    for rel in required_files:
-        p = SKETCHYBAR_DIR / rel
-        assert_true(p.exists(), f"SketchyBar: Required configuration file missing: {p}")
-
-    assert_true((SKETCHYBAR_DIR / "sketchybarrc").stat().st_mode & 0o111 != 0, "SketchyBar: sketchybarrc must be executable")
-    assert_true((SKETCHYBAR_DIR / "helpers" / "omniwm_watch.sh").stat().st_mode & 0o111 != 0, "SketchyBar: helpers/omniwm_watch.sh must be executable")
-    print(f"PASS: macOS SketchyBar integration validated ({len(required_files)} modular Lua & IPC helper artifacts).")
 
 
 # -----------------------------------------------------------------------------
@@ -704,7 +672,6 @@ def main() -> None:
     validate_karabiner_external(karabiner_ext_data)
     validate_karabiner_laptop(karabiner_laptop_data)
     validate_omniwm_consumer(omniwm_data)
-    validate_sketchybar_artifacts()
 
     # 3. Windows Host
     if not AHK_PATH.exists():

@@ -30,7 +30,10 @@
           },
           "to": [
             {
-              "shell_command": "/opt/homebrew/bin/omniwmctl command move-to-workspace 1"
+              "key_code": "f13",
+              "modifiers": [
+                "left_shift"
+              ]
             }
           ]
         },
@@ -60,7 +63,10 @@
           },
           "to": [
             {
-              "shell_command": "/opt/homebrew/bin/omniwmctl command move-to-workspace 2"
+              "key_code": "f14",
+              "modifiers": [
+                "left_shift"
+              ]
             }
           ]
         },
@@ -90,7 +96,10 @@
           },
           "to": [
             {
-              "shell_command": "/opt/homebrew/bin/omniwmctl command move-to-workspace 3"
+              "key_code": "f15",
+              "modifiers": [
+                "left_shift"
+              ]
             }
           ]
         },
@@ -120,7 +129,10 @@
           },
           "to": [
             {
-              "shell_command": "/opt/homebrew/bin/omniwmctl command move-to-workspace 4"
+              "key_code": "f16",
+              "modifiers": [
+                "left_shift"
+              ]
             }
           ]
         },
@@ -150,7 +162,10 @@
           },
           "to": [
             {
-              "shell_command": "/opt/homebrew/bin/omniwmctl command move-to-workspace 5"
+              "key_code": "f17",
+              "modifiers": [
+                "left_shift"
+              ]
             }
           ]
         },
@@ -179,7 +194,7 @@
           },
           "to": [
             {
-              "shell_command": "/opt/homebrew/bin/omniwmctl command switch-workspace 1"
+              "key_code": "f13"
             }
           ]
         },
@@ -208,7 +223,7 @@
           },
           "to": [
             {
-              "shell_command": "/opt/homebrew/bin/omniwmctl command switch-workspace 2"
+              "key_code": "f14"
             }
           ]
         },
@@ -237,7 +252,7 @@
           },
           "to": [
             {
-              "shell_command": "/opt/homebrew/bin/omniwmctl command switch-workspace 3"
+              "key_code": "f15"
             }
           ]
         },
@@ -266,7 +281,7 @@
           },
           "to": [
             {
-              "shell_command": "/opt/homebrew/bin/omniwmctl command switch-workspace 4"
+              "key_code": "f16"
             }
           ]
         },
@@ -295,7 +310,7 @@
           },
           "to": [
             {
-              "shell_command": "/opt/homebrew/bin/omniwmctl command switch-workspace 5"
+              "key_code": "f17"
             }
           ]
         },
@@ -325,7 +340,11 @@
           },
           "to": [
             {
-              "shell_command": "/opt/homebrew/bin/omniwmctl command move left"
+              "key_code": "f13",
+              "modifiers": [
+                "left_control",
+                "left_shift"
+              ]
             }
           ]
         },
@@ -355,7 +374,11 @@
           },
           "to": [
             {
-              "shell_command": "/opt/homebrew/bin/omniwmctl command move down"
+              "key_code": "f14",
+              "modifiers": [
+                "left_control",
+                "left_shift"
+              ]
             }
           ]
         },
@@ -385,7 +408,11 @@
           },
           "to": [
             {
-              "shell_command": "/opt/homebrew/bin/omniwmctl command move up"
+              "key_code": "f15",
+              "modifiers": [
+                "left_control",
+                "left_shift"
+              ]
             }
           ]
         },
@@ -415,7 +442,11 @@
           },
           "to": [
             {
-              "shell_command": "/opt/homebrew/bin/omniwmctl command move right"
+              "key_code": "f16",
+              "modifiers": [
+                "left_control",
+                "left_shift"
+              ]
             }
           ]
         },
@@ -444,7 +475,10 @@
           },
           "to": [
             {
-              "shell_command": "/opt/homebrew/bin/omniwmctl command focus left"
+              "key_code": "f13",
+              "modifiers": [
+                "left_control"
+              ]
             }
           ]
         },
@@ -473,7 +507,10 @@
           },
           "to": [
             {
-              "shell_command": "/opt/homebrew/bin/omniwmctl command focus down"
+              "key_code": "f14",
+              "modifiers": [
+                "left_control"
+              ]
             }
           ]
         },
@@ -502,7 +539,10 @@
           },
           "to": [
             {
-              "shell_command": "/opt/homebrew/bin/omniwmctl command focus up"
+              "key_code": "f15",
+              "modifiers": [
+                "left_control"
+              ]
             }
           ]
         },
@@ -531,7 +571,10 @@
           },
           "to": [
             {
-              "shell_command": "/opt/homebrew/bin/omniwmctl command focus right"
+              "key_code": "f16",
+              "modifiers": [
+                "left_control"
+              ]
             }
           ]
         },
@@ -561,7 +604,7 @@
           },
           "to": [
             {
-              "shell_command": "/opt/homebrew/bin/omniwmctl command switch-workspace back-and-forth"
+              "key_code": "f18"
             }
           ]
         },
@@ -590,7 +633,10 @@
           },
           "to": [
             {
-              "shell_command": "/opt/homebrew/bin/omniwmctl command focus previous"
+              "key_code": "f16",
+              "modifiers": [
+                "left_alt"
+              ]
             }
           ]
         },
@@ -619,7 +665,10 @@
           },
           "to": [
             {
-              "shell_command": "/opt/homebrew/bin/omniwmctl command cycle-size forward"
+              "key_code": "f18",
+              "modifiers": [
+                "left_shift"
+              ]
             }
           ]
         },
@@ -649,7 +698,10 @@
           },
           "to": [
             {
-              "shell_command": "/opt/homebrew/bin/omniwmctl command toggle-overview"
+              "key_code": "f18",
+              "modifiers": [
+                "left_alt"
+              ]
             }
           ]
         },
@@ -678,7 +730,7 @@
           },
           "to": [
             {
-              "shell_command": "/opt/homebrew/bin/omniwmctl command toggle-fullscreen"
+              "key_code": "f19"
             }
           ]
         },
@@ -708,7 +760,7 @@
           },
           "to": [
             {
-              "shell_command": "/opt/homebrew/bin/omniwmctl command toggle-focused-window-floating"
+              "key_code": "f20"
             }
           ]
         },
@@ -737,7 +789,10 @@
           },
           "to": [
             {
-              "shell_command": "/opt/homebrew/bin/omniwmctl command toggle-quake-terminal"
+              "key_code": "f14",
+              "modifiers": [
+                "left_alt"
+              ]
             }
           ]
         }

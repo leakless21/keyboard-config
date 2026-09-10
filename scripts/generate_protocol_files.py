@@ -32,7 +32,7 @@ DOCS_HOST_PROTOCOL_PATH = REPO_ROOT / "docs" / "host-protocol.md"
 def generate_host_protocol_table(manifest: ProtocolManifest) -> str:
     """Generate Markdown matrix table from canonical protocol actions."""
     lines = [
-        "| Signal | Semantic Action | macOS Host (Karabiner + AeroSpace + Ghostty + Spotlight) | Windows Host (GlazeWM + AutoHotkey + Windows Terminal + Search) |",
+        "| Signal | Semantic Action | macOS Host (OmniWM + Karabiner + Ghostty + Spotlight) | Windows Host (GlazeWM + AutoHotkey + Windows Terminal + Search) |",
         "|---|---|---|---|",
     ]
 

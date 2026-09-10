@@ -6,35 +6,35 @@ This document is the canonical source of truth for the semantic high-function ke
 
 ## 1. Canonical Protocol Matrix
 
-| Signal | Semantic Action | macOS Host (Karabiner + AeroSpace + Ghostty + Spotlight) | Windows Host (GlazeWM + AutoHotkey + Windows Terminal + Search) |
+| Signal | Semantic Action | macOS Host (OmniWM + Karabiner + Ghostty + Spotlight) | Windows Host (GlazeWM + AutoHotkey + Windows Terminal + Search) |
 |---|---|---|---|
-| `F13` | Switch to workspace 1 (WEB) | AeroSpace: alt-1 (Workspace 1) | GlazeWM: focus --workspace 1 |
-| `F14` | Switch to workspace 2 (DEV) | AeroSpace: alt-2 (Workspace 2) | GlazeWM: focus --workspace 2 |
-| `F15` | Switch to workspace 3 (COMMS) | AeroSpace: alt-3 (Workspace 3) | GlazeWM: focus --workspace 3 |
-| `F16` | Switch to workspace 4 (RUN) | AeroSpace: alt-4 (Workspace 4) | GlazeWM: focus --workspace 4 |
-| `F17` | Switch to workspace 5 (AUX) | AeroSpace: alt-5 (Workspace 5) | GlazeWM: focus --workspace 5 |
-| `Shift+F13` | Move active window to workspace 1 and follow | AeroSpace: alt-shift-1 (Move to 1 and follow) | GlazeWM: move --workspace 1; focus --workspace 1 |
-| `Shift+F14` | Move active window to workspace 2 and follow | AeroSpace: alt-shift-2 (Move to 2 and follow) | GlazeWM: move --workspace 2; focus --workspace 2 |
-| `Shift+F15` | Move active window to workspace 3 and follow | AeroSpace: alt-shift-3 (Move to 3 and follow) | GlazeWM: move --workspace 3; focus --workspace 3 |
-| `Shift+F16` | Move active window to workspace 4 and follow | AeroSpace: alt-shift-4 (Move to 4 and follow) | GlazeWM: move --workspace 4; focus --workspace 4 |
-| `Shift+F17` | Move active window to workspace 5 and follow | AeroSpace: alt-shift-5 (Move to 5 and follow) | GlazeWM: move --workspace 5; focus --workspace 5 |
-| `Ctrl+F13` | Focus window to the left | AeroSpace: alt-h (Focus left) | GlazeWM: focus --direction left |
-| `Ctrl+F14` | Focus window below | AeroSpace: alt-j (Focus down) | GlazeWM: focus --direction down |
-| `Ctrl+F15` | Focus window above | AeroSpace: alt-k (Focus up) | GlazeWM: focus --direction up |
-| `Ctrl+F16` | Focus window to the right | AeroSpace: alt-l (Focus right) | GlazeWM: focus --direction right |
-| `Ctrl+Shift+F13` | Move active window to the left | AeroSpace: alt-shift-h (Move left) | GlazeWM: move --direction left |
-| `Ctrl+Shift+F14` | Move active window down | AeroSpace: alt-shift-j (Move down) | GlazeWM: move --direction down |
-| `Ctrl+Shift+F15` | Move active window up | AeroSpace: alt-shift-k (Move up) | GlazeWM: move --direction up |
-| `Ctrl+Shift+F16` | Move active window to the right | AeroSpace: alt-shift-l (Move right) | GlazeWM: move --direction right |
-| `F18` | Focus previous / recent workspace | AeroSpace: alt-tab (workspace-back-and-forth) | GlazeWM: focus --recent-workspace |
-| `Shift+F18` | Enter directional resize modal mode | AeroSpace: alt-r (mode resize) | GlazeWM: wm-enable-binding-mode --name resize |
-| `Alt+F18` | Enter WM management / service mode | AeroSpace: alt-shift-semicolon (mode service) | GlazeWM: wm-enable-binding-mode --name service |
-| `F19` | Toggle active window fullscreen | AeroSpace: alt-f (fullscreen) | GlazeWM: toggle-fullscreen |
-| `F20` | Toggle active window float / tile | AeroSpace: alt-shift-space (layout floating tiling) | GlazeWM: toggle-floating --centered |
+| `F13` | Switch to workspace 1 (WEB) | OmniWM: switch-workspace 1 (F13) | GlazeWM: focus --workspace 1 |
+| `F14` | Switch to workspace 2 (DEV) | OmniWM: switch-workspace 2 (F14) | GlazeWM: focus --workspace 2 |
+| `F15` | Switch to workspace 3 (COMMS) | OmniWM: switch-workspace 3 (F15) | GlazeWM: focus --workspace 3 |
+| `F16` | Switch to workspace 4 (RUN) | OmniWM: switch-workspace 4 (F16) | GlazeWM: focus --workspace 4 |
+| `F17` | Switch to workspace 5 (AUX) | OmniWM: switch-workspace 5 (F17) | GlazeWM: focus --workspace 5 |
+| `Shift+F13` | Move active window to workspace 1 and follow | OmniWM: move-to-workspace 1 and follow (Shift+F13) | GlazeWM: move --workspace 1; focus --workspace 1 |
+| `Shift+F14` | Move active window to workspace 2 and follow | OmniWM: move-to-workspace 2 and follow (Shift+F14) | GlazeWM: move --workspace 2; focus --workspace 2 |
+| `Shift+F15` | Move active window to workspace 3 and follow | OmniWM: move-to-workspace 3 and follow (Shift+F15) | GlazeWM: move --workspace 3; focus --workspace 3 |
+| `Shift+F16` | Move active window to workspace 4 and follow | OmniWM: move-to-workspace 4 and follow (Shift+F16) | GlazeWM: move --workspace 4; focus --workspace 4 |
+| `Shift+F17` | Move active window to workspace 5 and follow | OmniWM: move-to-workspace 5 and follow (Shift+F17) | GlazeWM: move --workspace 5; focus --workspace 5 |
+| `Ctrl+F13` | Focus window to the left | OmniWM: focus left (Ctrl+F13) | GlazeWM: focus --direction left |
+| `Ctrl+F14` | Focus window below | OmniWM: focus down (Ctrl+F14) | GlazeWM: focus --direction down |
+| `Ctrl+F15` | Focus window above | OmniWM: focus up (Ctrl+F15) | GlazeWM: focus --direction up |
+| `Ctrl+F16` | Focus window to the right | OmniWM: focus right (Ctrl+F16) | GlazeWM: focus --direction right |
+| `Ctrl+Shift+F13` | Move active window to the left | OmniWM: move left (Ctrl+Shift+F13) | GlazeWM: move --direction left |
+| `Ctrl+Shift+F14` | Move active window down | OmniWM: move down (Ctrl+Shift+F14) | GlazeWM: move --direction down |
+| `Ctrl+Shift+F15` | Move active window up | OmniWM: move up (Ctrl+Shift+F15) | GlazeWM: move --direction up |
+| `Ctrl+Shift+F16` | Move active window to the right | OmniWM: move right (Ctrl+Shift+F16) | GlazeWM: move --direction right |
+| `F18` | Focus previous / recent workspace | OmniWM: switch-workspace back-and-forth (F18) | GlazeWM: focus --recent-workspace |
+| `Shift+F18` | Cycle window size forward (OmniWM) / modal resize (GlazeWM) | OmniWM: cycle-size forward (Shift+F18) | GlazeWM: wm-enable-binding-mode --name resize |
+| `Alt+F18` | Toggle overview (OmniWM) / service mode (GlazeWM) | OmniWM: toggle-overview (Option+F18) | GlazeWM: wm-enable-binding-mode --name service |
+| `F19` | Toggle active window fullscreen | OmniWM: toggle-fullscreen (F19) | GlazeWM: toggle-fullscreen |
+| `F20` | Toggle active window float / tile | OmniWM: toggle-focused-window-floating (F20) | GlazeWM: toggle-floating --centered |
 | `Alt+F13` | Summon system search / launcher (Spotlight / Windows Search) | Karabiner: Cmd+Space (Spotlight) | AutoHotkey: Win+S (Windows Search) |
 | `Alt+F14` | Toggle quick dropdown scratchpad terminal (Quake mode) | Karabiner: Ctrl+` (Ghostty Quick Terminal) | AutoHotkey: Windows Terminal _quake dropdown |
 | `Alt+F15` | Launch new independent terminal window | Karabiner: Alt+Enter (Ghostty new window) | AutoHotkey: wt.exe new window |
-| `Alt+F16` | Switch to previous active window across workspaces | Karabiner: Alt+` (AeroSpace focus-back-and-forth) | AutoHotkey: Alt+Tab (Previous Window) |
+| `Alt+F16` | Switch to previous active window across workspaces | OmniWM: focus previous (Option+F16) | AutoHotkey: Alt+Tab (Previous Window) |
 | `Alt+F17` | Toggle primary input language / input method | Karabiner: Ctrl+Space (switch input source) | AutoHotkey: trigger configured EVKey E/V toggle |
 | `F21` | Copy selected text to clipboard | Karabiner: Cmd+C | AutoHotkey: Ctrl+C |
 | `F22` | Paste text from clipboard | Karabiner: Cmd+V | AutoHotkey: Ctrl+V |
@@ -52,6 +52,7 @@ This document is the canonical source of truth for the semantic high-function ke
 | `Ctrl+Alt+Shift+Gui+F22` | Move text cursor one word to the right | Karabiner: Option+Right (Word Right) | AutoHotkey: Ctrl+Right (Word Right) |
 | `Ctrl+Alt+Shift+Gui+F23` | Jump to next search match | Karabiner: Cmd+G (Find Next) | AutoHotkey: F3 (Find Next) |
 | `Ctrl+Alt+Shift+Gui+F24` | Redo last undone text action | Karabiner: Cmd+Shift+Z (Redo) | AutoHotkey: Ctrl+Y (Redo) |
+
 ---
 
 ## 2. Protocol Producers
@@ -63,8 +64,9 @@ Both keyboards implement the full protocol:
 ## 3. Protocol Consumers
 
 1. **macOS Host Adapters:**
-   - **`hosts/macos/karabiner.json`:** Device-scoped complex rules translating high-function keys to macOS chords.
-   - **`hosts/macos/aerospace.toml`:** AeroSpace window manager configuration consuming `main`, `resize`, and `service` modes.
+   - **`hosts/macos/omniwm/settings.toml`:** OmniWM window manager configuration consuming raw `F13`–`F20` signals for Niri workspaces, directional focus/movement, cycle size, overview, fullscreen, and float.
+   - **`hosts/macos/sketchybar/`:** SketchyBar configuration driven by OmniWM IPC events for workspace state, app icons, and system status.
+   - **`hosts/macos/karabiner.json`:** Device-scoped complex rules translating desktop launchers, Hyper+F13–F24 application actions, F21–F24 editing, and F1–F12 normalization (raw WM signals pass directly to OmniWM).
    - **`hosts/macos/ghostty.config`:** Ghostty terminal configuration with dropdown toggle.
 
 2. **Windows Host Adapters:**

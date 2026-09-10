@@ -42,7 +42,8 @@ except ImportError:
 CORNE_KEYMAP_PATH = REPO_ROOT / "config" / "corne.keymap"
 SOFLE_KEYMAP_PATH = REPO_ROOT / "config" / "sofle.keymap"
 KARABINER_PATH = REPO_ROOT / "hosts" / "macos" / "karabiner.json"
-AEROSPACE_PATH = REPO_ROOT / "hosts" / "macos" / "aerospace.toml"
+OMNIWM_PATH = REPO_ROOT / "hosts" / "macos" / "omniwm" / "settings.toml"
+SKETCHYBAR_DIR = REPO_ROOT / "hosts" / "macos" / "sketchybar"
 AHK_PATH = REPO_ROOT / "hosts" / "windows" / "keyboard.ahk"
 GLAZEWM_PATH = REPO_ROOT / "hosts" / "windows" / "glazewm.yaml"
 
@@ -60,7 +61,7 @@ EXPECTED_HOST_SIGNALS = [
     # Directional move (Left, Down, Up, Right)
     "&kp LC(LS(F13))", "&kp LC(LS(F14))", "&kp LC(LS(F15))", "&kp LC(LS(F16))",
     # Context & modes
-    "&kp LS(F18)",  # Resize mode
+    "&kp LS(F18)",  # Resize mode / cycle size
     "&kp F18",      # Previous workspace
     "&kp F19",      # Fullscreen
     "&kp F20",      # Float / tile
@@ -68,9 +69,9 @@ EXPECTED_HOST_SIGNALS = [
     "&kp LA(F13)",  # SYSTEM_LAUNCHER (Spotlight / Windows Search)
     "&kp LA(F14)",  # QUICK_TERMINAL (Ghostty scratchpad / Quake)
     "&kp LA(F15)",  # NEW_TERMINAL (Ghostty / Windows Terminal)
-    "&kp LA(F16)",  # PREVIOUS_WINDOW (focus-back-and-forth / Alt+Tab)
+    "&kp LA(F16)",  # PREVIOUS_WINDOW (OmniWM focus previous / Alt+Tab)
     "&kp LA(F17)",  # LANGUAGE_TOGGLE (Input Source / EVKey)
-    "&kp LA(F18)",  # SERVICE_MODE (AeroSpace / GlazeWM service)
+    "&kp LA(F18)",  # OVERVIEW / SERVICE_MODE (OmniWM Overview / GlazeWM service)
 ]
 
 EXPECTED_EDITING_SIGNALS = [
@@ -123,23 +124,22 @@ def validate_keymap_producer(path: Path, board_name: str) -> None:
     )
 
 # -----------------------------------------------------------------------------
-# Layer B: macOS Host (Karabiner & AeroSpace)
+# Layer B: macOS Host (Karabiner, OmniWM & SketchyBar)
 # -----------------------------------------------------------------------------
 
 def validate_karabiner_translator(karabiner_data: dict) -> None:
-    """Verify that Karabiner maps all semantic signals and standard F1-F12 normalization."""
+    """Verify that Karabiner maps application/editing/launcher signals and standard F1-F12 normalization,
+    and CRITICALLY does NOT intercept raw window management signals intended directly for OmniWM."""
     rules = karabiner_data.get("rules", [])
     if len(rules) < 3:
         fail("Layer B (Karabiner): Expected at least 3 rules in karabiner.json")
 
-    # Collect all manipulators across rules
     all_manipulators = []
     for r in rules:
         for m in r.get("manipulators", []):
             all_manipulators.append(m)
 
-    # Classify manipulators into distinct architectural groups
-    semantic_host_manipulators = []
+    semantic_launcher_manipulators = []
     semantic_app_manipulators = []
     semantic_editing_manipulators = []
     standard_f_manipulators = []
@@ -152,8 +152,8 @@ def validate_karabiner_translator(karabiner_data: dict) -> None:
 
         if is_hyper and key_code in [f"f{i}" for i in range(13, 25)]:
             semantic_app_manipulators.append(m)
-        elif key_code in [f"f{i}" for i in range(13, 21)]:
-            semantic_host_manipulators.append(m)
+        elif mandatory_mods == {"option"} and key_code in ["f13", "f14", "f15", "f17"]:
+            semantic_launcher_manipulators.append(m)
         elif key_code in [f"f{i}" for i in range(21, 25)]:
             semantic_editing_manipulators.append(m)
         elif key_code in [f"f{i}" for i in range(1, 13)]:
@@ -167,9 +167,9 @@ def validate_karabiner_translator(karabiner_data: dict) -> None:
         f"Layer B (Karabiner): Found unexpected manipulators: {unexpected_manipulators}",
     )
     assert_eq(
-        len(semantic_host_manipulators),
-        28,
-        f"Layer B (Karabiner): Expected exactly 28 HOST manipulators, found {len(semantic_host_manipulators)}",
+        len(semantic_launcher_manipulators),
+        4,
+        f"Layer B (Karabiner): Expected exactly 4 desktop launcher manipulators (Alt+F13, F14, F15, F17), found {len(semantic_launcher_manipulators)}",
     )
     assert_eq(
         len(semantic_app_manipulators),
@@ -188,9 +188,33 @@ def validate_karabiner_translator(karabiner_data: dict) -> None:
     )
     assert_eq(
         len(all_manipulators),
-        60,
-        f"Layer B (Karabiner): Expected exactly 60 canonical manipulators (28 HOST + 12 Hyper app + 8 editing + 12 standard F), found {len(all_manipulators)}",
+        36,
+        f"Layer B (Karabiner): Expected exactly 36 canonical manipulators (4 launcher + 12 Hyper app + 8 editing + 12 standard F), found {len(all_manipulators)}",
     )
+
+    # CRITICAL INVARIANT: Karabiner must NOT intercept raw OmniWM signals!
+    disallowed_karabiner_signals = [
+        # Raw workspace switching (F13-F17)
+        ("f13", set()), ("f14", set()), ("f15", set()), ("f16", set()), ("f17", set()),
+        # Move to workspace (Shift + F13-F17)
+        ("f13", {"shift"}), ("f14", {"shift"}), ("f15", {"shift"}), ("f16", {"shift"}), ("f17", {"shift"}),
+        # Directional focus (Ctrl + F13-F16)
+        ("f13", {"control"}), ("f14", {"control"}), ("f15", {"control"}), ("f16", {"control"}),
+        # Directional move (Ctrl + Shift + F13-F16)
+        ("f13", {"control", "shift"}), ("f14", {"control", "shift"}), ("f15", {"control", "shift"}), ("f16", {"control", "shift"}),
+        # Context & mode controls
+        ("f18", set()),                    # Previous workspace
+        ("f18", {"shift"}),                # Cycle size forward
+        ("f18", {"option"}),               # Overview (Alt+F18)
+        ("f19", set()),                    # Fullscreen
+        ("f20", set()),                    # Float
+        ("f16", {"option"}),               # Previous window (Alt+F16)
+    ]
+    for k_dis, m_dis in disallowed_karabiner_signals:
+        for m in all_manipulators:
+            m_from = m.get("from", {})
+            if m_from.get("key_code") == k_dis and set(m_from.get("modifiers", {}).get("mandatory", [])) == m_dis:
+                fail(f"Layer B (Karabiner): Karabiner must NOT intercept raw OmniWM signal ({k_dis}, {m_dis})")
 
     # Verify Shift-safe editing handlers appear before bare editing handlers
     shift_safe_keys = []
@@ -200,7 +224,7 @@ def validate_karabiner_translator(karabiner_data: dict) -> None:
         mods = m.get("from", {}).get("modifiers", {})
         mand = mods.get("mandatory", [])
         opt = mods.get("optional", [])
-        assert_eq(opt, ["caps_lock"], f"Layer B (Karabiner): Editing manipulator for {k} must have optional: ['caps_lock']")
+        assert_eq(opt, ["caps_lock"], f"Layer B (Karabiner): Editing manipulator for {k} must have optional: [caps_lock]")
         if mand == ["shift"]:
             shift_safe_keys.append(k)
         elif not mand:
@@ -210,6 +234,7 @@ def validate_karabiner_translator(karabiner_data: dict) -> None:
 
     assert_eq(shift_safe_keys, ["f21", "f22", "f23", "f24"], "Layer B (Karabiner): Expected 4 Shift-safe editing handlers in order")
     assert_eq(bare_keys, ["f21", "f22", "f23", "f24"], "Layer B (Karabiner): Expected 4 bare editing handlers in order")
+
     for idx, m in enumerate(all_manipulators):
         conditions = m.get("conditions", [])
         has_device_if = False
@@ -221,7 +246,7 @@ def validate_karabiner_translator(karabiner_data: dict) -> None:
                         has_device_if = True
         if not has_device_if:
             fail(
-                f"Layer B (Karabiner): Manipulator #{idx} ({m.get('from')}) "
+                f"Layer B (Karabiner): Manipulator #{idx} ({m.get("from")}) "
                 f"must be scoped with device_if excluding built-in keyboard (is_built_in_keyboard: false)"
             )
 
@@ -241,84 +266,42 @@ def validate_karabiner_translator(karabiner_data: dict) -> None:
         assert_in(
             "any",
             optional_mods,
-            f"Layer B (Karabiner): {f_key} from.modifiers.optional must contain 'any' to preserve opposite-hand mods",
+            f"Layer B (Karabiner): {f_key} from.modifiers.optional must contain any to preserve opposite-hand mods",
         )
 
         # to must map to same f-key with "fn" modifier
         to_list = norm_m.get("to", [])
         assert_true(
-            len(to_list) > 0,
-            f"Layer B (Karabiner): {f_key} normalizer must specify at least one 'to' target",
-        )
-        to_target = to_list[0]
-        assert_eq(
-            to_target.get("key_code"),
-            f_key,
-            f"Layer B (Karabiner): {f_key} normalizer must map to key_code '{f_key}'",
-        )
-        assert_in(
-            "fn",
-            to_target.get("modifiers", []),
-            f"Layer B (Karabiner): {f_key} normalizer to.modifiers must contain 'fn'",
+            len(to_list) == 1 and to_list[0].get("key_code") == f_key and set(to_list[0].get("modifiers", [])) == {"fn"},
+            f"Layer B (Karabiner): {f_key} must map to {f_key} with modifiers [fn]",
         )
 
-        # conditions must contain system F-key preference condition
-        conds = norm_m.get("conditions", [])
+        # conditions must evaluate system.use_fkeys_as_standard_function_keys == false
+        conditions = norm_m.get("conditions", [])
         has_sys_fkey_cond = False
-        for c in conds:
+        for c in conditions:
             if (
                 c.get("type") == "variable_if"
                 and c.get("name") == "system.use_fkeys_as_standard_function_keys"
-                and c.get("value") is False
+                and c.get("value") == 0
             ):
                 has_sys_fkey_cond = True
         assert_true(
             has_sys_fkey_cond,
             f"Layer B (Karabiner): {f_key} normalizer missing system.use_fkeys_as_standard_function_keys variable_if condition",
         )
+
     expected_translations: List[Tuple[str, Set[str], str, Set[str]]] = [
-        # Directional move
-        ("f13", {"control", "shift"}, "h", {"left_alt", "left_shift"}),
-        ("f14", {"control", "shift"}, "j", {"left_alt", "left_shift"}),
-        ("f15", {"control", "shift"}, "k", {"left_alt", "left_shift"}),
-        ("f16", {"control", "shift"}, "l", {"left_alt", "left_shift"}),
-        # Directional focus
-        ("f13", {"control"}, "h", {"left_alt"}),
-        ("f14", {"control"}, "j", {"left_alt"}),
-        ("f15", {"control"}, "k", {"left_alt"}),
-        ("f16", {"control"}, "l", {"left_alt"}),
-        # Move to workspace 1-5
-        ("f13", {"shift"}, "1", {"left_alt", "left_shift"}),
-        ("f14", {"shift"}, "2", {"left_alt", "left_shift"}),
-        ("f15", {"shift"}, "3", {"left_alt", "left_shift"}),
-        ("f16", {"shift"}, "4", {"left_alt", "left_shift"}),
-        ("f17", {"shift"}, "5", {"left_alt", "left_shift"}),
-        # Resize mode
-        ("f18", {"shift"}, "r", {"left_alt"}),
-        # Extended semantic protocol
+        # Desktop launchers & controls
         ("f13", {"option"}, "spacebar", {"left_command"}),               # LAUNCHER -> Cmd+Space
         ("f14", {"option"}, "grave_accent_and_tilde", {"left_control"}),  # QTERM -> Ctrl+`
         ("f15", {"option"}, "return_or_enter", {"left_alt"}),            # TERM -> Alt+Enter
-        ("f16", {"option"}, "grave_accent_and_tilde", {"left_alt"}),      # PREV WIN -> Alt+`
         ("f17", {"option"}, "spacebar", {"left_control"}),               # LANG -> Ctrl+Space
-        ("f18", {"option"}, "semicolon", {"left_alt", "left_shift"}),     # SERVICE -> Alt+Shift+;
-        # Workspace focus 1-5
-        ("f13", set(), "1", {"left_alt"}),
-        ("f14", set(), "2", {"left_alt"}),
-        ("f15", set(), "3", {"left_alt"}),
-        ("f16", set(), "4", {"left_alt"}),
-        ("f17", set(), "5", {"left_alt"}),
-        # Context controls
-        ("f18", set(), "tab", {"left_alt"}),                             # PREV WS -> Alt+Tab
-        ("f19", set(), "f", {"left_alt"}),                               # FULL -> Alt+F
-        ("f20", set(), "spacebar", {"left_alt", "left_shift"}),          # FLOAT -> Alt+Shift+Space
         # Semantic editing (4 Shift-safe variants + 4 bare variants)
-        # Shift-safe selection editing: mandatory Shift stripped before emitting target
         ("f21", {"shift"}, "c", {"left_command"}),
         ("f22", {"shift"}, "v", {"left_command"}),
         ("f23", {"shift"}, "x", {"left_command"}),
         ("f24", {"shift"}, "z", {"left_command"}),
-        # Bare semantic editing
         ("f21", set(), "c", {"left_command"}),
         ("f22", set(), "v", {"left_command"}),
         ("f23", set(), "x", {"left_command"}),
@@ -360,60 +343,114 @@ def validate_karabiner_translator(karabiner_data: dict) -> None:
             )
 
     print(
-        f"PASS: macOS Karabiner Translation validated ({len(expected_translations)} semantic mappings + {len(standard_f_manipulators)} standard F-key normalizers with device_if scoping)."
+        f"PASS: macOS Karabiner Translation validated ({len(expected_translations)} semantic mappings + {len(standard_f_manipulators)} standard F-key normalizers with device_if scoping; no raw WM signals intercepted)."
     )
 
 
-def validate_aerospace_consumer(data: dict) -> None:
-    """Verify AeroSpace config consumes all chords produced by Karabiner / laptop."""
-    mode = data.get("mode", {})
-    main_mode = mode.get("main", {})
-    main_bindings = main_mode.get("binding", {})
+def validate_omniwm_consumer(data: dict) -> None:
+    """Verify OmniWM settings consume all raw F13-F20 window management signals directly."""
+    assert_eq(data.get("schemaVersion"), 3, "OmniWM: schemaVersion must be 3")
 
-    required_main_bindings = [
-        "alt-1", "alt-2", "alt-3", "alt-4", "alt-5",
-        "alt-shift-1", "alt-shift-2", "alt-shift-3", "alt-shift-4", "alt-shift-5",
-        "alt-h", "alt-j", "alt-k", "alt-l",
-        "alt-shift-h", "alt-shift-j", "alt-shift-k", "alt-shift-l",
-        "alt-r", "alt-shift-semicolon", "alt-f", "alt-shift-space",
-        "alt-tab", "alt-backtick", "alt-enter",
+    general = data.get("general", {})
+    assert_true(general.get("ipcEnabled") is True, "OmniWM: general.ipcEnabled must be true for SketchyBar IPC")
+    assert_eq(general.get("defaultLayoutType"), "niri", "OmniWM: general.defaultLayoutType must be niri")
+    assert_true(general.get("hotkeysEnabled") is True, "OmniWM: general.hotkeysEnabled must be true")
+
+    ws_bar = data.get("workspaceBar", {})
+    assert_true(ws_bar.get("enabled") is False, "OmniWM: workspaceBar.enabled must be false (SketchyBar handles bar)")
+
+    niri = data.get("niri", {})
+    assert_eq(niri.get("visibleContainerCount"), 2, "OmniWM: niri.visibleContainerCount must be 2")
+    assert_eq(niri.get("centerFocusedColumn"), "onOverflow", "OmniWM: niri.centerFocusedColumn must be onOverflow")
+    assert_eq(niri.get("singleWindowFit"), "fill", "OmniWM: niri.singleWindowFit must be fill")
+    assert_true(niri.get("infiniteLoop") is False, "OmniWM: niri.infiniteLoop must be false")
+
+    presets = niri.get("containerPrimarySpanPresets", [])
+    for expected_preset in [0.5, 1.0]:
+        assert_true(any(abs(p - expected_preset) < 0.01 for p in presets), f"OmniWM: preset {expected_preset} missing in niri presets")
+
+    # Validate 5 semantic workspaces
+    workspaces = data.get("workspaces", [])
+    ws_display_names = [w.get("displayName") for w in workspaces]
+    assert_eq(ws_display_names, ["WEB", "DEV", "COMMS", "RUN", "AUX"], "OmniWM: Expected workspaces [WEB, DEV, COMMS, RUN, AUX]")
+
+    # Validate hotkey bindings
+    hotkeys = data.get("hotkeys", [])
+    hk_map = {h.get("id"): h.get("binding") for h in hotkeys if isinstance(h, dict) and "id" in h}
+
+    required_bindings = {
+        # Workspaces 1-5 (F13-F17)
+        "switchWorkspace.0": "F13",
+        "switchWorkspace.1": "F14",
+        "switchWorkspace.2": "F15",
+        "switchWorkspace.3": "F16",
+        "switchWorkspace.4": "F17",
+        # Move to workspace 1-5 (Shift+F13..F17)
+        "moveToWorkspace.0": "Shift+F13",
+        "moveToWorkspace.1": "Shift+F14",
+        "moveToWorkspace.2": "Shift+F15",
+        "moveToWorkspace.3": "Shift+F16",
+        "moveToWorkspace.4": "Shift+F17",
+        # Directional focus (Ctrl+F13..F16)
+        "focus.left": "Control+F13",
+        "focus.down": "Control+F14",
+        "focus.up": "Control+F15",
+        "focus.right": "Control+F16",
+        # Directional move (Ctrl+Shift+F13..F16)
+        "move.left": "Control+Shift+F13",
+        "move.down": "Control+Shift+F14",
+        "move.up": "Control+Shift+F15",
+        "move.right": "Control+Shift+F16",
+        # Context & modes
+        "workspaceBackAndForth": "F18",
+        "cycleSizeForward": "Shift+F18",
+        "toggleOverview": "Option+F18",
+        "toggleFullscreen": "F19",
+        "toggleFocusedWindowFloating": "F20",
+        "focusPrevious": "Option+F16",
+    }
+
+    for hk_id, expected_binding in required_bindings.items():
+        actual = hk_map.get(hk_id)
+        assert_eq(actual, expected_binding, f"OmniWM: Hotkey {hk_id} expected binding {expected_binding}, got {actual}")
+
+    # Verify no duplicate active bindings among hotkeys
+    active_bindings = [h.get("binding") for h in hotkeys if h.get("binding") != "Unassigned"]
+    dups = [b for b in active_bindings if active_bindings.count(b) > 1]
+    assert_eq(len(set(dups)), 0, f"OmniWM: Duplicate active hotkey bindings found: {set(dups)}")
+
+    print(
+        f"PASS: macOS OmniWM Consumer validated ({len(required_bindings)} required hotkey bindings, "
+        f"5 semantic workspaces, Niri settings, ipcEnabled=true, workspaceBar=false)."
+    )
+
+
+def validate_sketchybar_artifacts() -> None:
+    """Verify that all required SketchyBar configuration files exist and are executable where appropriate."""
+    required_files = [
+        "sketchybarrc",
+        "init.lua",
+        "bar.lua",
+        "colors.lua",
+        "icons.lua",
+        "lib/json.lua",
+        "items/workspaces.lua",
+        "items/workspaces_updater.lua",
+        "items/front_app.lua",
+        "items/front_app_updater.lua",
+        "items/media.lua",
+        "items/media_updater.lua",
+        "items/status.lua",
+        "items/status_updater.lua",
+        "helpers/omniwm_watch.sh",
     ]
-    for b in required_main_bindings:
-        assert_in(b, main_bindings, f"AeroSpace: Missing binding '{b}' in [mode.main.binding]")
+    for rel in required_files:
+        p = SKETCHYBAR_DIR / rel
+        assert_true(p.exists(), f"SketchyBar: Required configuration file missing: {p}")
 
-    resize_mode = mode.get("resize", {})
-    resize_bindings = resize_mode.get("binding", {})
-    required_resize_bindings = [
-        "alt-h", "alt-j", "alt-k", "alt-l",
-        "h", "j", "k", "l",
-        "enter", "esc",
-    ]
-    for b in required_resize_bindings:
-        assert_in(b, resize_bindings, f"AeroSpace: Missing binding '{b}' in [mode.resize.binding]")
-
-    service_mode = mode.get("service", {})
-    service_bindings = service_mode.get("binding", {})
-    required_service_bindings = [
-        "h", "j", "k", "l",
-        "alt-h", "alt-j", "alt-k", "alt-l",
-        "shift-h", "shift-j", "shift-k", "shift-l",
-        "alt-shift-h", "alt-shift-j", "alt-shift-k", "alt-shift-l",
-        "b", "r", "t", "a",
-        "m", "shift-m",
-        "enter", "esc",
-    ]
-    for b in required_service_bindings:
-        assert_in(b, service_bindings, f"AeroSpace: Missing binding '{b}' in [mode.service.binding]")
-
-    # Check on-window-detected list
-    on_window_detected = data.get("on-window-detected", [])
-    for rule in on_window_detected:
-        app_id = rule.get("check-further-callbacks", {}).get("app-id", "") if isinstance(rule, dict) else ""
-        run = rule.get("run", "") if isinstance(rule, dict) else ""
-        if "com.mitchellh.ghostty" in str(rule) and "move-node-to-workspace" in str(rule):
-            fail("AeroSpace: Ghostty must NOT have automatic workspace routing in on-window-detected")
-
-    print("PASS: macOS AeroSpace Consumer validated (main, resize, service modes, and no Ghostty auto-routing).")
+    assert_true((SKETCHYBAR_DIR / "sketchybarrc").stat().st_mode & 0o111 != 0, "SketchyBar: sketchybarrc must be executable")
+    assert_true((SKETCHYBAR_DIR / "helpers" / "omniwm_watch.sh").stat().st_mode & 0o111 != 0, "SketchyBar: helpers/omniwm_watch.sh must be executable")
+    print(f"PASS: macOS SketchyBar integration validated ({len(required_files)} modular Lua & IPC helper artifacts).")
 
 
 # -----------------------------------------------------------------------------
@@ -560,9 +597,10 @@ def main() -> None:
 
     # 2. macOS Host
     karabiner_data = load_json(KARABINER_PATH)
-    aerospace_data = load_toml(AEROSPACE_PATH)
+    omniwm_data = load_toml(OMNIWM_PATH)
     validate_karabiner_translator(karabiner_data)
-    validate_aerospace_consumer(aerospace_data)
+    validate_omniwm_consumer(omniwm_data)
+    validate_sketchybar_artifacts()
 
     # 3. Windows Host
     if not AHK_PATH.exists():

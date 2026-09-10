@@ -34,7 +34,7 @@ Problem Detected
    ├─ 2. Is raw F-key received?
    │  ├─ NO: Check active keymap layer (must be on HOST or NAV/MOUSE).
    │  └─ YES: Check host adapter process:
-   │     ├─ macOS: Is Karabiner running? Is AeroSpace running? Is Ghostty running?
+   │     ├─ macOS: Is Karabiner running? Is OmniWM running? Is SketchyBar running? Is Ghostty running?
    │     └─ Windows: Is AutoHotkey script running? Is GlazeWM running?
    └─ 3. Run static validator: uv run scripts/check_host_protocol.py
 ```
@@ -105,7 +105,8 @@ Used when runtime experiments in ZMK Studio override the Git keymap:
 
 ### macOS
 * **Verify Karabiner complex modifications:** Check that `~/.config/karabiner/assets/complex_modifications/karabiner.json` is enabled in Karabiner-Elements Settings $\rightarrow$ Complex Modifications.
-* **Verify AeroSpace status:** Run `aerospace list-workspaces --focused` or `aerospace reload-config` in terminal.
+* **Verify OmniWM status:** Run `omniwmctl ping` or `omniwmctl query active-workspace` in terminal.
+* **Verify SketchyBar status:** Run `sketchybar --query bar` or `brew services list`.
 * **Verify Ghostty:** Check that `ghostty.config` contains `quick-terminal-position = top` and `quick-terminal-screen = main`.
 
 ### Windows

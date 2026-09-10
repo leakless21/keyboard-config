@@ -89,7 +89,7 @@ uv run scripts/check_sofle_keymap.py
 # 3. Validate build targets, manifest SHAs, and CI workflow sync
 uv run scripts/check_build_config.py
 
-# 4. Validate multi-host semantic protocol (Karabiner, AeroSpace, AHK, GlazeWM)
+# 4. Validate multi-host semantic protocol (OmniWM, Karabiner, AHK, GlazeWM)
 uv run scripts/check_host_protocol.py
 
 # 5. Validate generated documentation freshness & undeclared signal detection

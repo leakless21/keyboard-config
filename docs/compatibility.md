@@ -12,7 +12,8 @@ This document tracks tested, validated versions of all upstream firmware modules
 | **zmk-helpers** | `95edb8f15ef1d1bd8332810555f8cf5837fbdd27` | 2026-08-22 | Key labels & layer macros | `config/west.yml` |
 | **zmk-nice-oled** | `de5b2afbd05f1a136e31ca28659373cd07d1e443` | 2026-08-22 | OLED display widgets & status | `config/west.yml` |
 | **keymap-drawer** | `0.23.0` (`a44809b8cc718cbff646641f49a8f71a9368336d`) | 2026-08-22 | Keymap diagram rendering | `.github/workflows/draw-keymap.yml` |
-| **AeroSpace** | `0.19.2+` | 2026-08-22 | macOS Tiling Window Manager | `hosts/macos/aerospace.toml` |
+| **OmniWM** | `0.6.8+` (schema v3) | 2026-09-10 | macOS Tiling & Scrolling Window Manager | `hosts/macos/omniwm/settings.toml` |
+| **SketchyBar** | `2.24.0+` | 2026-09-10 | macOS Status Bar & Workspace Presenter | `hosts/macos/sketchybar/` |
 | **Karabiner-Elements** | `15.3.0+` | 2026-08-22 | macOS HID Translation Bridge | `hosts/macos/karabiner.json` |
 | **Ghostty** | `1.1.0+` | 2026-08-22 | macOS Terminal & Scratchpad | `hosts/macos/ghostty.config` |
 | **GlazeWM** | `3.9.0+` (modern schema) | 2026-08-22 | Windows Tiling Window Manager | `hosts/windows/glazewm.yaml` |
@@ -47,9 +48,9 @@ Always upgrade **one external component at a time** to maintain deterministic re
 4. Reload GlazeWM on Windows host and exercise all workspace, navigation, resize, and service shortcuts.
 5. Update tested version in this file.
 
-### C. Upgrading AeroSpace or Karabiner (macOS)
+### C. Upgrading OmniWM, SketchyBar, or Karabiner (macOS)
 1. Review upstream release notes.
-2. If necessary, adjust `hosts/macos/aerospace.toml` or `hosts/macos/karabiner.json`.
+2. If necessary, adjust `hosts/macos/omniwm/settings.toml`, `hosts/macos/sketchybar/`, or `hosts/macos/karabiner.json`.
 3. Run protocol validation:
    ```bash
    uv run scripts/check_host_protocol.py

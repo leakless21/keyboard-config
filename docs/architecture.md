@@ -19,8 +19,8 @@ Keyboard Hardware (Corne / Sofle)
   ┌─────────────┴─────────────┐
   ▼                           ▼
 macOS                      Windows
-Karabiner-Elements         AutoHotkey v2
-AeroSpace                  GlazeWM
+OmniWM + SketchyBar        AutoHotkey v2
+Karabiner-Elements         GlazeWM
 Ghostty                    Windows Terminal
 Spotlight                  Windows Search
 ```

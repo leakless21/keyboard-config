@@ -8,7 +8,7 @@
 
 ```text
 Corne ─┐
-       ├── Semantic Keyboard Protocol (F13–F24) ─┬── macOS   (Karabiner + AeroSpace + Ghostty)
+       ├── Semantic Keyboard Protocol (F13–F24) ─┬── macOS   (OmniWM + SketchyBar + Karabiner + Ghostty)
 Sofle ─┘                                        └── Windows (AutoHotkey + GlazeWM + Windows Terminal)
 ```
 
@@ -62,19 +62,19 @@ Single-page, deterministic A4 reference sheets generated directly from firmware 
 ## 4. Host Integration Matrix
 | Feature | Firmware Signal | macOS Adapter | Windows Adapter |
 |---|---|---|---|
-| **Workspaces 1–5** | `F13`–`F17` | AeroSpace `Alt-1..5` | GlazeWM `f13..f17` |
-| **Move to Workspace** | `Shift+F13..F17` | AeroSpace `Alt-Shift-1..5` | GlazeWM `shift+f13..f17` |
-| **Directional Focus** | `Ctrl+F13..F16` | AeroSpace `Alt-H/J/K/L` | GlazeWM `ctrl+f13..f16` |
-| **Directional Move** | `Ctrl+Shift+F13..F16` | AeroSpace `Alt-Shift-H/J/K/L` | GlazeWM `ctrl+shift+f13..f16` |
-| **Previous Workspace** | `F18` | AeroSpace `Alt-Tab` | GlazeWM `f18` |
-| **Resize Mode** | `Shift+F18` | AeroSpace `Alt-R` | GlazeWM `shift+f18` |
-| **Service Mode** | `Alt+F18` | AeroSpace `Alt-Shift-;` | GlazeWM `alt+f18` |
-| **Fullscreen** | `F19` | AeroSpace `Alt-F` | GlazeWM `f19` |
-| **Float / Tile** | `F20` | AeroSpace `Alt-Shift-Space` | GlazeWM `f20` |
+| **Workspaces 1–5** | `F13`–`F17` | OmniWM `switch-workspace 1..5` | GlazeWM `f13..f17` |
+| **Move to Workspace** | `Shift+F13..F17` | OmniWM `move-to-workspace 1..5` | GlazeWM `shift+f13..f17` |
+| **Directional Focus** | `Ctrl+F13..F16` | OmniWM `focus left/down/up/right` | GlazeWM `ctrl+f13..f16` |
+| **Directional Move** | `Ctrl+Shift+F13..F16` | OmniWM `move left/down/up/right` | GlazeWM `ctrl+shift+f13..f16` |
+| **Previous Workspace** | `F18` | OmniWM `switch-workspace back-and-forth` | GlazeWM `f18` |
+| **Resize Mode / Cycle** | `Shift+F18` | OmniWM `cycle-size forward` | GlazeWM `shift+f18` |
+| **Overview / Service** | `Alt+F18` | OmniWM `toggle-overview` | GlazeWM `alt+f18` |
+| **Fullscreen** | `F19` | OmniWM `toggle-fullscreen` | GlazeWM `f19` |
+| **Float / Tile** | `F20` | OmniWM `toggle-focused-window-floating` | GlazeWM `f20` |
 | **System Launcher** | `Alt+F13` | Spotlight (`Cmd+Space`) | Windows Search (`Win+S`) |
 | **Quick Terminal** | `Alt+F14` | Ghostty dropdown (`Ctrl+```) | Windows Terminal Quake (`Ctrl+Alt+```) |
 | **New Terminal** | `Alt+F15` | Ghostty window (`Alt+Enter`) | Windows Terminal (`wt.exe`) |
-| **Previous Window** | `Alt+F16` | AeroSpace (`Alt+```) | Windows (`Alt+Tab`) |
+| **Previous Window** | `Alt+F16` | OmniWM (`focus previous`) | Windows (`Alt+Tab`) |
 | **Language Toggle** | `Alt+F17` | Input Source (`Ctrl+Space`) | EVKey Toggle (`Ctrl+Shift`) |
 | **Select All / Save / Find** | `Hyper+F13..F15` | `Cmd+A` / `Cmd+S` / `Cmd+F` | `Ctrl+A` / `Ctrl+S` / `Ctrl+F` |
 | **Tab Management** | `Hyper+F16..F20` | PrevTab / NextTab / New / Close / Reopen | PrevTab / NextTab / New / Close / Reopen |

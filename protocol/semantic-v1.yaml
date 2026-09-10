@@ -13,7 +13,7 @@ actions:
     category: workspace
     description: "Switch to workspace 1 (WEB)"
     host_implementations:
-      macos: "AeroSpace: alt-1 (Workspace 1)"
+      macos: "OmniWM: switch-workspace 1 (F13)"
       windows: "GlazeWM: focus --workspace 1"
 
   workspace_2:
@@ -22,7 +22,7 @@ actions:
     category: workspace
     description: "Switch to workspace 2 (DEV)"
     host_implementations:
-      macos: "AeroSpace: alt-2 (Workspace 2)"
+      macos: "OmniWM: switch-workspace 2 (F14)"
       windows: "GlazeWM: focus --workspace 2"
 
   workspace_3:
@@ -31,7 +31,7 @@ actions:
     category: workspace
     description: "Switch to workspace 3 (COMMS)"
     host_implementations:
-      macos: "AeroSpace: alt-3 (Workspace 3)"
+      macos: "OmniWM: switch-workspace 3 (F15)"
       windows: "GlazeWM: focus --workspace 3"
 
   workspace_4:
@@ -40,7 +40,7 @@ actions:
     category: workspace
     description: "Switch to workspace 4 (RUN)"
     host_implementations:
-      macos: "AeroSpace: alt-4 (Workspace 4)"
+      macos: "OmniWM: switch-workspace 4 (F16)"
       windows: "GlazeWM: focus --workspace 4"
 
   workspace_5:
@@ -49,7 +49,7 @@ actions:
     category: workspace
     description: "Switch to workspace 5 (AUX)"
     host_implementations:
-      macos: "AeroSpace: alt-5 (Workspace 5)"
+      macos: "OmniWM: switch-workspace 5 (F17)"
       windows: "GlazeWM: focus --workspace 5"
 
   # ===========================================================================
@@ -62,7 +62,7 @@ actions:
     category: window_management
     description: "Move active window to workspace 1 and follow"
     host_implementations:
-      macos: "AeroSpace: alt-shift-1 (Move to 1 and follow)"
+      macos: "OmniWM: move-to-workspace 1 and follow (Shift+F13)"
       windows: "GlazeWM: move --workspace 1; focus --workspace 1"
 
   move_workspace_2:
@@ -72,7 +72,7 @@ actions:
     category: window_management
     description: "Move active window to workspace 2 and follow"
     host_implementations:
-      macos: "AeroSpace: alt-shift-2 (Move to 2 and follow)"
+      macos: "OmniWM: move-to-workspace 2 and follow (Shift+F14)"
       windows: "GlazeWM: move --workspace 2; focus --workspace 2"
 
   move_workspace_3:
@@ -82,7 +82,7 @@ actions:
     category: window_management
     description: "Move active window to workspace 3 and follow"
     host_implementations:
-      macos: "AeroSpace: alt-shift-3 (Move to 3 and follow)"
+      macos: "OmniWM: move-to-workspace 3 and follow (Shift+F15)"
       windows: "GlazeWM: move --workspace 3; focus --workspace 3"
 
   move_workspace_4:
@@ -92,7 +92,7 @@ actions:
     category: window_management
     description: "Move active window to workspace 4 and follow"
     host_implementations:
-      macos: "AeroSpace: alt-shift-4 (Move to 4 and follow)"
+      macos: "OmniWM: move-to-workspace 4 and follow (Shift+F16)"
       windows: "GlazeWM: move --workspace 4; focus --workspace 4"
 
   move_workspace_5:
@@ -102,7 +102,7 @@ actions:
     category: window_management
     description: "Move active window to workspace 5 and follow"
     host_implementations:
-      macos: "AeroSpace: alt-shift-5 (Move to 5 and follow)"
+      macos: "OmniWM: move-to-workspace 5 and follow (Shift+F17)"
       windows: "GlazeWM: move --workspace 5; focus --workspace 5"
 
   # ===========================================================================
@@ -115,7 +115,7 @@ actions:
     category: navigation
     description: "Focus window to the left"
     host_implementations:
-      macos: "AeroSpace: alt-h (Focus left)"
+      macos: "OmniWM: focus left (Ctrl+F13)"
       windows: "GlazeWM: focus --direction left"
 
   focus_down:
@@ -125,7 +125,7 @@ actions:
     category: navigation
     description: "Focus window below"
     host_implementations:
-      macos: "AeroSpace: alt-j (Focus down)"
+      macos: "OmniWM: focus down (Ctrl+F14)"
       windows: "GlazeWM: focus --direction down"
 
   focus_up:
@@ -135,7 +135,7 @@ actions:
     category: navigation
     description: "Focus window above"
     host_implementations:
-      macos: "AeroSpace: alt-k (Focus up)"
+      macos: "OmniWM: focus up (Ctrl+F15)"
       windows: "GlazeWM: focus --direction up"
 
   focus_right:
@@ -145,7 +145,7 @@ actions:
     category: navigation
     description: "Focus window to the right"
     host_implementations:
-      macos: "AeroSpace: alt-l (Focus right)"
+      macos: "OmniWM: focus right (Ctrl+F16)"
       windows: "GlazeWM: focus --direction right"
 
   # ===========================================================================
@@ -158,7 +158,7 @@ actions:
     category: window_management
     description: "Move active window to the left"
     host_implementations:
-      macos: "AeroSpace: alt-shift-h (Move left)"
+      macos: "OmniWM: move left (Ctrl+Shift+F13)"
       windows: "GlazeWM: move --direction left"
 
   move_down:
@@ -168,7 +168,7 @@ actions:
     category: window_management
     description: "Move active window down"
     host_implementations:
-      macos: "AeroSpace: alt-shift-j (Move down)"
+      macos: "OmniWM: move down (Ctrl+Shift+F14)"
       windows: "GlazeWM: move --direction down"
 
   move_up:
@@ -178,7 +178,7 @@ actions:
     category: window_management
     description: "Move active window up"
     host_implementations:
-      macos: "AeroSpace: alt-shift-k (Move up)"
+      macos: "OmniWM: move up (Ctrl+Shift+F15)"
       windows: "GlazeWM: move --direction up"
 
   move_right:
@@ -188,7 +188,7 @@ actions:
     category: window_management
     description: "Move active window to the right"
     host_implementations:
-      macos: "AeroSpace: alt-shift-l (Move right)"
+      macos: "OmniWM: move right (Ctrl+Shift+F16)"
       windows: "GlazeWM: move --direction right"
 
   # ===========================================================================
@@ -200,7 +200,7 @@ actions:
     category: workspace
     description: "Focus previous / recent workspace"
     host_implementations:
-      macos: "AeroSpace: alt-tab (workspace-back-and-forth)"
+      macos: "OmniWM: switch-workspace back-and-forth (F18)"
       windows: "GlazeWM: focus --recent-workspace"
 
   resize_mode:
@@ -208,9 +208,9 @@ actions:
       key: F18
       modifiers: [shift]
     category: modal
-    description: "Enter directional resize modal mode"
+    description: "Cycle window size forward (OmniWM) / modal resize (GlazeWM)"
     host_implementations:
-      macos: "AeroSpace: alt-r (mode resize)"
+      macos: "OmniWM: cycle-size forward (Shift+F18)"
       windows: "GlazeWM: wm-enable-binding-mode --name resize"
 
   service_mode:
@@ -218,9 +218,9 @@ actions:
       key: F18
       modifiers: [alt]
     category: modal
-    description: "Enter WM management / service mode"
+    description: "Toggle overview (OmniWM) / service mode (GlazeWM)"
     host_implementations:
-      macos: "AeroSpace: alt-shift-semicolon (mode service)"
+      macos: "OmniWM: toggle-overview (Option+F18)"
       windows: "GlazeWM: wm-enable-binding-mode --name service"
 
   fullscreen_toggle:
@@ -229,7 +229,7 @@ actions:
     category: window_management
     description: "Toggle active window fullscreen"
     host_implementations:
-      macos: "AeroSpace: alt-f (fullscreen)"
+      macos: "OmniWM: toggle-fullscreen (F19)"
       windows: "GlazeWM: toggle-fullscreen"
 
   float_toggle:
@@ -238,7 +238,7 @@ actions:
     category: window_management
     description: "Toggle active window float / tile"
     host_implementations:
-      macos: "AeroSpace: alt-shift-space (layout floating tiling)"
+      macos: "OmniWM: toggle-focused-window-floating (F20)"
       windows: "GlazeWM: toggle-floating --centered"
 
   # ===========================================================================
@@ -281,7 +281,7 @@ actions:
     category: navigation
     description: "Switch to previous active window across workspaces"
     host_implementations:
-      macos: "Karabiner: Alt+` (AeroSpace focus-back-and-forth)"
+      macos: "OmniWM: focus previous (Option+F16)"
       windows: "AutoHotkey: Alt+Tab (Previous Window)"
 
   language_toggle:

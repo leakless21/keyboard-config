@@ -9,7 +9,7 @@ schemaVersion = 3
 mode = "dark"
 
 [borders]
-enabled = true
+enabled = false
 width = 2.0
 
 [borders.color]
@@ -88,10 +88,9 @@ margin = 1
 alwaysCenterSingleColumn = false
 centerFocusedColumn = "onOverflow"
 containerPrimarySpanPresets = [0.3333333333333333, 0.5, 0.6666666666666666, 1.0]
-defaultContainerPrimarySpan = 0.5
 infiniteLoop = false
 singleWindowFit = "fill"
-visibleContainerCount = 2
+visibleContainerCount = 1
 
 [overview]
 zoom = 1.0
@@ -150,19 +149,19 @@ useWorkspaceId = false
 [workspaceBar]
 backgroundOpacity = 0.05
 deduplicateAppIcons = true
-enabled = false
+enabled = true
 excludedBundleIDs = []
 height = 24.0
-hideEmptyWorkspaces = true
+hideEmptyWorkspaces = false
 hideInNativeFullscreen = true
 notchActiveZoneWidth = 180.0
 notchMode = "moveBelowMenuBar"
-position = "overlappingMenuBar"
-reserveLayoutSpace = false
+position = "belowMenuBar"
+reserveLayoutSpace = true
 revealHoldMilliseconds = 200.0
-revealModifier = "option"
+revealModifier = "off"
 showFloatingWindows = true
-showLabels = false
+showLabels = true
 systemStatsButton = true
 windowLevel = "popup"
 xOffset = 0.0
@@ -1031,7 +1030,7 @@ type = "main"
 [[workspaces]]
 displayName = "COMMS"
 id = "BEB842B5-E894-4791-9FD1-397C3CDD3538"
-layoutType = "niri"
+layoutType = "dwindle"
 name = "3"
 
 [workspaces.monitorAssignment]

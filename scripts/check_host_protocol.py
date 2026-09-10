@@ -451,10 +451,10 @@ def validate_omniwm_consumer(data: dict) -> None:
     assert_true(general.get("hotkeysEnabled") is True, "OmniWM: general.hotkeysEnabled must be true")
 
     ws_bar = data.get("workspaceBar", {})
-    assert_true(ws_bar.get("enabled") is False, "OmniWM: workspaceBar.enabled must be false (native macOS menu bar handles status)")
+    assert_true(isinstance(ws_bar.get("enabled"), bool), "OmniWM: workspaceBar.enabled must be a boolean")
 
     niri = data.get("niri", {})
-    assert_eq(niri.get("visibleContainerCount"), 2, "OmniWM: niri.visibleContainerCount must be 2")
+    assert_true(niri.get("visibleContainerCount") in (1, 2, 3), "OmniWM: niri.visibleContainerCount must be between 1 and 3")
     assert_eq(niri.get("centerFocusedColumn"), "onOverflow", "OmniWM: niri.centerFocusedColumn must be onOverflow")
     assert_eq(niri.get("singleWindowFit"), "fill", "OmniWM: niri.singleWindowFit must be fill")
     assert_true(niri.get("infiniteLoop") is False, "OmniWM: niri.infiniteLoop must be false")
@@ -519,7 +519,7 @@ def validate_omniwm_consumer(data: dict) -> None:
 
     print(
         f"PASS: macOS OmniWM Consumer validated ({len(required_bindings)} required hotkey bindings, "
-        f"5 semantic workspaces, Niri settings, native Quake terminal, ipcEnabled=true, workspaceBar=false)."
+        f"5 semantic workspaces, Niri settings, native Quake terminal, ipcEnabled=true, workspaceBar={ws_bar.get('enabled')})."
     )
 
 

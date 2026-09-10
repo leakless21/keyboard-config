@@ -309,8 +309,8 @@ layers:
   - Move→RUN
   - Move→AUX
   - ''
-  - Resize
-  - Service
+  - Width
+  - Overview
   - ''
   - ''
   - ESCAPE

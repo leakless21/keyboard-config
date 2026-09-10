@@ -11,7 +11,6 @@
               "type": "device_if",
               "identifiers": [
                 {
-                  "is_keyboard": true,
                   "is_built_in_keyboard": false
                 }
               ]
@@ -44,7 +43,6 @@
               "type": "device_if",
               "identifiers": [
                 {
-                  "is_keyboard": true,
                   "is_built_in_keyboard": false
                 }
               ]
@@ -74,7 +72,6 @@
               "type": "device_if",
               "identifiers": [
                 {
-                  "is_keyboard": true,
                   "is_built_in_keyboard": false
                 }
               ]
@@ -112,7 +109,6 @@
               "type": "device_if",
               "identifiers": [
                 {
-                  "is_keyboard": true,
                   "is_built_in_keyboard": false
                 }
               ]
@@ -148,7 +144,6 @@
               "type": "device_if",
               "identifiers": [
                 {
-                  "is_keyboard": true,
                   "is_built_in_keyboard": false
                 }
               ]
@@ -184,7 +179,6 @@
               "type": "device_if",
               "identifiers": [
                 {
-                  "is_keyboard": true,
                   "is_built_in_keyboard": false
                 }
               ]
@@ -220,7 +214,6 @@
               "type": "device_if",
               "identifiers": [
                 {
-                  "is_keyboard": true,
                   "is_built_in_keyboard": false
                 }
               ]
@@ -257,7 +250,6 @@
               "type": "device_if",
               "identifiers": [
                 {
-                  "is_keyboard": true,
                   "is_built_in_keyboard": false
                 }
               ]
@@ -294,7 +286,6 @@
               "type": "device_if",
               "identifiers": [
                 {
-                  "is_keyboard": true,
                   "is_built_in_keyboard": false
                 }
               ]
@@ -330,7 +321,6 @@
               "type": "device_if",
               "identifiers": [
                 {
-                  "is_keyboard": true,
                   "is_built_in_keyboard": false
                 }
               ]
@@ -366,7 +356,6 @@
               "type": "device_if",
               "identifiers": [
                 {
-                  "is_keyboard": true,
                   "is_built_in_keyboard": false
                 }
               ]
@@ -403,7 +392,6 @@
               "type": "device_if",
               "identifiers": [
                 {
-                  "is_keyboard": true,
                   "is_built_in_keyboard": false
                 }
               ]
@@ -439,7 +427,6 @@
               "type": "device_if",
               "identifiers": [
                 {
-                  "is_keyboard": true,
                   "is_built_in_keyboard": false
                 }
               ]
@@ -475,7 +462,6 @@
               "type": "device_if",
               "identifiers": [
                 {
-                  "is_keyboard": true,
                   "is_built_in_keyboard": false
                 }
               ]
@@ -511,7 +497,6 @@
               "type": "device_if",
               "identifiers": [
                 {
-                  "is_keyboard": true,
                   "is_built_in_keyboard": false
                 }
               ]
@@ -553,7 +538,6 @@
               "type": "device_if",
               "identifiers": [
                 {
-                  "is_keyboard": true,
                   "is_built_in_keyboard": false
                 }
               ]
@@ -586,7 +570,6 @@
               "type": "device_if",
               "identifiers": [
                 {
-                  "is_keyboard": true,
                   "is_built_in_keyboard": false
                 }
               ]
@@ -619,7 +602,6 @@
               "type": "device_if",
               "identifiers": [
                 {
-                  "is_keyboard": true,
                   "is_built_in_keyboard": false
                 }
               ]
@@ -652,7 +634,6 @@
               "type": "device_if",
               "identifiers": [
                 {
-                  "is_keyboard": true,
                   "is_built_in_keyboard": false
                 }
               ]
@@ -685,7 +666,6 @@
               "type": "device_if",
               "identifiers": [
                 {
-                  "is_keyboard": true,
                   "is_built_in_keyboard": false
                 }
               ]
@@ -715,7 +695,6 @@
               "type": "device_if",
               "identifiers": [
                 {
-                  "is_keyboard": true,
                   "is_built_in_keyboard": false
                 }
               ]
@@ -745,7 +724,6 @@
               "type": "device_if",
               "identifiers": [
                 {
-                  "is_keyboard": true,
                   "is_built_in_keyboard": false
                 }
               ]
@@ -775,7 +753,6 @@
               "type": "device_if",
               "identifiers": [
                 {
-                  "is_keyboard": true,
                   "is_built_in_keyboard": false
                 }
               ]
@@ -810,7 +787,6 @@
               "type": "device_if",
               "identifiers": [
                 {
-                  "is_keyboard": true,
                   "is_built_in_keyboard": false
                 }
               ]
@@ -845,7 +821,6 @@
               "type": "device_if",
               "identifiers": [
                 {
-                  "is_keyboard": true,
                   "is_built_in_keyboard": false
                 }
               ]
@@ -880,7 +855,6 @@
               "type": "device_if",
               "identifiers": [
                 {
-                  "is_keyboard": true,
                   "is_built_in_keyboard": false
                 }
               ]
@@ -915,7 +889,6 @@
               "type": "device_if",
               "identifiers": [
                 {
-                  "is_keyboard": true,
                   "is_built_in_keyboard": false
                 }
               ]
@@ -950,7 +923,6 @@
               "type": "device_if",
               "identifiers": [
                 {
-                  "is_keyboard": true,
                   "is_built_in_keyboard": false
                 }
               ]
@@ -985,7 +957,6 @@
               "type": "device_if",
               "identifiers": [
                 {
-                  "is_keyboard": true,
                   "is_built_in_keyboard": false
                 }
               ]
@@ -1020,7 +991,6 @@
               "type": "device_if",
               "identifiers": [
                 {
-                  "is_keyboard": true,
                   "is_built_in_keyboard": false
                 }
               ]
@@ -1055,7 +1025,6 @@
               "type": "device_if",
               "identifiers": [
                 {
-                  "is_keyboard": true,
                   "is_built_in_keyboard": false
                 }
               ]
@@ -1090,7 +1059,6 @@
               "type": "device_if",
               "identifiers": [
                 {
-                  "is_keyboard": true,
                   "is_built_in_keyboard": false
                 }
               ]
@@ -1125,7 +1093,6 @@
               "type": "device_if",
               "identifiers": [
                 {
-                  "is_keyboard": true,
                   "is_built_in_keyboard": false
                 }
               ]
@@ -1160,7 +1127,6 @@
               "type": "device_if",
               "identifiers": [
                 {
-                  "is_keyboard": true,
                   "is_built_in_keyboard": false
                 }
               ]
@@ -1195,7 +1161,6 @@
               "type": "device_if",
               "identifiers": [
                 {
-                  "is_keyboard": true,
                   "is_built_in_keyboard": false
                 }
               ]

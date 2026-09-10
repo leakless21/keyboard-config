@@ -1,4 +1,6 @@
+-- hosts/macos/sketchybar/items/workspaces.lua
 -- Workspaces item setup for SketchyBar
+
 local colors = require("colors")
 local icons = require("icons")
 
@@ -38,7 +40,7 @@ local function setup_workspaces()
       "--set workspace.%d icon=\"%d\" label=\"%s\" " ..
       "click_script=\"omniwmctl command switch-workspace %d\" " ..
       "icon.font=\"JetBrainsMono Nerd Font:Bold:12.0\" " ..
-      "label.font=\"JetBrainsMono Nerd Font:Bold:11.0\" " ..
+      "label.font=\"sketchybar-app-font:Regular:12.0\" " ..
       "icon.color=0x%08x label.color=0x%08x " ..
       "background.height=24 background.corner_radius=6 background.color=0x%08x background.drawing=off " ..
       "icon.padding_left=8 icon.padding_right=4 label.padding_left=4 label.padding_right=8",
@@ -48,11 +50,11 @@ local function setup_workspaces()
   end
   os.execute(table.concat(batch_init, " "))
 
-  -- Add invisible updater item that listens to omniwm_state_changed, front_app_switched, system_woke
+  -- Add invisible updater item that listens to omniwm_state_changed, front_app_switched, system_woke, display_change
   local updater_cmd = string.format(
     "sketchybar --add item workspace_listener left " ..
     "--set workspace_listener drawing=off script=\"lua '%s/items/workspaces_updater.lua'\" " ..
-    "--subscribe workspace_listener omniwm_state_changed front_app_switched system_woke",
+    "--subscribe workspace_listener omniwm_state_changed front_app_switched system_woke display_change",
     config_dir
   )
   os.execute(updater_cmd)

@@ -1,14 +1,22 @@
--- Status updater script for right-side items
+-- hosts/macos/sketchybar/items/status_updater.lua
+-- Simplified status updater: Wi-Fi (icon only), Volume (icon only), Battery (icon + %), Clock (HH:mm)
+
 local config_dir = os.getenv("CONFIG_DIR") or (os.getenv("HOME") .. "/.config/sketchybar")
 package.path = config_dir .. "/?.lua;" .. config_dir .. "/?/init.lua;" .. package.path
 
 local icons = require("icons")
+local shell = require("lib.shell")
 
 local target = arg[1] or "all"
 
 local function update_clock()
   local time_str = os.date("%H:%M")
-  os.execute(string.format('sketchybar --set status.clock icon="%s" label="%s"', icons.clock, time_str))
+  local cmd = string.format(
+    "sketchybar --set status.clock icon=%s label=%s",
+    shell.quote(icons.clock),
+    shell.quote(time_str)
+  )
+  os.execute(cmd)
 end
 
 local function update_battery()
@@ -35,7 +43,13 @@ local function update_battery()
     icon = icons.battery.empty
   end
 
-  os.execute(string.format('sketchybar --set status.battery icon="%s" label="%d%%"', icon, pct))
+  local label_str = string.format("%d%%", pct)
+  local cmd = string.format(
+    "sketchybar --set status.battery icon=%s label=%s",
+    shell.quote(icon),
+    shell.quote(label_str)
+  )
+  os.execute(cmd)
 end
 
 local function update_volume()
@@ -57,7 +71,11 @@ local function update_volume()
     end
   end
 
-  os.execute(string.format('sketchybar --set status.volume icon="%s" label="%d%%"', icon, vol))
+  local cmd = string.format(
+    "sketchybar --set status.volume icon=%s label.drawing=off",
+    shell.quote(icon)
+  )
+  os.execute(cmd)
 end
 
 local function update_wifi()
@@ -67,22 +85,18 @@ local function update_wifi()
 
   local ssid = out:match("SSID%s*:%s*(.+)")
   local icon = icons.wifi.disconnected
-  local label = "Off"
 
-  if ssid and ssid ~= "" then
+  if ssid and ssid ~= "" and not ssid:match("<redacted>") then
     icon = icons.wifi.connected
-    -- If redacted or generic, show clean label
-    if ssid:match("<redacted>") then
-      label = "Wi-Fi"
-    else
-      label = ssid:gsub('"', '\\"')
-      if #label > 14 then
-        label = label:sub(1, 12) .. ".."
-      end
-    end
+  elseif ssid and ssid:match("<redacted>") then
+    icon = icons.wifi.connected
   end
 
-  os.execute(string.format('sketchybar --set status.wifi icon="%s" label="%s"', icon, label))
+  local cmd = string.format(
+    "sketchybar --set status.wifi icon=%s label.drawing=off",
+    shell.quote(icon)
+  )
+  os.execute(cmd)
 end
 
 if target == "clock" then

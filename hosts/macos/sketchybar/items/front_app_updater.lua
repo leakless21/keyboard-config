@@ -1,14 +1,17 @@
--- Front App updater for SketchyBar
+-- hosts/macos/sketchybar/items/front_app_updater.lua
+-- Front App updater for SketchyBar (notch-aware q/center placement, app icon + name)
+
 local config_dir = os.getenv("CONFIG_DIR") or (os.getenv("HOME") .. "/.config/sketchybar")
 package.path = config_dir .. "/?.lua;" .. config_dir .. "/?/init.lua;" .. package.path
 
 local json = require("lib.json")
+local shell = require("lib.shell")
 local icons = require("icons")
 
 local app_name = os.getenv("INFO")
-local title = ""
+local is_internal = true
 
--- Attempt to get focused window from OmniWM IPC
+-- Attempt to get focused window and monitor information from OmniWM IPC
 local handle = io.popen("omniwmctl query focused-window --format json 2>/dev/null")
 if handle then
   local raw = handle:read("*a")
@@ -20,8 +23,28 @@ if handle then
       if win.app and win.app.name then
         app_name = win.app.name
       end
-      if win.title then
-        title = win.title
+    end
+  end
+end
+
+-- Check display setup to position at q (notched internal) vs center (external)
+local mhandle = io.popen("omniwmctl query workspace-bar --format json 2>/dev/null")
+if mhandle then
+  local mraw = mhandle:read("*a")
+  mhandle:close()
+  if mraw and mraw ~= "" then
+    local msuccess, mdata = pcall(json.decode, mraw)
+    if msuccess and mdata and mdata.result and mdata.result.payload and mdata.result.payload.monitors then
+      local monitors = mdata.result.payload.monitors
+      local active_id = mdata.result.payload.interactionMonitorId
+      for _, m in ipairs(monitors) do
+        if m.id == active_id or #monitors == 1 then
+          local mname = m.name or ""
+          if not mname:find("Built%-in") and not mname:find("Retina") then
+            is_internal = false
+          end
+          break
+        end
       end
     end
   end
@@ -33,22 +56,12 @@ if not app_name or app_name == "" then
 end
 
 local app_icon = icons.get_app_icon(app_name)
-
--- Truncate title if long
-if #title > 35 then
-  title = string.sub(title, 1, 32) .. "..."
-end
-
--- Escape double quotes in title
-title = title:gsub('"', '\\"')
-
-local display_label = app_name
-if title ~= "" and title ~= app_name then
-  display_label = string.format("%s — %s", app_name, title)
-end
+local target_pos = is_internal and "q" or "center"
 
 local cmd = string.format(
-  "sketchybar --set front_app icon=\"%s\" label=\"%s\" drawing=on",
-  app_icon, display_label
+  "sketchybar --set front_app position=%s icon=%s label=%s drawing=on",
+  target_pos,
+  shell.quote(app_icon),
+  shell.quote(app_name)
 )
 os.execute(cmd)

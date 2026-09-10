@@ -1,8 +1,8 @@
 {
-  "title": "Keyboard Semantic Host Bridge (Desktop Launchers, Hyper+F13-F24 Application Actions, F21-F24 Editing, Standard F1-F12 Normalization)",
+  "title": "Keyboard Semantic Host Bridge - External (Desktop Launchers, Hyper+F13-F24 Application Actions, F21-F24 Editing, Standard F1-F12 Normalization)",
   "rules": [
     {
-      "description": "Semantic Desktop Actions & Launchers (Alt+F13 Spotlight, Alt+F14 Quick Terminal, Alt+F15 New Terminal, Alt+F17 Language)",
+      "description": "Semantic Desktop Actions & Launchers (Alt+F13 Spotlight, Alt+F15 New Terminal, Alt+F17 Language)",
       "manipulators": [
         {
           "type": "basic",
@@ -51,39 +51,6 @@
             }
           ],
           "from": {
-            "key_code": "f14",
-            "modifiers": {
-              "mandatory": [
-                "option"
-              ],
-              "optional": [
-                "caps_lock"
-              ]
-            }
-          },
-          "to": [
-            {
-              "key_code": "grave_accent_and_tilde",
-              "modifiers": [
-                "left_control"
-              ]
-            }
-          ]
-        },
-        {
-          "type": "basic",
-          "conditions": [
-            {
-              "type": "device_if",
-              "identifiers": [
-                {
-                  "is_keyboard": true,
-                  "is_built_in_keyboard": false
-                }
-              ]
-            }
-          ],
-          "from": {
             "key_code": "f15",
             "modifiers": {
               "mandatory": [
@@ -96,10 +63,7 @@
           },
           "to": [
             {
-              "key_code": "return_or_enter",
-              "modifiers": [
-                "left_alt"
-              ]
+              "shell_command": "osascript -e 'tell application \"Ghostty\" to activate' -e 'tell application \"Ghostty\" to new window'"
             }
           ]
         },

@@ -203,17 +203,17 @@ Configured in `hosts/macos/omniwm/settings.toml`:
 Configured in `hosts/macos/omniwm/settings.toml` (`[workspaceBar]`):
 
 ```toml
-position = "belowMenuBar"
+position = "overlappingMenuBar"
 notchMode = "moveBelowMenuBar"
 revealModifier = "option"
 revealHoldMilliseconds = 200.0
-reserveLayoutSpace = false
+reserveLayoutSpace = true
 ```
 
-- Hold `Option` alone → after ~200 ms the OmniWM workspace bar appears below the native menu bar.
+- Hold `Option` alone → after ~200 ms the OmniWM workspace bar appears (overlapping the menu bar row; on a notched display it moves below the menu bar).
 - Release `Option` → the workspace bar immediately hides.
 - The bar stays visible while `Option` remains physically held, including while issuing `Option`-based workspace/focus/move shortcuts (MacBook IPC preserves modifier state; synthetic `F13`–`F20` would not).
-- The hidden bar reserves no permanent vertical layout space; tiled windows regain the region when hidden.
+- `position = "overlappingMenuBar"` and `reserveLayoutSpace = true` are deliberate choices and are also OmniWM's own normalized values for the workspace bar. Keeping the repo file identical to what OmniWM writes prevents the running app from drifting the checked-in configuration.
 - `hideInNativeFullscreen = true` is preserved: native fullscreen hides the bar per OmniWM's intended behavior.
 
 ---

@@ -156,6 +156,14 @@ Validate adapter JSON with Karabiner's own linter before enabling it:
   --lint-complex-modifications "$(pwd)/hosts/macos/karabiner/"*.json
 ```
 
+**Deploying adapter edits (the step that is easy to miss):**
+```bash
+uv run scripts/check_host_drift.py               # is the live config running what the repo says?
+uv run scripts/sync_karabiner.py                 # dry run: show what is stale
+uv run scripts/sync_karabiner.py --apply --reload  # update assets + inline rules, reload Karabiner
+```
+`check_host_drift.py` compares the repo against the live asset files, the inline rule bodies in `karabiner.json`, and the live OmniWM settings symlink. It exits non-zero on drift, which is how a correct repo file can otherwise sit unused for months while an old inline copy keeps running.
+
 ---
 
 ## 3. Workspaces & Niri Layout
@@ -223,13 +231,13 @@ position = "overlappingMenuBar"
 notchMode = "moveBelowMenuBar"
 revealModifier = "option"
 revealHoldMilliseconds = 200.0
-reserveLayoutSpace = true
+reserveLayoutSpace = false
 ```
 
 - Hold `Option` alone → after ~200 ms the OmniWM workspace bar appears (overlapping the menu bar row; on a notched display it moves below the menu bar).
 - Release `Option` → the workspace bar immediately hides.
 - The bar stays visible while `Option` remains physically held, including while issuing `Option`-based workspace/focus/move shortcuts (MacBook IPC preserves modifier state; synthetic `F13`–`F20` would not).
-- `position = "overlappingMenuBar"` and `reserveLayoutSpace = true` are deliberate choices and are also OmniWM's own normalized values for the workspace bar. Keeping the repo file identical to what OmniWM writes prevents the running app from drifting the checked-in configuration.
+- `position = "overlappingMenuBar"` is the intended placement (verified stable while OmniWM runs). `reserveLayoutSpace = false` is kept for semantic clarity: with `revealModifier` active the bar is overlay-only, so a `true` value would only be misleading.
 - `hideInNativeFullscreen = true` is preserved: native fullscreen hides the bar per OmniWM's intended behavior.
 
 ---

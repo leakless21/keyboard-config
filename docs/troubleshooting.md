@@ -104,7 +104,9 @@ Used when runtime experiments in ZMK Studio override the Git keymap:
 ## 4. Host Bridge Diagnostics
 
 ### macOS
+* **First, check for live config drift:** run `uv run scripts/check_host_drift.py`. Karabiner stores the manipulators of every *enabled* rule **inline** in `~/.config/karabiner/karabiner.json`, so editing `hosts/macos/karabiner/*.json` alone changes nothing on the keyboard. The drift check compares the repo against both live layers (asset files + inline rules) and against the live OmniWM settings. Repair with `uv run scripts/sync_karabiner.py --apply --reload`.
 * **Verify Karabiner complex modifications:** Check that rules from `hosts/macos/karabiner/external-semantic.json` and `hosts/macos/karabiner/laptop-omniwm.json` are installed in `~/.config/karabiner/assets/complex_modifications/` and enabled in Karabiner-Elements Settings $\rightarrow$ Complex Modifications.
+* **Workspace bar flickers or hides while `Option` is held:** use Karabiner-EventViewer to hold `Option` for >200 ms and press `1 2 3` without releasing it. This must show a single `left_option down` … `left_option up` and `omniwm_option_held` should read `1` while held. Repeated Option down/up pairs mean a rule still declares `option` under `modifiers.mandatory` (Karabiner removes mandatory modifiers from `to` events); the built-in adapter is validated to keep Option optional-only.
 * **Verify OmniWM status:** Run `omniwmctl ping` or `omniwmctl query active-workspace` in terminal.
 * **Verify Quake terminal:** Press `Option+F14` on Corne (or `Option+` ` on MacBook) and verify OmniWM's embedded Quake terminal toggles. Verify `quakeTerminal.enabled = true` in `~/.config/omniwm/settings.toml`. Note that OmniWM stores manually adjusted Quake frames in runtime state; to reset to defaults, clear the runtime state frame.
 * **Verify native menu bar:** Ensure the macOS menu bar is visible and autohide is off (`defaults read NSGlobalDomain _HIHideMenuBar` returns `0`).

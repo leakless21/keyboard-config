@@ -139,6 +139,8 @@ keyboard-config/
 │   ├── check_corne_keymap.py # Positional invariant validator
 │   ├── check_sofle_keymap.py # Positional & encoder validator
 │   ├── check_host_protocol.py# End-to-end multi-host protocol validator
+│   ├── check_host_drift.py   # Live macOS config vs repo drift check
+│   ├── sync_karabiner.py     # Deploy repo Karabiner rules into live config
 │   ├── check_build_config.py # Target matrix & manifest validator
 │   ├── check_generated.py    # Freshness & undeclared signal validator
 │   ├── generate_protocol_files.py
@@ -191,6 +193,15 @@ uv run scripts/check_sofle_keymap.py
 uv run scripts/check_host_protocol.py
 uv run scripts/check_build_config.py
 uv run scripts/check_generated.py
+```
+
+On a configured macOS host, additionally verify that the *running* configuration still matches the repo
+(Karabiner stores enabled rules inline in `~/.config/karabiner/karabiner.json`, so a stale copy can keep
+running while the repo looks correct):
+
+```bash
+uv run scripts/check_host_drift.py            # read-only; exits 1 on drift
+uv run scripts/sync_karabiner.py --apply --reload   # re-deploy Karabiner adapters
 ```
 
 To regenerate cheatsheet visual reference artifacts (SVG, PDF, and manifest):

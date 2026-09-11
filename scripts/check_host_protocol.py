@@ -355,96 +355,176 @@ def validate_karabiner_external(karabiner_data: dict) -> None:
     )
 
 
+OPTION_TRACKING_VARIABLE = "omniwm_option_held"
+OPTION_KEYS = {"left_option", "right_option"}
+
+
 def validate_karabiner_laptop(karabiner_data: dict) -> None:
     """Verify that the MacBook built-in keyboard adapter maps conventional Option chords to OmniWM IPC,
-    strictly scoped to is_built_in_keyboard=true. The built-in keyboard intentionally uses OmniWM IPC rather
-    than re-emitting semantic F13-F20 because Karabiner removes mandatory modifiers from translated events.
-    Preserving physical Option state is necessary for OmniWM's Option-held workspace-bar reveal."""
+    strictly scoped to is_built_in_keyboard=true, preserving physical Option state.
+
+    Karabiner removes *mandatory* modifiers from `to` events, so declaring Option mandatory emits a phantom
+    Option key-up that OmniWM reads as a modifier release and hides the Option-held workspace bar. Option is
+    therefore never mandatory here: dedicated left/right Option trackers set the `omniwm_option_held` variable
+    (and pass the key through), and every IPC action requires that variable instead."""
     rules = karabiner_data.get("rules", [])
     assert_true(len(rules) >= 1, "Layer B (Karabiner Laptop): Expected at least 1 rule in laptop-omniwm.json")
 
     all_manipulators = [m for r in rules for m in r.get("manipulators", [])]
-    assert_eq(len(all_manipulators), 25, f"Layer B (Karabiner Laptop): Expected exactly 25 manipulators, found {len(all_manipulators)}")
+    assert_eq(len(all_manipulators), 27, f"Layer B (Karabiner Laptop): Expected exactly 27 manipulators (2 Option trackers + 25 IPC actions), found {len(all_manipulators)}")
 
     # Canonical deterministic CLI path: explicit app-bundle binary, independent of Karabiner's PATH.
     OMNIWMCTL_PREFIX = "/Applications/OmniWM.app/Contents/MacOS/omniwmctl command "
 
-    # Every manipulator must be scoped to is_built_in_keyboard: true and invoke IPC (never synthetic F13-F20).
-    for idx, m in enumerate(all_manipulators):
-        conditions = m.get("conditions", [])
-        has_builtin_scope = False
-        for c in conditions:
+    def has_builtin_scope(manipulator: dict) -> bool:
+        for c in manipulator.get("conditions", []):
             if c.get("type") == "device_if":
-                identifiers = c.get("identifiers", [])
-                for ident in identifiers:
+                for ident in c.get("identifiers", []):
                     if ident.get("is_built_in_keyboard") is True:
-                        has_builtin_scope = True
-        assert_true(has_builtin_scope, f"Layer B (Karabiner Laptop): Manipulator #{idx} missing is_built_in_keyboard: true scoping")
+                        return True
+        return False
+
+    trackers = [m for m in all_manipulators if m.get("from", {}).get("key_code") in OPTION_KEYS]
+    actions = [m for m in all_manipulators if m.get("from", {}).get("key_code") not in OPTION_KEYS]
+
+    # --- Option trackers: keep the physical key down, mirror the state into a variable ---
+    assert_eq(len(trackers), 2, f"Layer B (Karabiner Laptop): Expected exactly 2 Option trackers (left_option, right_option), found {len(trackers)}")
+    assert_eq(
+        sorted(m["from"]["key_code"] for m in trackers),
+        ["left_option", "right_option"],
+        "Layer B (Karabiner Laptop): Option trackers must cover left_option and right_option",
+    )
+
+    for tracker in trackers:
+        key = tracker["from"]["key_code"]
+        assert_true(has_builtin_scope(tracker), f"Layer B (Karabiner Laptop): Option tracker for {key} missing is_built_in_keyboard: true scoping")
+        tracker_optional = set(tracker["from"].get("modifiers", {}).get("optional", []))
+        assert_eq(tracker_optional, {"any"}, f"Layer B (Karabiner Laptop): Option tracker for {key} must match with optional: ['any'] so shifted chords still track Option")
+        assert_eq(tracker["from"].get("modifiers", {}).get("mandatory", []), [], f"Layer B (Karabiner Laptop): Option tracker for {key} must not declare mandatory modifiers")
+
+        to_events = tracker.get("to", [])
+        assert_eq(len(to_events), 2, f"Layer B (Karabiner Laptop): Option tracker for {key} must set the variable and pass the key through")
+        assert_eq(
+            to_events[0].get("set_variable", {}),
+            {"name": OPTION_TRACKING_VARIABLE, "value": 1},
+            f"Layer B (Karabiner Laptop): Option tracker for {key} must set {OPTION_TRACKING_VARIABLE} = 1",
+        )
+        passthrough = to_events[1]
+        assert_eq(passthrough.get("key_code"), key, f"Layer B (Karabiner Laptop): Option tracker for {key} must pass {key} through unchanged")
+        assert_true(
+            not passthrough.get("modifiers"),
+            f"Layer B (Karabiner Laptop): Option tracker for {key} must pass the key through without manipulating modifiers",
+        )
+
+        after_key_up = tracker.get("to_after_key_up", [])
+        assert_eq(len(after_key_up), 1, f"Layer B (Karabiner Laptop): Option tracker for {key} must reset the variable on key up via to_after_key_up")
+        assert_eq(
+            after_key_up[0].get("set_variable", {}),
+            {"name": OPTION_TRACKING_VARIABLE, "value": 0},
+            f"Layer B (Karabiner Laptop): Option tracker for {key} to_after_key_up must reset {OPTION_TRACKING_VARIABLE} = 0",
+        )
+        assert_true(
+            all("shell_command" not in event for event in to_events + after_key_up),
+            f"Layer B (Karabiner Laptop): Option tracker for {key} must be pure state tracking, not IPC",
+        )
+
+    # --- IPC actions: Option optional + variable condition, never Option-mandatory ---
+    assert_eq(len(actions), 25, f"Layer B (Karabiner Laptop): Expected exactly 25 OmniWM IPC actions, found {len(actions)}")
+
+    for idx, m in enumerate(actions):
+        assert_true(has_builtin_scope(m), f"Layer B (Karabiner Laptop): Action #{idx} missing is_built_in_keyboard: true scoping")
+
+        modifiers = m.get("from", {}).get("modifiers", {})
+        mandatory = set(modifiers.get("mandatory", []))
+        optional = set(modifiers.get("optional", []))
+
+        assert_eq(
+            mandatory & (OPTION_KEYS | {"option"}),
+            set(),
+            f"Layer B (Karabiner Laptop): Action #{idx} ({m['from']['key_code']}) must never declare Option mandatory (Karabiner would emit a phantom Option key-up)",
+        )
+        assert_in("option", optional, f"Layer B (Karabiner Laptop): Action #{idx} ({m['from']['key_code']}) must allow Option as an optional modifier")
+        assert_true(
+            optional <= {"option", "caps_lock"},
+            f"Layer B (Karabiner Laptop): Action #{idx} ({m['from']['key_code']}) optional modifiers must stay within option/caps_lock, got {sorted(optional)}",
+        )
+
+        conditions = m.get("conditions", [])
+        has_option_condition = any(
+            c.get("type") == "variable_if" and c.get("name") == OPTION_TRACKING_VARIABLE and c.get("value") == 1
+            for c in conditions
+        )
+        assert_true(
+            has_option_condition,
+            f"Layer B (Karabiner Laptop): Action #{idx} ({m['from']['key_code']}) must require variable_if {OPTION_TRACKING_VARIABLE} == 1",
+        )
 
         to_list = m.get("to", [])
-        assert_true(len(to_list) == 1, f"Layer B (Karabiner Laptop): Manipulator #{idx} must have exactly 1 'to' action")
+        assert_eq(len(to_list), 1, f"Layer B (Karabiner Laptop): Action #{idx} must have exactly 1 'to' action")
         to_act = to_list[0]
-        assert_true("shell_command" in to_act, f"Layer B (Karabiner Laptop): Manipulator #{idx} must invoke OmniWM IPC via shell_command, not synthetic key events")
-        assert_true("key_code" not in to_act, f"Layer B (Karabiner Laptop): Manipulator #{idx} must not emit synthetic F13-F20 events (would strip physical Option state)")
+        assert_true("shell_command" in to_act, f"Layer B (Karabiner Laptop): Action #{idx} must invoke OmniWM IPC via shell_command, not synthetic key events")
+        assert_true("key_code" not in to_act, f"Layer B (Karabiner Laptop): Action #{idx} must not emit synthetic F13-F20 events (would strip physical Option state)")
         cmd = to_act.get("shell_command", "")
-        assert_true("omniwmctl command" in cmd, f"Layer B (Karabiner Laptop): Manipulator #{idx} must invoke omniwmctl command: {cmd}")
-        assert_true(OMNIWMCTL_PREFIX in cmd, f"Layer B (Karabiner Laptop): Manipulator #{idx} must use deterministic bundle path '{OMNIWMCTL_PREFIX.strip()}': {cmd}")
+        assert_true("omniwmctl command" in cmd, f"Layer B (Karabiner Laptop): Action #{idx} must invoke omniwmctl command: {cmd}")
+        assert_true(OMNIWMCTL_PREFIX in cmd, f"Layer B (Karabiner Laptop): Action #{idx} must use deterministic bundle path '{OMNIWMCTL_PREFIX.strip()}': {cmd}")
 
     # Required mappings: (from_key, from_mandatory_mods, expected OmniWM IPC command suffix)
     expected_laptop_mappings = [
         # Option+Shift+1..5 -> move-to-workspace 1..5
-        ("1", {"option", "shift"}, "move-to-workspace 1"),
-        ("2", {"option", "shift"}, "move-to-workspace 2"),
-        ("3", {"option", "shift"}, "move-to-workspace 3"),
-        ("4", {"option", "shift"}, "move-to-workspace 4"),
-        ("5", {"option", "shift"}, "move-to-workspace 5"),
+        ("1", {"shift"}, "move-to-workspace 1"),
+        ("2", {"shift"}, "move-to-workspace 2"),
+        ("3", {"shift"}, "move-to-workspace 3"),
+        ("4", {"shift"}, "move-to-workspace 4"),
+        ("5", {"shift"}, "move-to-workspace 5"),
         # Option+1..5 -> switch-workspace 1..5
-        ("1", {"option"}, "switch-workspace 1"),
-        ("2", {"option"}, "switch-workspace 2"),
-        ("3", {"option"}, "switch-workspace 3"),
-        ("4", {"option"}, "switch-workspace 4"),
-        ("5", {"option"}, "switch-workspace 5"),
+        ("1", set(), "switch-workspace 1"),
+        ("2", set(), "switch-workspace 2"),
+        ("3", set(), "switch-workspace 3"),
+        ("4", set(), "switch-workspace 4"),
+        ("5", set(), "switch-workspace 5"),
         # Option+Shift+H/J/K/L -> move left/down/up/right
-        ("h", {"option", "shift"}, "move left"),
-        ("j", {"option", "shift"}, "move down"),
-        ("k", {"option", "shift"}, "move up"),
-        ("l", {"option", "shift"}, "move right"),
+        ("h", {"shift"}, "move left"),
+        ("j", {"shift"}, "move down"),
+        ("k", {"shift"}, "move up"),
+        ("l", {"shift"}, "move right"),
         # Option+H/J/K/L -> focus left/down/up/right
-        ("h", {"option"}, "focus left"),
-        ("j", {"option"}, "focus down"),
-        ("k", {"option"}, "focus up"),
-        ("l", {"option"}, "focus right"),
-        # Ctrl+Option+Tab -> switch-workspace back-and-forth
-        ("tab", {"control", "option"}, "switch-workspace back-and-forth"),
+        ("h", set(), "focus left"),
+        ("j", set(), "focus down"),
+        ("k", set(), "focus up"),
+        ("l", set(), "focus right"),
+        # Control+Option+Tab -> switch-workspace back-and-forth
+        ("tab", {"control"}, "switch-workspace back-and-forth"),
         # Option+Tab -> focus previous
-        ("tab", {"option"}, "focus previous"),
+        ("tab", set(), "focus previous"),
         # Option+. -> cycle-size forward
-        ("period", {"option"}, "cycle-size forward"),
+        ("period", set(), "cycle-size forward"),
         # Option+Shift+O -> toggle-overview
-        ("o", {"option", "shift"}, "toggle-overview"),
+        ("o", {"shift"}, "toggle-overview"),
         # Option+Return -> toggle-fullscreen
-        ("return_or_enter", {"option"}, "toggle-fullscreen"),
+        ("return_or_enter", set(), "toggle-fullscreen"),
         # Option+Shift+Space -> toggle-focused-window-floating
-        ("spacebar", {"option", "shift"}, "toggle-focused-window-floating"),
+        ("spacebar", {"shift"}, "toggle-focused-window-floating"),
         # Option+` -> toggle-quake-terminal
-        ("grave_accent_and_tilde", {"option"}, "toggle-quake-terminal"),
+        ("grave_accent_and_tilde", set(), "toggle-quake-terminal"),
     ]
 
     for from_key, from_mods, expected_cmd in expected_laptop_mappings:
         found = False
-        for m in all_manipulators:
+        for m in actions:
             m_from = m.get("from", {})
             m_key = m_from.get("key_code")
             m_mods = set(m_from.get("modifiers", {}).get("mandatory", []))
             if m_key == from_key and m_mods == from_mods:
-                t = m.get("to", [])[0]
-                shell = t.get("shell_command", "")
+                shell = m.get("to", [])[0].get("shell_command", "")
                 if expected_cmd in shell:
                     found = True
                     break
-        assert_true(found, f"Layer B (Karabiner Laptop): Missing mapping for {from_key} (mods={from_mods}) -> '{expected_cmd}'")
+        assert_true(found, f"Layer B (Karabiner Laptop): Missing mapping for {from_key} (mandatory mods={from_mods}) -> '{expected_cmd}'")
 
-    print(f"PASS: macOS Karabiner Built-in Laptop Adapter validated ({len(expected_laptop_mappings)} OmniWM IPC mappings scoped to is_built_in_keyboard=true, no synthetic F13-F20).")
+    print(
+        f"PASS: macOS Karabiner Built-in Laptop Adapter validated (2 Option trackers + {len(expected_laptop_mappings)} OmniWM IPC mappings "
+        f"scoped to is_built_in_keyboard=true; Option optional-only, never mandatory, no synthetic F13-F20)."
+    )
 
 
 def validate_omniwm_consumer(data: dict) -> None:

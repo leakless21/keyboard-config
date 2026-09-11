@@ -541,7 +541,7 @@ def validate_omniwm_consumer(data: dict) -> None:
     assert_eq(ws_bar.get("position"), "overlappingMenuBar", "OmniWM: workspaceBar.position must be overlappingMenuBar")
     assert_eq(ws_bar.get("notchMode"), "moveBelowMenuBar", "OmniWM: workspaceBar.notchMode must be moveBelowMenuBar")
     assert_eq(ws_bar.get("revealModifier"), "option", "OmniWM: workspaceBar.revealModifier must be option for Option-held overlay reveal")
-    assert_true(ws_bar.get("reserveLayoutSpace") is True, "OmniWM: workspaceBar.reserveLayoutSpace must be true (OmniWM's canonical value; avoids app/repo config drift)")
+    assert_true(ws_bar.get("reserveLayoutSpace") is False, "OmniWM: workspaceBar.reserveLayoutSpace must be false (reveal mode is overlay-only; true would be misleading)")
     assert_eq(ws_bar.get("revealHoldMilliseconds"), 200.0, "OmniWM: workspaceBar.revealHoldMilliseconds must be 200.0")
 
     niri = data.get("niri", {})

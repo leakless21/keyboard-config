@@ -356,15 +356,20 @@ def validate_karabiner_external(karabiner_data: dict) -> None:
 
 
 def validate_karabiner_laptop(karabiner_data: dict) -> None:
-    """Verify that the MacBook built-in keyboard adapter maps conventional chords to semantic F13-F20 signals,
-    strictly scoped to is_built_in_keyboard=true, preserving the semantic HID protocol without invoking shell commands."""
+    """Verify that the MacBook built-in keyboard adapter maps conventional Option chords to OmniWM IPC,
+    strictly scoped to is_built_in_keyboard=true. The built-in keyboard intentionally uses OmniWM IPC rather
+    than re-emitting semantic F13-F20 because Karabiner removes mandatory modifiers from translated events.
+    Preserving physical Option state is necessary for OmniWM's Option-held workspace-bar reveal."""
     rules = karabiner_data.get("rules", [])
     assert_true(len(rules) >= 1, "Layer B (Karabiner Laptop): Expected at least 1 rule in laptop-omniwm.json")
 
     all_manipulators = [m for r in rules for m in r.get("manipulators", [])]
     assert_eq(len(all_manipulators), 25, f"Layer B (Karabiner Laptop): Expected exactly 25 manipulators, found {len(all_manipulators)}")
 
-    # Every manipulator must be scoped to is_built_in_keyboard: true
+    # Canonical deterministic CLI path: explicit app-bundle binary, independent of Karabiner's PATH.
+    OMNIWMCTL_PREFIX = "/Applications/OmniWM.app/Contents/MacOS/omniwmctl command "
+
+    # Every manipulator must be scoped to is_built_in_keyboard: true and invoke IPC (never synthetic F13-F20).
     for idx, m in enumerate(all_manipulators):
         conditions = m.get("conditions", [])
         has_builtin_scope = False
@@ -379,51 +384,53 @@ def validate_karabiner_laptop(karabiner_data: dict) -> None:
         to_list = m.get("to", [])
         assert_true(len(to_list) == 1, f"Layer B (Karabiner Laptop): Manipulator #{idx} must have exactly 1 'to' action")
         to_act = to_list[0]
-        assert_true("shell_command" not in to_act, f"Layer B (Karabiner Laptop): Manipulator #{idx} must map to semantic signal, not shell_command")
-        to_key = to_act.get("key_code", "")
-        assert_true(to_key in [f"f{i}" for i in range(13, 21)], f"Layer B (Karabiner Laptop): Manipulator #{idx} maps to non-semantic key '{to_key}'")
+        assert_true("shell_command" in to_act, f"Layer B (Karabiner Laptop): Manipulator #{idx} must invoke OmniWM IPC via shell_command, not synthetic key events")
+        assert_true("key_code" not in to_act, f"Layer B (Karabiner Laptop): Manipulator #{idx} must not emit synthetic F13-F20 events (would strip physical Option state)")
+        cmd = to_act.get("shell_command", "")
+        assert_true("omniwmctl command" in cmd, f"Layer B (Karabiner Laptop): Manipulator #{idx} must invoke omniwmctl command: {cmd}")
+        assert_true(OMNIWMCTL_PREFIX in cmd, f"Layer B (Karabiner Laptop): Manipulator #{idx} must use deterministic bundle path '{OMNIWMCTL_PREFIX.strip()}': {cmd}")
 
-    # Required mappings: (from_key, from_mandatory_mods, to_key, to_mods)
+    # Required mappings: (from_key, from_mandatory_mods, expected OmniWM IPC command suffix)
     expected_laptop_mappings = [
-        # ⌥⇧1…5 -> Shift+F13…F17
-        ("1", {"option", "shift"}, "f13", {"left_shift"}),
-        ("2", {"option", "shift"}, "f14", {"left_shift"}),
-        ("3", {"option", "shift"}, "f15", {"left_shift"}),
-        ("4", {"option", "shift"}, "f16", {"left_shift"}),
-        ("5", {"option", "shift"}, "f17", {"left_shift"}),
-        # ⌥1…5 -> F13…F17
-        ("1", {"option"}, "f13", set()),
-        ("2", {"option"}, "f14", set()),
-        ("3", {"option"}, "f15", set()),
-        ("4", {"option"}, "f16", set()),
-        ("5", {"option"}, "f17", set()),
-        # ⌥⇧H/J/K/L -> Ctrl+Shift+F13..F16
-        ("h", {"option", "shift"}, "f13", {"left_control", "left_shift"}),
-        ("j", {"option", "shift"}, "f14", {"left_control", "left_shift"}),
-        ("k", {"option", "shift"}, "f15", {"left_control", "left_shift"}),
-        ("l", {"option", "shift"}, "f16", {"left_control", "left_shift"}),
-        # ⌥H/J/K/L -> Ctrl+F13..F16
-        ("h", {"option"}, "f13", {"left_control"}),
-        ("j", {"option"}, "f14", {"left_control"}),
-        ("k", {"option"}, "f15", {"left_control"}),
-        ("l", {"option"}, "f16", {"left_control"}),
-        # ⌃⌥Tab -> F18
-        ("tab", {"control", "option"}, "f18", set()),
-        # ⌥Tab -> Option+F16
-        ("tab", {"option"}, "f16", {"left_alt"}),
-        # ⌥. -> Shift+F18
-        ("period", {"option"}, "f18", {"left_shift"}),
-        # ⌥⇧O -> Option+F18
-        ("o", {"option", "shift"}, "f18", {"left_alt"}),
-        # ⌥Return -> F19
-        ("return_or_enter", {"option"}, "f19", set()),
-        # ⌥⇧Space -> F20
-        ("spacebar", {"option", "shift"}, "f20", set()),
-        # ⌥` -> Option+F14
-        ("grave_accent_and_tilde", {"option"}, "f14", {"left_alt"}),
+        # Option+Shift+1..5 -> move-to-workspace 1..5
+        ("1", {"option", "shift"}, "move-to-workspace 1"),
+        ("2", {"option", "shift"}, "move-to-workspace 2"),
+        ("3", {"option", "shift"}, "move-to-workspace 3"),
+        ("4", {"option", "shift"}, "move-to-workspace 4"),
+        ("5", {"option", "shift"}, "move-to-workspace 5"),
+        # Option+1..5 -> switch-workspace 1..5
+        ("1", {"option"}, "switch-workspace 1"),
+        ("2", {"option"}, "switch-workspace 2"),
+        ("3", {"option"}, "switch-workspace 3"),
+        ("4", {"option"}, "switch-workspace 4"),
+        ("5", {"option"}, "switch-workspace 5"),
+        # Option+Shift+H/J/K/L -> move left/down/up/right
+        ("h", {"option", "shift"}, "move left"),
+        ("j", {"option", "shift"}, "move down"),
+        ("k", {"option", "shift"}, "move up"),
+        ("l", {"option", "shift"}, "move right"),
+        # Option+H/J/K/L -> focus left/down/up/right
+        ("h", {"option"}, "focus left"),
+        ("j", {"option"}, "focus down"),
+        ("k", {"option"}, "focus up"),
+        ("l", {"option"}, "focus right"),
+        # Ctrl+Option+Tab -> switch-workspace back-and-forth
+        ("tab", {"control", "option"}, "switch-workspace back-and-forth"),
+        # Option+Tab -> focus previous
+        ("tab", {"option"}, "focus previous"),
+        # Option+. -> cycle-size forward
+        ("period", {"option"}, "cycle-size forward"),
+        # Option+Shift+O -> toggle-overview
+        ("o", {"option", "shift"}, "toggle-overview"),
+        # Option+Return -> toggle-fullscreen
+        ("return_or_enter", {"option"}, "toggle-fullscreen"),
+        # Option+Shift+Space -> toggle-focused-window-floating
+        ("spacebar", {"option", "shift"}, "toggle-focused-window-floating"),
+        # Option+` -> toggle-quake-terminal
+        ("grave_accent_and_tilde", {"option"}, "toggle-quake-terminal"),
     ]
 
-    for from_key, from_mods, to_key, to_mods in expected_laptop_mappings:
+    for from_key, from_mods, expected_cmd in expected_laptop_mappings:
         found = False
         for m in all_manipulators:
             m_from = m.get("from", {})
@@ -431,14 +438,13 @@ def validate_karabiner_laptop(karabiner_data: dict) -> None:
             m_mods = set(m_from.get("modifiers", {}).get("mandatory", []))
             if m_key == from_key and m_mods == from_mods:
                 t = m.get("to", [])[0]
-                t_key = t.get("key_code")
-                t_mods = set(t.get("modifiers", []))
-                if t_key == to_key and t_mods == to_mods:
+                shell = t.get("shell_command", "")
+                if expected_cmd in shell:
                     found = True
                     break
-        assert_true(found, f"Layer B (Karabiner Laptop): Missing mapping for {from_key} (mods={from_mods}) -> {to_key} (mods={to_mods})")
+        assert_true(found, f"Layer B (Karabiner Laptop): Missing mapping for {from_key} (mods={from_mods}) -> '{expected_cmd}'")
 
-    print(f"PASS: macOS Karabiner Built-in Laptop Adapter validated ({len(expected_laptop_mappings)} semantic mappings scoped to is_built_in_keyboard=true).")
+    print(f"PASS: macOS Karabiner Built-in Laptop Adapter validated ({len(expected_laptop_mappings)} OmniWM IPC mappings scoped to is_built_in_keyboard=true, no synthetic F13-F20).")
 
 
 def validate_omniwm_consumer(data: dict) -> None:
@@ -453,8 +459,10 @@ def validate_omniwm_consumer(data: dict) -> None:
     ws_bar = data.get("workspaceBar", {})
     assert_true(ws_bar.get("enabled") is True, "OmniWM: workspaceBar.enabled must be true")
     assert_eq(ws_bar.get("position"), "belowMenuBar", "OmniWM: workspaceBar.position must be belowMenuBar")
-    assert_true(ws_bar.get("reserveLayoutSpace") is True, "OmniWM: workspaceBar.reserveLayoutSpace must be true")
-    assert_eq(ws_bar.get("revealModifier"), "off", "OmniWM: workspaceBar.revealModifier must be off for persistent visibility")
+    assert_eq(ws_bar.get("notchMode"), "moveBelowMenuBar", "OmniWM: workspaceBar.notchMode must be moveBelowMenuBar")
+    assert_eq(ws_bar.get("revealModifier"), "option", "OmniWM: workspaceBar.revealModifier must be option for Option-held overlay reveal")
+    assert_true(ws_bar.get("reserveLayoutSpace") is False, "OmniWM: workspaceBar.reserveLayoutSpace must be false (overlay-only in reveal mode)")
+    assert_eq(ws_bar.get("revealHoldMilliseconds"), 200.0, "OmniWM: workspaceBar.revealHoldMilliseconds must be 200.0")
 
     niri = data.get("niri", {})
     assert_true(niri.get("visibleContainerCount") in (1, 2, 3), "OmniWM: niri.visibleContainerCount must be between 1 and 3")
@@ -522,7 +530,7 @@ def validate_omniwm_consumer(data: dict) -> None:
 
     print(
         f"PASS: macOS OmniWM Consumer validated ({len(required_bindings)} required hotkey bindings, "
-        f"5 semantic workspaces, Niri settings, native Quake terminal, ipcEnabled=true, persistent workspaceBar=true)."
+        f"5 semantic workspaces, Niri settings, native Quake terminal, ipcEnabled=true, Option-reveal workspaceBar overlay)."
     )
 
 

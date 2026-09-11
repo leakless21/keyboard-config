@@ -53,7 +53,11 @@ MacBook built-in keyboard
    - `Option+F15` creates a new independent Ghostty window via AppleScript automation (`osascript -e 'tell application "Ghostty" to activate' -e 'tell application "Ghostty" to new window'`).
 3. **Karabiner is Divided into Modular Adapters:**
    - `hosts/macos/karabiner/external-semantic.json`: Scoped to external keyboards (`is_built_in_keyboard: false`). Translates OS launchers (Spotlight, Ghostty window, Language), Hyper app actions, semantic editing (F21–F24), and F1–F12 normalizers. Does **not** intercept raw WM or Quake signals.
-   - `hosts/macos/karabiner/laptop-omniwm.json`: Scoped to the built-in keyboard (`is_built_in_keyboard: true`). Maps conventional MacBook `Option` chords to OmniWM IPC (`/Applications/OmniWM.app/Contents/MacOS/omniwmctl command …`). It intentionally does NOT re-emit synthetic `F13`–`F20` events, because Karabiner removes mandatory modifiers from translated events and that breaks OmniWM's Option-held workspace-bar reveal. Do not "clean this up" back to synthetic F-keys.
+   - `hosts/macos/karabiner/laptop-omniwm.json`: Scoped to the built-in keyboard (`is_built_in_keyboard: true`). Maps conventional MacBook `Option` chords to OmniWM IPC (`/Applications/OmniWM.app/Contents/MacOS/omniwmctl command …`).
+     - **Option is never a mandatory modifier.** Karabiner removes mandatory modifiers from `to` events ("Mandatory modifiers are removed from `to` events" — Karabiner JSON reference), which emits a phantom Option key-up. OmniWM reads that `flagsChanged` event as a release and hides the workspace bar mid-chord.
+     - Instead, two pass-through trackers (`left_option`, `right_option`, matched with `optional: ["any"]` so shifted chords still track) set the `omniwm_option_held` variable on press, pass the physical key through unchanged, and reset the variable to `0` via `to_after_key_up`. macOS/OmniWM therefore observe exactly one Option-down per press and one Option-up per release.
+     - Every IPC action requires `variable_if omniwm_option_held == 1` and declares Option only as an optional modifier. `Shift` and `Control` may remain mandatory; Option may not.
+     - It also does not re-emit synthetic `F13`–`F20` events. Do not "clean this up" back to synthetic F-keys or mandatory Option — both recreate the workspace-bar flicker.
 4. **Native macOS Menu Bar Architecture:**
    - The setup intentionally uses the native macOS menu bar for all system status (Wi-Fi, Battery, Clock, Audio, Control Center) and application menus.
    - SketchyBar was deliberately removed to simplify host configuration and avoid brittle status bar hacks or background polling daemons.
@@ -144,6 +148,14 @@ In Karabiner-Elements Settings $\rightarrow$ **Complex Modifications** $\rightar
 1. Enable rules from **"Keyboard Semantic Host Bridge - External"** for external keyboards.
 2. Enable rules from **"MacBook Built-in Keyboard OmniWM Adapter"** for the built-in keyboard.
 
+> **Enabling a rule copies it.** Karabiner stores the manipulators of an enabled rule **inline** in `~/.config/karabiner/karabiner.json`; the asset file is only the source. After editing `laptop-omniwm.json` or `external-semantic.json` you must re-apply the rule in **Complex Modifications** (remove the old rule, then add it again) — otherwise the previously enabled inline copy keeps running and the edit appears to do nothing. Symlinking the assets (above) keeps the asset layer in sync but does **not** update the inline copy.
+
+Validate adapter JSON with Karabiner's own linter before enabling it:
+```bash
+"/Library/Application Support/org.pqrs/Karabiner-Elements/bin/karabiner_cli" \
+  --lint-complex-modifications "$(pwd)/hosts/macos/karabiner/"*.json
+```
+
 ---
 
 ## 3. Workspaces & Niri Layout
@@ -189,6 +201,10 @@ The built-in MacBook keyboard adapter allows full daily-driving of the OmniWM en
 | `⌥ \`` | `toggle-quake-terminal` | Toggle native Quake terminal |
 
 All MacBook rules invoke the deterministic bundle binary `/Applications/OmniWM.app/Contents/MacOS/omniwmctl` (independent of Karabiner's `PATH`) and are strictly scoped to `is_built_in_keyboard: true` so the external Corne is unaffected.
+
+`Option` itself is tracked in the `omniwm_option_held` Karabiner variable by two pass-through trackers, and is declared only as an *optional* modifier on the actions above. Karabiner projects mandatory modifiers out of `to` events, so declaring Option mandatory would emit a phantom Option key-up that hides the workspace bar mid-chord.
+
+**Verify in Karabiner-EventViewer:** hold `Option` for >200 ms and press `1 2 3 H L 1` without releasing it. The modifier stream must show a single `left_option down` … `left_option up`, with no intermediate Option events, and the **Variables** pane must show `omniwm_option_held` flipping `1` on press and `0` on release.
 
 ### Laptop Trackpad Gestures
 Configured in `hosts/macos/omniwm/settings.toml`:

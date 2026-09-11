@@ -161,6 +161,7 @@ Validate adapter JSON with Karabiner's own linter before enabling it:
 uv run scripts/check_host_drift.py               # is the live config running what the repo says?
 uv run scripts/sync_karabiner.py                 # dry run: show what is stale
 uv run scripts/sync_karabiner.py --apply --reload  # update assets + inline rules, reload Karabiner
+uv run scripts/sync_karabiner.py --apply --prune-backups  # also drop stale karabiner.json backups (keeps newest 3)
 ```
 `check_host_drift.py` compares the repo against the live asset files, the inline rule bodies in `karabiner.json`, and the live OmniWM settings symlink. It exits non-zero on drift, which is how a correct repo file can otherwise sit unused for months while an old inline copy keeps running.
 

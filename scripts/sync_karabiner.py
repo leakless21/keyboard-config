@@ -22,6 +22,8 @@ Usage:
   uv run scripts/sync_karabiner.py                  # show what would change
   uv run scripts/sync_karabiner.py --apply          # write changes (+ backup)
   uv run scripts/sync_karabiner.py --apply --reload # also reload Karabiner
+  uv run scripts/sync_karabiner.py --prune-backups  # list stale karabiner.json backups
+  uv run scripts/sync_karabiner.py --apply --prune-backups 5  # keep 5 newest
 """
 
 from __future__ import annotations
@@ -57,6 +59,8 @@ KARABINER_CLI = Path(
     "/Library/Application Support/org.pqrs/Karabiner-Elements/bin/karabiner_cli"
 )
 KARABINER_RELOAD_LABEL = "org.pqrs.service.agent.Karabiner-Console-User-Server"
+BACKUP_GLOB = "karabiner.json.bak*"
+DEFAULT_KEPT_BACKUPS = 3
 
 
 def repo_adapters() -> dict[str, Any]:
@@ -160,6 +164,54 @@ def sync_inline_rules(config: dict[str, Any], apply: bool, changed: list[str]) -
             )
 
 
+def format_bytes(count: int) -> str:
+    """Render a byte count for human consumption (backup sizes are small)."""
+    if count < 1024:
+        return f"{count} B"
+    return f"{count / 1024:.1f} KiB"
+
+
+def prune_backups(keep: int, apply: bool) -> None:
+    """Delete stale karabiner.json backups, keeping the newest `keep`.
+
+    Only files matching `karabiner.json.bak*` are candidates, so the live
+    `karabiner.json` can never match (the `.bak` segment is required). Newest
+    first by modification time; anything past `keep` is a victim. Dry-run
+    aware: without --apply nothing is deleted.
+    """
+    if keep < 0:
+        fail(f"--prune-backups must be >= 0, got {keep}")
+
+    candidates = [
+        path
+        for path in sorted(
+            KARABINER_HOME.glob(BACKUP_GLOB),
+            key=lambda candidate: candidate.stat().st_mtime,
+            reverse=True,
+        )
+        if path.is_file()
+        and path.name.startswith("karabiner.json.bak")
+        and path.resolve() != KARABINER_PROFILE.resolve()
+    ]
+
+    print(f"Backup layer (keeping newest {keep} of {len(candidates)}):")
+    if len(candidates) <= keep:
+        print("  nothing to prune")
+        return
+
+    victims = candidates[keep:]
+    freed = 0
+    for victim in victims:
+        size = victim.stat().st_size
+        if apply:
+            victim.unlink()
+            print(f"  deleted: {victim.name} ({format_bytes(size)})")
+        else:
+            print(f"  would delete: {victim.name} ({format_bytes(size)})")
+        freed += size
+    print(f"{'Freed' if apply else 'Would free'}: {format_bytes(freed)}")
+
+
 def reload_karabiner() -> None:
     """Ask launchd to restart Karabiner's config server so edits take effect."""
     uid = os.getuid()
@@ -193,6 +245,18 @@ def main() -> None:
         action="store_true",
         help="ask launchd to reload Karabiner after writing changes",
     )
+    parser.add_argument(
+        "--prune-backups",
+        nargs="?",
+        const=DEFAULT_KEPT_BACKUPS,
+        default=None,
+        type=int,
+        metavar="KEEP",
+        help=(
+            "delete stale karabiner.json backups, keeping the KEEP newest "
+            f"(default {DEFAULT_KEPT_BACKUPS}); dry-run lists victims"
+        ),
+    )
     args = parser.parse_args()
 
     if not KARABINER_HOME.exists():
@@ -223,31 +287,32 @@ def main() -> None:
             print("Pending changes:")
             for item in changed:
                 print(f"  - {item}")
-        return
-
-    if not changed:
+    elif not changed:
         print()
         print("PASS: live Karabiner configuration already matches the repository.")
-        return
-
-    backup = KARABINER_PROFILE.with_name(
-        f"{KARABINER_PROFILE.name}.bak.{int(time.time())}"
-    )
-    shutil.copy2(KARABINER_PROFILE, backup)
-    KARABINER_PROFILE.write_text(json.dumps(config, indent=4) + "\n")
-    print(f"Backup: {backup}")
-    print(f"Wrote:  {KARABINER_PROFILE}")
-    print("Changed:")
-    for item in changed:
-        print(f"  - {item}")
-
-    if args.reload:
-        reload_karabiner()
     else:
-        print("Reload Karabiner to apply (re-run with --reload, or toggle the rule in the UI).")
+        backup = KARABINER_PROFILE.with_name(
+            f"{KARABINER_PROFILE.name}.bak.{int(time.time())}"
+        )
+        shutil.copy2(KARABINER_PROFILE, backup)
+        KARABINER_PROFILE.write_text(json.dumps(config, indent=4) + "\n")
+        print(f"Backup: {backup}")
+        print(f"Wrote:  {KARABINER_PROFILE}")
+        print("Changed:")
+        for item in changed:
+            print(f"  - {item}")
 
-    print()
-    print("Verify with: uv run scripts/check_host_drift.py")
+        if args.reload:
+            reload_karabiner()
+        else:
+            print("Reload Karabiner to apply (re-run with --reload, or toggle the rule in the UI).")
+
+        print()
+        print("Verify with: uv run scripts/check_host_drift.py")
+
+    if args.prune_backups is not None:
+        print()
+        prune_backups(args.prune_backups, args.apply)
 
 
 if __name__ == "__main__":

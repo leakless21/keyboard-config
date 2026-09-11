@@ -9,37 +9,51 @@ This guide documents the canonical macOS host configuration for the semantic key
 ```text
                          macOS
                            │
-        ┌──────────────────┴──────────────────┐
-        │                                     │
-     CORNE                               MACBOOK
- semantic HID                         normal keyboard
- F13–F24                                  │
-        │                                 │
-        │                     Karabiner laptop adapter
-        │                                 │
-        └──────────── semantic HID ◄───────┘
+       ┌───────────────────┴───────────────────┐
+       │                                       │
+     CORNE                                  MACBOOK
+ semantic HID F13–F20               conventional Option chords
+       │                                       │
+       │                               Karabiner laptop adapter
+       │                                       │
+       │                                  OmniWM IPC
+       │                           (/Applications/OmniWM.app/…/omniwmctl)
+       │                                       │
+       └───────────────────┬───────────────────┘
                            │
-             ┌─────────────┴─────────────┐
-             │                           │
-          OmniWM                     Karabiner
-     WM + Quake Terminal          OS/app semantics
-             │                           │
-      (window & layout)              Spotlight
-                                     Ghostty new window
-                                     language
-                                     editing/tabs
+                         OmniWM
+              logical actions + Quake terminal
+                           │
+              ┌────────────┴────────────┐
+              │                         │
+           OmniWM                  Karabiner external
+      WM + Quake Terminal          OS/app semantics
+```
+
+Both input paths invoke the same logical OmniWM actions. Transport is intentionally asymmetric:
+
+```text
+Corne
+  └─ semantic F13–F20 HID
+       └─ OmniWM hotkey consumer
+
+MacBook built-in keyboard
+  └─ conventional Option shortcuts
+       └─ Karabiner-Elements
+            └─ OmniWM IPC (omniwmctl command …)
 ```
 
 ### Key Architectural Invariants
 1. **OmniWM is the Complete Window Environment & Scratch Terminal:**
-   - OmniWM directly consumes all window management signals (`F13`–`F20` combinations).
-   - **`Option+F14` is a native OmniWM semantic action** opening the embedded libghostty Quake terminal (`[quakeTerminal]`). It no longer routes through Karabiner or Ghostty.
+   - OmniWM consumes Corne window-management signals directly as raw `F13`–`F20` hotkeys.
+   - OmniWM consumes MacBook window-management actions via IPC (`omniwmctl command …`). Both paths invoke the same logical actions.
+   - **`Option+F14` / `toggle-quake-terminal` is a native OmniWM semantic action** opening the embedded libghostty Quake terminal (`[quakeTerminal]`). It no longer routes through Karabiner or Ghostty.
 2. **Ghostty is Exclusively for Standalone Windows:**
    - Ghostty Quick Terminal is completely disabled.
    - `Option+F15` creates a new independent Ghostty window via AppleScript automation (`osascript -e 'tell application "Ghostty" to activate' -e 'tell application "Ghostty" to new window'`).
 3. **Karabiner is Divided into Modular Adapters:**
    - `hosts/macos/karabiner/external-semantic.json`: Scoped to external keyboards (`is_built_in_keyboard: false`). Translates OS launchers (Spotlight, Ghostty window, Language), Hyper app actions, semantic editing (F21–F24), and F1–F12 normalizers. Does **not** intercept raw WM or Quake signals.
-   - `hosts/macos/karabiner/laptop-omniwm.json`: Scoped to the built-in keyboard (`is_built_in_keyboard: true`). Adapts standard MacBook chords into the exact same semantic F13–F20 signals consumed by OmniWM.
+   - `hosts/macos/karabiner/laptop-omniwm.json`: Scoped to the built-in keyboard (`is_built_in_keyboard: true`). Maps conventional MacBook `Option` chords to OmniWM IPC (`/Applications/OmniWM.app/Contents/MacOS/omniwmctl command …`). It intentionally does NOT re-emit synthetic `F13`–`F20` events, because Karabiner removes mandatory modifiers from translated events and that breaks OmniWM's Option-held workspace-bar reveal. Do not "clean this up" back to synthetic F-keys.
 4. **Native macOS Menu Bar Architecture:**
    - The setup intentionally uses the native macOS menu bar for all system status (Wi-Fi, Battery, Clock, Audio, Control Center) and application menus.
    - SketchyBar was deliberately removed to simplify host configuration and avoid brittle status bar hacks or background polling daemons.
@@ -145,7 +159,7 @@ OmniWM operates with five persistent virtual workspaces on the Niri layout engin
 | 5       | **AUX**      | Finder, docs, miscellaneous       | `F17`          | `Shift+F17`            |
 
 ### Niri Scrolling Columns & Width Presets
-- **Layout:** Niri horizontal scrolling strip with 2 visible containers.
+- **Layout:** Niri horizontal scrolling strip with 1 visible container (`visibleContainerCount = 1`).
 - **Default Container Span:** 50% (`0.50`).
 - **Width Presets:** `33%`, `50%`, `67%`, `100%` (`[0.333, 0.5, 0.667, 1.0]`).
 - **Cycle Width:** Pressing `Shift+F18` cycles the focused column width forward through presets (`1/3` $\rightarrow$ `1/2` $\rightarrow$ `2/3` $\rightarrow$ `full` $\rightarrow$ `1/3`).
@@ -158,27 +172,49 @@ OmniWM operates with five persistent virtual workspaces on the Niri layout engin
 
 ## 4. MacBook Built-in Keyboard & Trackpad Workflow
 
-The built-in MacBook keyboard adapter allows full daily-driving of the OmniWM environment without the physical Corne keyboard:
+The built-in MacBook keyboard adapter allows full daily-driving of the OmniWM environment without the physical Corne keyboard. It preserves the exact physical `Option` chords but transports them as OmniWM IPC rather than synthetic `F13`–`F20` events, so the physical `Option` key remains held and visible to OmniWM's workspace-bar reveal monitor.
 
-| Built-in Key Chord | Semantic Protocol Output | OmniWM Action |
+| Built-in Key Chord | OmniWM IPC (`omniwmctl command …`) | OmniWM Action |
 |---|---|---|
-| `⌥ 1` … `5` | `F13` … `F17` | Switch to workspace 1–5 |
-| `⌥ ⇧ 1` … `5` | `Shift+F13` … `Shift+F17` | Move active window to workspace 1–5 |
-| `⌥ H / J / K / L` | `Ctrl+F13 / F14 / F15 / F16` | Focus Left / Down / Up / Right |
-| `⌥ ⇧ H / J / K / L` | `Ctrl+Shift+F13 / F14 / F15 / F16` | Move Left / Down / Up / Right |
-| `⌃ ⌥ Tab` | `F18` | Previous workspace back-and-forth |
-| `⌥ Tab` | `Option+F16` | Focus previous window across workspaces |
-| `⌥ .` | `Shift+F18` | Cycle column width forward |
-| `⌥ ⇧ O` | `Option+F18` | Toggle OmniWM Overview |
-| `⌥ Return` | `F19` | Toggle fullscreen |
-| `⌥ ⇧ Space` | `F20` | Toggle focused window floating |
-| `⌥ \`` | `Option+F14` | Toggle native Quake terminal |
+| `⌥ 1` … `5` | `switch-workspace 1` … `5` | Switch to workspace 1–5 |
+| `⌥ ⇧ 1` … `5` | `move-to-workspace 1` … `5` | Move active window to workspace 1–5 |
+| `⌥ H / J / K / L` | `focus left / down / up / right` | Focus Left / Down / Up / Right |
+| `⌥ ⇧ H / J / K / L` | `move left / down / up / right` | Move Left / Down / Up / Right |
+| `⌃ ⌥ Tab` | `switch-workspace back-and-forth` | Previous workspace back-and-forth |
+| `⌥ Tab` | `focus previous` | Focus previous window across workspaces |
+| `⌥ .` | `cycle-size forward` | Cycle column width forward |
+| `⌥ ⇧ O` | `toggle-overview` | Toggle OmniWM Overview |
+| `⌥ Return` | `toggle-fullscreen` | Toggle fullscreen |
+| `⌥ ⇧ Space` | `toggle-focused-window-floating` | Toggle focused window floating |
+| `⌥ \`` | `toggle-quake-terminal` | Toggle native Quake terminal |
+
+All MacBook rules invoke the deterministic bundle binary `/Applications/OmniWM.app/Contents/MacOS/omniwmctl` (independent of Karabiner's `PATH`) and are strictly scoped to `is_built_in_keyboard: true` so the external Corne is unaffected.
 
 ### Laptop Trackpad Gestures
 Configured in `hosts/macos/omniwm/settings.toml`:
 - `workspaceSwipeEnabled = true`
 - **3-Finger Horizontal Swipe:** Scrolls Niri columns.
 - **3-Finger Vertical Swipe:** Cycles OmniWM virtual workspaces.
+
+---
+
+### Workspace Bar (Option-Held Overlay)
+
+Configured in `hosts/macos/omniwm/settings.toml` (`[workspaceBar]`):
+
+```toml
+position = "belowMenuBar"
+notchMode = "moveBelowMenuBar"
+revealModifier = "option"
+revealHoldMilliseconds = 200.0
+reserveLayoutSpace = false
+```
+
+- Hold `Option` alone → after ~200 ms the OmniWM workspace bar appears below the native menu bar.
+- Release `Option` → the workspace bar immediately hides.
+- The bar stays visible while `Option` remains physically held, including while issuing `Option`-based workspace/focus/move shortcuts (MacBook IPC preserves modifier state; synthetic `F13`–`F20` would not).
+- The hidden bar reserves no permanent vertical layout space; tiled windows regain the region when hidden.
+- `hideInNativeFullscreen = true` is preserved: native fullscreen hides the bar per OmniWM's intended behavior.
 
 ---
 

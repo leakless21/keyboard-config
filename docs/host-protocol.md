@@ -63,8 +63,8 @@ Both keyboards implement the full protocol:
 ## 3. Protocol Consumers
 
 1. **macOS Host Adapters:**
-   - **`hosts/macos/omniwm/settings.toml`:** OmniWM window manager configuration consuming raw `F13`–`F20` signals for Niri workspaces, directional focus/movement, cycle size, overview, fullscreen, and float.
-   - **`hosts/macos/karabiner/`:** Device-scoped complex rules translating desktop launchers, Hyper+F13–F24 application actions, F21–F24 editing, and F1–F12 normalization (raw WM signals pass directly to OmniWM).
+   - **`hosts/macos/omniwm/settings.toml`:** OmniWM window manager configuration. Corne window-management actions arrive as raw `F13`–`F20` hotkeys (Niri workspaces, directional focus/movement, cycle size, overview, fullscreen, float); MacBook actions arrive via IPC (`omniwmctl command …`). Both invoke the same logical OmniWM actions.
+   - **`hosts/macos/karabiner/`:** Device-scoped complex rules. `external-semantic.json` (`is_built_in_keyboard: false`) translates desktop launchers, Hyper+F13–F24 application actions, F21–F24 editing, and F1–F12 normalization (raw WM signals pass directly to OmniWM). `laptop-omniwm.json` (`is_built_in_keyboard: true`) maps conventional MacBook `Option` chords to OmniWM IPC — it intentionally does NOT re-emit `F13`–`F20`.
    - **`hosts/macos/ghostty.config`:** Ghostty terminal configuration with dropdown toggle.
    - **macOS Native Menu Bar:** Native system status (Wi-Fi, Battery, Clock, Audio) and application menus.
 
@@ -76,6 +76,29 @@ Both keyboards implement the full protocol:
 ---
 
 ## 4. Design Decisions & Implementation Notes
+
+### Split macOS Input Transport (Corne HID vs MacBook IPC)
+
+```text
+macOS
+
+Corne
+  └─ semantic F13–F20 HID
+       └─ OmniWM hotkey consumer
+
+MacBook built-in keyboard
+  └─ conventional Option shortcuts
+       └─ Karabiner-Elements
+            └─ OmniWM IPC
+
+Both paths invoke the same logical OmniWM actions.
+```
+
+- **Corne:** external keyboard benefits from device-independent semantic HID. Raw `F13`–`F20` (plus `Shift`/`Ctrl`/`Option` combinations) pass through Karabiner untouched directly to OmniWM hotkeys. No Karabiner dependency for Corne WM navigation.
+- **MacBook:** built-in keyboard benefits from retaining native macOS modifier state. Physical chords (`Option+1..5`, `Option+H/J/K/L`, `Option+Tab`, `Option+.`, `Option+Shift+O`, `Option+Return`, `Option+Shift+Space`, `Option+\``) are translated by Karabiner to `omniwmctl command …` via the deterministic bundle binary `/Applications/OmniWM.app/Contents/MacOS/omniwmctl`.
+- **Why IPC:** Karabiner removes mandatory modifiers (notably `Option`) from translated `to` events. Re-emitting `Option+1 → F13` hides `Option` from OmniWM's `flagsChanged` monitor, collapsing the Option-held workspace-bar reveal (`hidden → Option held → visible → Option released → hidden`) and breaking workspace switching while held. IPC preserves physical `Option` state.
+- **Architectural rule:** treat the host protocol as logical semantics, not identical low-level transport. Optimize each path for its hardware/input constraints. Do NOT "unify" the MacBook back to synthetic `F13`–`F20` for symmetry — that recreates the workspace-bar bug. Humanity has enough recurring bugs already.
+- **Workspace bar:** native Option-hold overlay (`revealModifier = "option"`, `position = "belowMenuBar"`, `notchMode = "moveBelowMenuBar"`, `reserveLayoutSpace = false`). See `docs/hosts/macos.md`.
 
 ### Cross-Platform Language Toggle (`Alt+F17 = LANGUAGE_TOGGLE`)
 - **Firmware Emission:** Emits `&kp LA(F17)` (`Alt+F17`) from the launcher row on the `HOST` layer.

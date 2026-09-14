@@ -118,6 +118,12 @@ uv run scripts/generate_cheatsheet.py corne --check
 # Render with debug position overlays (LT5..RH2):
 uv run scripts/generate_cheatsheet.py corne --debug
 ```
+
+The macOS/OmniWM host workflow reference is generated separately from the layer sheets:
+```bash
+uv run scripts/generate_host_cheatsheet.py
+uv run scripts/generate_host_cheatsheet.py --check
+```
 ---
 
 ## 5. Manual Smoke Test Sequences
@@ -137,7 +143,7 @@ uv run scripts/generate_cheatsheet.py corne --debug
 * **Move Window:** Tap `Ctrl+Shift+F13`–`Ctrl+Shift+F16` $\rightarrow$ Directional window move ← ↓ ↑ →.
 * **Context & Modals:**
   * `F18` $\rightarrow$ Previous / recent workspace.
-  * `Shift+F18` $\rightarrow$ Primary window/container size adjustment (Width cycle on OmniWM / Resize mode on GlazeWM).
+  * `Shift+F18` $\rightarrow$ Cycle Size (Niri container span / Dwindle split ratio on OmniWM; Resize mode on GlazeWM).
   * `Alt+F18` $\rightarrow$ Secondary WM management / overview action (OmniWM Overview / GlazeWM Service mode).
   * `F19` $\rightarrow$ Toggle fullscreen.
   * `F20` $\rightarrow$ Toggle floating / tiling.

@@ -2,6 +2,8 @@
 
 This guide documents the canonical macOS host configuration for the semantic keyboard protocol using **OmniWM**, **Karabiner-Elements**, and **Ghostty** alongside the **native macOS menu bar**.
 
+For the daily workflow, use the generated [macOS / OmniWM workflow cheatsheet](../generated/macos-omniwm-cheatsheet.svg) or its [printable PDF](../generated/macos-omniwm-cheatsheet.pdf). The Corne and Sofle sheets remain keyboard-layer references.
+
 ---
 
 ## 1. Architecture Overview
@@ -90,6 +92,17 @@ MacBook built-in keyboard
   killall OmniWM && open -a OmniWM
   ```
 
+This repository targets the current stable OmniWM configuration schema. Keep OmniWM on the stable Homebrew cask channel; do not pin an OmniWM version or add a supported-version lock file. When upgrading, validate the repository against the installed stable release:
+
+```bash
+brew update
+brew upgrade --cask omniwm
+uv run scripts/check_host_protocol.py
+uv run scripts/check_host_drift.py
+```
+
+If upstream changes its schema or action IDs, adapt the repository configuration instead of holding OmniWM back.
+
 ### 2. Quake Terminal Configuration
 OmniWM's embedded Quake terminal is configured in `hosts/macos/omniwm/settings.toml`:
 ```toml
@@ -100,9 +113,9 @@ widthPercent = 90.0
 heightPercent = 50.0
 monitorMode = "focusedWindow"
 autoHide = true
-opacity = 0.94
+opacity = 0.75
 backgroundEffect = "standardBlur"
-backgroundBlurRadius = 18
+backgroundBlurRadius = 15
 animationDuration = 0.0
 
 [[hotkeys]]
@@ -167,27 +180,47 @@ uv run scripts/sync_karabiner.py --apply --prune-backups  # also drop stale kara
 
 ---
 
-## 3. Workspaces & Niri Layout
+## 3. Workspaces & Layout Strategy
 
-OmniWM operates with five persistent virtual workspaces on the Niri layout engine:
+OmniWM operates with five persistent virtual workspaces. The workspace model is intentionally mixed: COMMS uses Dwindle while the other workspaces use Niri.
 
-| Omni ID | Display Name | Purpose                           | Keyboard Focus | Keyboard Move & Follow |
-|:-------:|:------------:|:----------------------------------|:--------------:|:----------------------:|
-| 1       | **WEB**      | browser / research                | `F13`          | `Shift+F13`            |
-| 2       | **DEV**      | editor + terminals                | `F14`          | `Shift+F14`            |
-| 3       | **COMMS**    | chat / email / meetings           | `F15`          | `Shift+F15`            |
-| 4       | **RUN**      | running apps, testing, simulators | `F16`          | `Shift+F16`            |
-| 5       | **AUX**      | Finder, docs, miscellaneous       | `F17`          | `Shift+F17`            |
+| Workspace | Role                    | Layout  |
+| --------- | ----------------------- | ------- |
+| 1 WEB     | Browser / research      | Niri    |
+| 2 DEV     | Editor / development    | Niri    |
+| 3 COMMS   | Chat / email / meetings | Dwindle |
+| 4 RUN     | Running apps / testing  | Niri    |
+| 5 AUX     | Miscellaneous           | Niri    |
 
-### Niri Scrolling Columns & Width Presets
-- **Layout:** Niri horizontal scrolling strip with 1 visible container (`visibleContainerCount = 1`).
-- **Default Container Span:** 50% (`0.50`).
-- **Width Presets:** `33%`, `50%`, `67%`, `100%` (`[0.333, 0.5, 0.667, 1.0]`).
-- **Cycle Width:** Pressing `Shift+F18` cycles the focused column width forward through presets (`1/3` $\rightarrow$ `1/2` $\rightarrow$ `2/3` $\rightarrow$ `full` $\rightarrow$ `1/3`).
-- **Vertical Stacking:** Columns can contain multiple vertically stacked windows. Use `Ctrl+F14`/`Ctrl+F15` to navigate up/down within a column, and `Ctrl+F13`/`Ctrl+F16` to scroll columns horizontally.
-- **Overview:** Pressing `Alt+F18` (`Option+F18`) opens OmniWM's Overview thumbnail view.
+### Niri behavior: WEB, DEV, RUN, and AUX
+
+- Niri presents a horizontal scrolling strip with one visible container (`visibleContainerCount = 1`).
+- The default container span is 50% (`0.50`), with presets of `33%`, `50%`, `67%`, and `100%` (`[0.333, 0.5, 0.667, 1.0]`).
+- **Cycle Size** (`Shift+F18`) cycles the focused container span through those presets (`1/3` $\\rightarrow$ `1/2` $\\rightarrow$ `2/3` $\\rightarrow$ `full` $\\rightarrow$ `1/3`).
+- Columns can contain multiple vertically stacked windows. The same directional focus and move semantic keys work here and on Dwindle: `Ctrl+F13`/`Ctrl+F16` focus left/right, `Ctrl+F14`/`Ctrl+F15` focus down/up, and the corresponding `Ctrl+Shift+F13..F16` keys move windows.
+
+### Dwindle behavior: COMMS
+
+- Dwindle arranges COMMS windows as a binary split tree using the configured split ratio.
+- **Cycle Size** (`Shift+F18`) cycles the focused Dwindle split ratio; it is not a global width control.
+- The same directional focus and move semantic keys are available on COMMS, so workspace layout does not change the keyboard's window-management vocabulary.
+
+### Shared workspace actions
+
+- `F13`–`F17` focus workspaces 1–5; `Shift+F13`–`Shift+F17` move the active window to the corresponding workspace and follow it.
+- **Overview:** `Alt+F18` (`Option+F18`) opens OmniWM's Overview thumbnail view.
 - **Fullscreen & Floating:** `F19` toggles fullscreen, and `F20` toggles floating.
 - **Previous Window:** `Alt+F16` switches to the previously focused window across workspaces.
+
+### Conservative app routing
+
+New windows are routed only for the deliberate workspace defaults below. Workspace switching and app launching remain separate actions.
+
+- **WEB (`1`):** Chrome, Safari, Firefox, Zen, and Dia.
+- **DEV (`2`):** Codex and Zed.
+- **COMMS (`3`):** Discord, Outlook, Messages, and Spotify.
+- **RUN (`4`) and AUX (`5`):** no automatic routing yet.
+- Ghostty remains manual so a new standalone terminal opens in the current workspace. Unlisted applications remain in the workspace where they are opened.
 
 ---
 
@@ -203,7 +236,7 @@ The built-in MacBook keyboard adapter allows full daily-driving of the OmniWM en
 | `⌥ ⇧ H / J / K / L` | `move left / down / up / right` | Move Left / Down / Up / Right |
 | `⌃ ⌥ Tab` | `switch-workspace back-and-forth` | Previous workspace back-and-forth |
 | `⌥ Tab` | `focus previous` | Focus previous window across workspaces |
-| `⌥ .` | `cycle-size forward` | Cycle column width forward |
+| `⌥ .` | `cycle-size forward` | Cycle Size |
 | `⌥ ⇧ O` | `toggle-overview` | Toggle OmniWM Overview |
 | `⌥ Return` | `toggle-fullscreen` | Toggle fullscreen |
 | `⌥ ⇧ Space` | `toggle-focused-window-floating` | Toggle focused window floating |

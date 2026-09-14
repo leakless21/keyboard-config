@@ -1,0 +1,102 @@
+schema_version: 1
+
+cheatsheet: macos-omniwm
+title: "macOS · OMNIWM WORKFLOW CHEATSHEET"
+subtitle: "OmniWM workspaces · Corne HOST actions · MacBook equivalents"
+
+# Presentation names only. Workspace membership and layout come from settings.toml;
+# bindings and IPC commands are checked against the protocol and Karabiner assets.
+routing_labels:
+  com.google.Chrome: "Chrome"
+  com.apple.Safari: "Safari"
+  org.mozilla.firefox: "Firefox"
+  app.zen-browser.zen: "Zen"
+  company.thebrowser.dia: "Dia"
+  com.openai.codex: "Codex"
+  dev.zed.Zed: "Zed"
+  com.hnc.Discord: "Discord"
+  com.microsoft.Outlook: "Outlook"
+  com.apple.MobileSMS: "Messages"
+  com.spotify.client: "Spotify"
+
+section_titles:
+  workspace_model: "WORKSPACE MODEL"
+  corne_host: "CORNE HOST ACTIONS"
+  macbook: "MACBOOK EQUIVALENTS"
+  behavior: "BEHAVIOR NOTES"
+  routing: "CONSERVATIVE ROUTING"
+
+host_group_titles:
+  workspaces: "Workspace"
+  move_workspace: "Move→workspace"
+  focus: "Focus"
+  move: "Move"
+  context: "Window"
+  desktop: "Desktop"
+
+macbook_controls:
+  - chord: "⌥1…5"
+    label: "workspace"
+    commands:
+      - "switch-workspace 1"
+      - "switch-workspace 2"
+      - "switch-workspace 3"
+      - "switch-workspace 4"
+      - "switch-workspace 5"
+  - chord: "⌥⇧1…5"
+    label: "move workspace"
+    commands:
+      - "move-to-workspace 1"
+      - "move-to-workspace 2"
+      - "move-to-workspace 3"
+      - "move-to-workspace 4"
+      - "move-to-workspace 5"
+  - chord: "⌥H/J/K/L"
+    label: "focus"
+    commands:
+      - "focus left"
+      - "focus down"
+      - "focus up"
+      - "focus right"
+  - chord: "⌥⇧H/J/K/L"
+    label: "move"
+    commands:
+      - "move left"
+      - "move down"
+      - "move up"
+      - "move right"
+  - chord: "⌃⌥Tab"
+    label: "previous workspace"
+    commands:
+      - "switch-workspace back-and-forth"
+  - chord: "⌥Tab"
+    label: "previous window"
+    commands:
+      - "focus previous"
+  - chord: "⌥."
+    label: "size"
+    commands:
+      - "cycle-size forward"
+  - chord: "⌥⇧O"
+    label: "overview"
+    commands:
+      - "toggle-overview"
+  - chord: "⌥Return"
+    label: "fullscreen"
+    commands:
+      - "toggle-fullscreen"
+  - chord: "⌥⇧Space"
+    label: "float"
+    commands:
+      - "toggle-focused-window-floating"
+  - chord: "⌥`"
+    label: "Quake"
+    commands:
+      - "toggle-quake-terminal"
+
+behavior_notes:
+  niri: "Size → 33 / 50 / 67 / 100% container span"
+  dwindle: "Size → cycle split ratio"
+  quake: "= OmniWM embedded persistent drop-down terminal"
+  newterm: "= independent Ghostty window in current workspace"
+  option: "= reveal OmniWM workspace bar after ~200 ms"

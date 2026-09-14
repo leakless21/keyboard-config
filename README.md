@@ -69,6 +69,16 @@ Single-page, deterministic A4 reference sheets generated directly from firmware 
 * **Technical Keymap Diagram:** [`keymap-drawer/sofle.svg`](keymap-drawer/sofle.svg)
 * **Cheatsheet Configuration:** [`cheatsheets/sofle.yaml`](cheatsheets/sofle.yaml)
 
+### macOS / OmniWM Workflow
+
+The keyboard sheets above stay focused on physical layers. The separate host workflow reference covers the five mixed-layout workspaces, conservative app routing, Corne HOST actions, and MacBook equivalents:
+
+![macOS OmniWM Workflow Cheatsheet](docs/generated/macos-omniwm-cheatsheet.svg)
+
+* **Printable Vector PDF:** [`docs/generated/macos-omniwm-cheatsheet.pdf`](docs/generated/macos-omniwm-cheatsheet.pdf)
+* **Presentation Configuration:** [`cheatsheets/macos-omniwm.yaml`](cheatsheets/macos-omniwm.yaml)
+* **Generator:** [`scripts/generate_host_cheatsheet.py`](scripts/generate_host_cheatsheet.py)
+
 ---
 
 ## 4. Host Integration Matrix
@@ -79,7 +89,7 @@ Single-page, deterministic A4 reference sheets generated directly from firmware 
 | **Directional Focus** | `Ctrl+F13..F16` | OmniWM `focus left/down/up/right` | GlazeWM `ctrl+f13..f16` |
 | **Directional Move** | `Ctrl+Shift+F13..F16` | OmniWM `move left/down/up/right` | GlazeWM `ctrl+shift+f13..f16` |
 | **Previous Workspace** | `F18` | OmniWM `switch-workspace back-and-forth` | GlazeWM `f18` |
-| **Resize Mode / Cycle** | `Shift+F18` | OmniWM `cycle-size forward` | GlazeWM `shift+f18` |
+| **Cycle Size / Resize Mode** | `Shift+F18` | OmniWM `cycle-size forward` | GlazeWM `shift+f18` |
 | **Overview / Service** | `Alt+F18` | OmniWM `toggle-overview` | GlazeWM `alt+f18` |
 | **Fullscreen** | `F19` | OmniWM `toggle-fullscreen` | GlazeWM `f19` |
 | **Float / Tile** | `F20` | OmniWM `toggle-focused-window-floating` | GlazeWM `f20` |
@@ -112,7 +122,8 @@ keyboard-config/
 │   └── semantic-v1.yaml      # Canonical semantic HID protocol specification
 ├── cheatsheets/
 │   ├── corne.yaml            # Corne cheatsheet styling and palette
-│   └── sofle.yaml            # Sofle cheatsheet styling and palette
+│   ├── sofle.yaml            # Sofle cheatsheet styling and palette
+│   └── macos-omniwm.yaml     # macOS/OmniWM workflow presentation
 ├── hosts/
 │   ├── macos/
 │   │   ├── omniwm/
@@ -135,7 +146,9 @@ keyboard-config/
 │   │   ├── protocol.py       # Protocol loader & signal helpers
 │   │   ├── validation.py     # Real JSON/YAML/TOML loaders & assertions
 │   │   ├── cheatsheet.py     # Semantic model & hold-tap resolver
-│   │   └── cheatsheet_svg.py # Deterministic A4 SVG renderer
+│   │   ├── cheatsheet_svg.py # Deterministic A4 keyboard SVG renderer
+│   │   ├── host_cheatsheet.py # Source-backed macOS host model
+│   │   └── host_cheatsheet_svg.py # Deterministic host SVG renderer
 │   ├── check_corne_keymap.py # Positional invariant validator
 │   ├── check_sofle_keymap.py # Positional & encoder validator
 │   ├── check_host_protocol.py# End-to-end multi-host protocol validator
@@ -144,11 +157,13 @@ keyboard-config/
 │   ├── check_build_config.py # Target matrix & manifest validator
 │   ├── check_generated.py    # Freshness & undeclared signal validator
 │   ├── generate_protocol_files.py
-│   └── generate_cheatsheet.py# First-class cheatsheet SVG/PDF generator
+│   ├── generate_cheatsheet.py# First-class keyboard cheatsheet generator
+│   └── generate_host_cheatsheet.py # macOS/OmniWM workflow generator
 └── docs/
     ├── generated/
     │   ├── corne-cheatsheet.svg / corne-cheatsheet.pdf / corne-cheatsheet.manifest.json
-    │   └── sofle-cheatsheet.svg / sofle-cheatsheet.pdf / sofle-cheatsheet.manifest.json
+    │   ├── sofle-cheatsheet.svg / sofle-cheatsheet.pdf / sofle-cheatsheet.manifest.json
+    │   └── macos-omniwm-cheatsheet.svg / .pdf / .manifest.json
     ├── setup.md
     ├── usage.md
     ├── development.md

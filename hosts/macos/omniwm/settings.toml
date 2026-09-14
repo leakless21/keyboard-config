@@ -75,7 +75,7 @@ workspaceSwipeEnabled = true
 workspaceSwipeFingerCount = 3
 
 [hiddenBar]
-enabled = true
+enabled = false
 hiddenBundleIDs = []
 rehideIntervalSeconds = 5.0
 
@@ -124,12 +124,12 @@ red = 0.3
 [quakeTerminal]
 animationDuration = 0.0
 autoHide = true
-backgroundBlurRadius = 18
+backgroundBlurRadius = 15
 backgroundEffect = "standardBlur"
 enabled = true
 heightPercent = 50.0
 monitorMode = "focusedWindow"
-opacity = 0.94
+opacity = 0.75
 position = "top"
 widthPercent = 90.0
 
@@ -152,7 +152,7 @@ deduplicateAppIcons = true
 enabled = true
 excludedBundleIDs = []
 height = 24.0
-hideEmptyWorkspaces = false
+hideEmptyWorkspaces = true
 hideInNativeFullscreen = true
 notchActiveZoneWidth = 180.0
 notchMode = "moveBelowMenuBar"
@@ -167,10 +167,17 @@ windowLevel = "popup"
 xOffset = 0.0
 yOffset = 0.0
 
+[workspaceBar.accentColor]
+alpha = 1.0
+blue = 0.7713536024093628
+green = 0.7615341544151306
+red = 0.7862474918365479
+
 [workspaceBar.iconOverrides]
 
 [[appRules]]
 bundleId = "com.openai.codex"
+assignToWorkspace = "2"
 id = "6A31F08A-4051-4354-B439-42F4C71894A3"
 minHeight = 600.0
 minWidth = 800.0
@@ -183,48 +190,56 @@ minWidth = 950.0
 
 [[appRules]]
 bundleId = "com.google.Chrome"
+assignToWorkspace = "1"
 id = "486CEFA6-69AA-4A3C-AF27-BCD38F4F138B"
 minHeight = 375.0
 minWidth = 500.0
 
 [[appRules]]
 bundleId = "dev.zed.Zed"
+assignToWorkspace = "2"
 id = "979F05F4-FFA2-4EDD-B23F-08A9944C759F"
 minHeight = 240.0
 minWidth = 360.0
 
 [[appRules]]
 bundleId = "com.apple.Safari"
+assignToWorkspace = "1"
 id = "81426D13-C1A5-475E-AFBC-00BBA05042D0"
 minHeight = 220.0
 minWidth = 574.0
 
 [[appRules]]
 bundleId = "app.zen-browser.zen"
+assignToWorkspace = "1"
 id = "1CF39647-F30D-4E76-9686-79B551F1B094"
 minHeight = 495.0
 minWidth = 500.0
 
 [[appRules]]
 bundleId = "org.mozilla.firefox"
+assignToWorkspace = "1"
 id = "005C00D3-F665-47F8-BDAE-D80790E9E46B"
 minHeight = 120.0
 minWidth = 500.0
 
 [[appRules]]
 bundleId = "company.thebrowser.dia"
+assignToWorkspace = "1"
 id = "C21156B1-0224-4998-97E3-8F4FA65B9F3B"
 minHeight = 420.0
 minWidth = 500.0
 
 [[appRules]]
 bundleId = "com.spotify.client"
+assignToWorkspace = "3"
 id = "2DE9390B-0DB4-4D0C-9ABA-06F76F1D4EA9"
 minHeight = 600.0
 minWidth = 800.0
 
 [[appRules]]
 bundleId = "com.hnc.Discord"
+assignToWorkspace = "3"
 id = "AF752D95-8497-4844-BE20-4C93E73BAEF2"
 minHeight = 500.0
 minWidth = 800.0
@@ -237,12 +252,14 @@ minWidth = 90.0
 
 [[appRules]]
 bundleId = "com.microsoft.Outlook"
+assignToWorkspace = "3"
 id = "8ECAB78B-BCDD-4245-BC25-1609A49B1C86"
 minHeight = 650.0
 minWidth = 930.0
 
 [[appRules]]
 bundleId = "com.apple.MobileSMS"
+assignToWorkspace = "3"
 id = "552FB77D-BF0E-4737-90A6-B5BC6986C579"
 minHeight = 320.0
 minWidth = 660.0

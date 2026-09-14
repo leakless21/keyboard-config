@@ -1250,7 +1250,7 @@
   </g>
   <g class="key normal" data-layer="HOST" data-position="RT1" data-binding="&amp;kp LS(F18)">
     <rect x="1576.0" y="1098.0" width="72.0" height="96.0" rx="6" ry="6" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.2" />
-    <text x="1612.0" y="1151.5" class="lbl-word" font-size="14">Width</text>
+    <text x="1612.0" y="1151.5" class="lbl-word" font-size="16">Size</text>
   </g>
   <g class="key normal" data-layer="HOST" data-position="RT2" data-binding="&amp;kp LA(F18)">
     <rect x="1654.0" y="1098.0" width="72.0" height="96.0" rx="6" ry="6" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.2" />
@@ -1326,11 +1326,11 @@
   </g>
   <g class="key normal" data-layer="HOST" data-position="LB3" data-binding="&amp;kp LA(F14)">
     <rect x="1166.0" y="1302.0" width="72.0" height="96.0" rx="6" ry="6" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.2" />
-    <text x="1202.0" y="1355.5" class="lbl-word" font-size="14">QTerm</text>
+    <text x="1202.0" y="1355.5" class="lbl-word" font-size="14">Quake</text>
   </g>
   <g class="key normal" data-layer="HOST" data-position="LB2" data-binding="&amp;kp LA(F15)">
     <rect x="1244.0" y="1302.0" width="72.0" height="96.0" rx="6" ry="6" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.2" />
-    <text x="1280.0" y="1355.5" class="lbl-word" font-size="16">Term</text>
+    <text x="1280.0" y="1355.5" class="lbl-word" font-size="14">NewTerm</text>
   </g>
   <g class="key normal" data-layer="HOST" data-position="LB1" data-binding="&amp;kp LA(F17)">
     <rect x="1322.0" y="1302.0" width="72.0" height="96.0" rx="6" ry="6" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.2" />

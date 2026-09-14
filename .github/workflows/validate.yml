@@ -72,3 +72,6 @@ jobs:
           test -s /tmp/cheatsheet-smoke-test/corne-cheatsheet.pdf
           test -f /tmp/cheatsheet-smoke-test/sofle-cheatsheet.pdf
           test -s /tmp/cheatsheet-smoke-test/sofle-cheatsheet.pdf
+          uv run scripts/generate_host_cheatsheet.py --out-dir /tmp/cheatsheet-smoke-test
+          test -f /tmp/cheatsheet-smoke-test/macos-omniwm-cheatsheet.pdf
+          test -s /tmp/cheatsheet-smoke-test/macos-omniwm-cheatsheet.pdf

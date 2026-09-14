@@ -535,6 +535,11 @@ def validate_omniwm_consumer(data: dict) -> None:
     assert_true(general.get("ipcEnabled") is True, "OmniWM: general.ipcEnabled must be true for CLI/IPC control")
     assert_eq(general.get("defaultLayoutType"), "niri", "OmniWM: general.defaultLayoutType must be niri")
     assert_true(general.get("hotkeysEnabled") is True, "OmniWM: general.hotkeysEnabled must be true")
+    assert_true(general.get("updateChecksEnabled") is True, "OmniWM: general.updateChecksEnabled must remain true for stable-release tracking")
+
+    hidden_bar = data.get("hiddenBar", {})
+    assert_true(hidden_bar.get("enabled") is False, "OmniWM: hiddenBar.enabled must be false when no Hidden Bar integration is configured")
+    assert_in("hiddenBundleIDs", hidden_bar, "OmniWM: hiddenBar.hiddenBundleIDs must remain present for schema compatibility")
 
     ws_bar = data.get("workspaceBar", {})
     assert_true(ws_bar.get("enabled") is True, "OmniWM: workspaceBar.enabled must be true")
@@ -554,10 +559,75 @@ def validate_omniwm_consumer(data: dict) -> None:
     for expected_preset in [0.5, 1.0]:
         assert_true(any(abs(p - expected_preset) < 0.01 for p in presets), f"OmniWM: preset {expected_preset} missing in niri presets")
 
-    # Validate 5 semantic workspaces
+    # Validate the exact five-workspace model without coupling the repository to UUIDs.
+    expected_workspaces = [
+        {"name": "1", "displayName": "WEB", "layoutType": "niri"},
+        {"name": "2", "displayName": "DEV", "layoutType": "niri"},
+        {"name": "3", "displayName": "COMMS", "layoutType": "dwindle"},
+        {"name": "4", "displayName": "RUN", "layoutType": "niri"},
+        {"name": "5", "displayName": "AUX", "layoutType": "niri"},
+    ]
     workspaces = data.get("workspaces", [])
-    ws_display_names = [w.get("displayName") for w in workspaces]
-    assert_eq(ws_display_names, ["WEB", "DEV", "COMMS", "RUN", "AUX"], "OmniWM: Expected workspaces [WEB, DEV, COMMS, RUN, AUX]")
+    assert_eq(
+        len(workspaces),
+        len(expected_workspaces),
+        f"OmniWM: Expected exactly {len(expected_workspaces)} workspace definitions, found {len(workspaces)}",
+    )
+    for index, (workspace, expected) in enumerate(zip(workspaces, expected_workspaces), start=1):
+        for property_name, expected_value in expected.items():
+            actual_value = workspace.get(property_name)
+            assert_eq(
+                actual_value,
+                expected_value,
+                f"OmniWM: Workspace #{index} property '{property_name}' expected {expected_value!r}, got {actual_value!r}",
+            )
+
+    # Validate only the intentional app-routing contract. Other app rules may
+    # continue to carry sizing/layout policy without becoming routing policy;
+    # no additional app may be assigned to any workspace.
+    expected_app_routing = {
+        # Browsers are explicitly routed to WEB by the revised host plan.
+        "com.google.Chrome": "1",
+        "com.apple.Safari": "1",
+        "org.mozilla.firefox": "1",
+        "app.zen-browser.zen": "1",
+        "company.thebrowser.dia": "1",
+        "com.openai.codex": "2",
+        "dev.zed.Zed": "2",
+        "com.hnc.Discord": "3",
+        "com.microsoft.Outlook": "3",
+        "com.apple.MobileSMS": "3",
+        "com.spotify.client": "3",
+    }
+    app_rules = data.get("appRules", [])
+    unexpected_routes = [
+        (rule.get("bundleId"), rule.get("assignToWorkspace"))
+        for rule in app_rules
+        if "assignToWorkspace" in rule and rule.get("bundleId") not in expected_app_routing
+    ]
+    assert_eq(
+        unexpected_routes,
+        [],
+        f"OmniWM: Unexpected app-routing rules found: {unexpected_routes}",
+    )
+    for bundle_id, workspace_name in expected_app_routing.items():
+        matches = [rule for rule in app_rules if rule.get("bundleId") == bundle_id]
+        assert_eq(
+            len(matches),
+            1,
+            f"OmniWM: Expected exactly one appRule for {bundle_id}, found {len(matches)}",
+        )
+        assert_eq(
+            matches[0].get("assignToWorkspace"),
+            workspace_name,
+            f"OmniWM: App routing for {bundle_id} expected assignToWorkspace={workspace_name!r}, got {matches[0].get('assignToWorkspace')!r}",
+        )
+
+    ghostty_rules = [rule for rule in app_rules if rule.get("bundleId") == "com.mitchellh.ghostty"]
+    assert_true(
+        all("assignToWorkspace" not in rule for rule in ghostty_rules),
+        "OmniWM: Ghostty must remain manually placed and must not have assignToWorkspace",
+    )
 
     # Validate hotkey bindings
     hotkeys = data.get("hotkeys", [])
@@ -610,7 +680,8 @@ def validate_omniwm_consumer(data: dict) -> None:
 
     print(
         f"PASS: macOS OmniWM Consumer validated ({len(required_bindings)} required hotkey bindings, "
-        f"5 semantic workspaces, Niri settings, native Quake terminal, ipcEnabled=true, Option-reveal workspaceBar overlay)."
+        f"5 mixed-layout workspaces, {len(expected_app_routing)} app-routing rules, Niri/Dwindle settings, "
+        f"native Quake terminal, ipcEnabled=true, Option-reveal workspaceBar overlay)."
     )
 
 

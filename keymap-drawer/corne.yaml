@@ -309,7 +309,7 @@ layers:
   - Move→RUN
   - Move→AUX
   - ''
-  - Width
+  - Size
   - Overview
   - ''
   - ''
@@ -328,8 +328,8 @@ layers:
   - ''
   - ''
   - Launch
-  - QTerm
-  - Term
+  - Quake
+  - NewTerm
   - LANG
   - ''
   - ''

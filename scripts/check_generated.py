@@ -31,6 +31,8 @@ try:
         load_presentation_aliases,
     )
     from lib.cheatsheet_svg import render_cheatsheet_svg
+    from lib.host_cheatsheet import HOST_CHEATSHEET_INPUTS, build_host_cheatsheet_model
+    from lib.host_cheatsheet_svg import render_host_cheatsheet_svg
     from lib.keymap_parser import parse_keymap_file
     from lib.protocol import ProtocolManifest, load_protocol
     from lib.validation import assert_eq, assert_in, assert_true, fail, load_json, load_yaml
@@ -43,6 +45,8 @@ except ImportError:
         load_presentation_aliases,
     )
     from scripts.lib.cheatsheet_svg import render_cheatsheet_svg
+    from scripts.lib.host_cheatsheet import HOST_CHEATSHEET_INPUTS, build_host_cheatsheet_model
+    from scripts.lib.host_cheatsheet_svg import render_host_cheatsheet_svg
     from scripts.lib.keymap_parser import parse_keymap_file
     from scripts.lib.protocol import ProtocolManifest, load_protocol
     from scripts.lib.validation import assert_eq, assert_in, assert_true, fail, load_json, load_yaml
@@ -60,6 +64,9 @@ KEYMAP_DRAWER_CONFIG_PATH = REPO_ROOT / "keymap_drawer.config.yaml"
 CORNE_CHEATSHEET_CONFIG_PATH = REPO_ROOT / "cheatsheets" / "corne.yaml"
 SOFLE_CHEATSHEET_CONFIG_PATH = REPO_ROOT / "cheatsheets" / "sofle.yaml"
 DOCS_GENERATED_DIR = REPO_ROOT / "docs" / "generated"
+HOST_CHEATSHEET_SVG_PATH = DOCS_GENERATED_DIR / "macos-omniwm-cheatsheet.svg"
+HOST_CHEATSHEET_PDF_PATH = DOCS_GENERATED_DIR / "macos-omniwm-cheatsheet.pdf"
+HOST_CHEATSHEET_MANIFEST_PATH = DOCS_GENERATED_DIR / "macos-omniwm-cheatsheet.manifest.json"
 
 def test_documentation_freshness(manifest: ProtocolManifest) -> None:
     """Verify that docs/host-protocol.md contains the exact generated protocol table."""
@@ -321,6 +328,94 @@ def test_cheatsheet_structure(keyboard: str = "corne") -> None:
     print(f"PASS: {kb.capitalize()} Cheatsheet SVG structure, dimensions, and transition invariants verified.")
 
 
+def test_host_cheatsheet_freshness() -> None:
+    """Verify the generated macOS/OmniWM reference and its source hashes."""
+    if not HOST_CHEATSHEET_SVG_PATH.exists():
+        fail(
+            f"Host cheatsheet SVG missing: {HOST_CHEATSHEET_SVG_PATH}. "
+            "Run 'uv run scripts/generate_host_cheatsheet.py'"
+        )
+
+    model = build_host_cheatsheet_model()
+    expected_svg = render_host_cheatsheet_svg(model)
+    actual_svg = HOST_CHEATSHEET_SVG_PATH.read_text(encoding="utf-8")
+    assert_eq(
+        actual_svg,
+        expected_svg,
+        "macos-omniwm-cheatsheet.svg is stale! Run 'uv run scripts/generate_host_cheatsheet.py'",
+    )
+
+    root = ET.fromstring(actual_svg)
+    assert_eq(root.attrib.get("viewBox"), "0 0 2970 2100", "Host cheatsheet SVG must be A4 landscape")
+    assert_eq(root.attrib.get("width"), "297mm", "Host cheatsheet SVG width must be 297mm")
+    assert_eq(root.attrib.get("height"), "210mm", "Host cheatsheet SVG height must be 210mm")
+
+    for workspace in model.workspaces:
+        assert_in(
+            f">{workspace.name} {workspace.display_name}<",
+            actual_svg,
+            f"Host cheatsheet is missing workspace {workspace.name} {workspace.display_name}",
+        )
+        assert_in(
+            f">{workspace.layout_type.capitalize()}<",
+            actual_svg,
+            f"Host cheatsheet is missing {workspace.layout_type} layout for workspace {workspace.name}",
+        )
+
+    routes_by_workspace: dict[str, list[str]] = {}
+    for route in model.routing:
+        routes_by_workspace.setdefault(route.workspace_name, []).append(route.display_name)
+    for workspace in model.workspaces:
+        names = routes_by_workspace.get(workspace.name, [])
+        if names:
+            assert_in(
+                f"{' / '.join(names)} → {workspace.display_name}",
+                actual_svg,
+                f"Host cheatsheet is missing routing for workspace {workspace.name}",
+            )
+
+    for control in model.macbook_controls:
+        assert_in(control.chord, actual_svg, f"Host cheatsheet is missing MacBook chord {control.chord}")
+        assert_in(control.label, actual_svg, f"Host cheatsheet is missing MacBook action {control.label}")
+
+    for terminology in ("Size", "Quake", "NewTerm"):
+        assert_in(terminology, actual_svg, f"Host cheatsheet is missing required terminology {terminology}")
+    assert_true("Width" not in actual_svg, "Host cheatsheet must use Size, not the old Width terminology")
+    assert_true("QTerm" not in actual_svg, "Host cheatsheet must use Quake, not the old QTerm terminology")
+
+    def sha(path: Path) -> str:
+        return hashlib.sha256(path.read_bytes()).hexdigest()
+
+    manifest = load_json(HOST_CHEATSHEET_MANIFEST_PATH)
+    assert_eq(manifest.get("schema"), 1, "Host cheatsheet manifest schema mismatch")
+    assert_eq(
+        manifest.get("cheatsheet"),
+        "macos-omniwm-cheatsheet",
+        "Host cheatsheet manifest identity mismatch",
+    )
+    for name, path in HOST_CHEATSHEET_INPUTS.items():
+        assert_eq(
+            manifest.get(f"{name}_sha256"),
+            sha(path),
+            f"Host cheatsheet manifest {name}_sha256 mismatch",
+        )
+    assert_eq(
+        manifest.get("svg_sha256"),
+        sha(HOST_CHEATSHEET_SVG_PATH),
+        "Host cheatsheet manifest svg_sha256 mismatch",
+    )
+    assert_true(
+        HOST_CHEATSHEET_PDF_PATH.exists() and HOST_CHEATSHEET_PDF_PATH.stat().st_size > 0,
+        f"Host cheatsheet PDF missing or empty: {HOST_CHEATSHEET_PDF_PATH}",
+    )
+    assert_eq(
+        manifest.get("pdf_sha256"),
+        sha(HOST_CHEATSHEET_PDF_PATH),
+        "Host cheatsheet manifest pdf_sha256 mismatch",
+    )
+    print("PASS: macos-omniwm-cheatsheet.svg, PDF, and manifest are fresh and semantically complete.")
+
+
 def main() -> None:
     print("=" * 70)
     print("RUNNING GENERATED ARTIFACT & PROTOCOL FRESHNESS CHECKS")
@@ -335,6 +430,7 @@ def main() -> None:
         test_cheatsheet_svg_freshness(kb)
         test_cheatsheet_manifest(kb)
         test_cheatsheet_structure(kb)
+    test_host_cheatsheet_freshness()
     print("=" * 70)
     print("ALL GENERATED ARTIFACT & PROTOCOL CHECKS PASSED.")
     print("=" * 70)

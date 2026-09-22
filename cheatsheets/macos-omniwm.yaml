@@ -93,10 +93,18 @@ macbook_controls:
     label: "Quake"
     commands:
       - "toggle-quake-terminal"
+  # Native chord: OmniWM owns this hotkey directly, so it is tracked against
+  # settings.toml rather than the Karabiner IPC adapter (hence `native`).
+  - chord: "⌃⌥Space"
+    label: "palette"
+    native: true
+    binding: "Control+Option+Space"
+    commands:
+      - "openCommandPalette"
 
 behavior_notes:
   niri: "Size → 33 / 50 / 67 / 100% container span"
-  dwindle: "Size → cycle split ratio"
+  dwindle: "Size → cycle split ratio when a workspace selects Dwindle"
   quake: "= OmniWM embedded persistent drop-down terminal"
   newterm: "= independent Ghostty window in current workspace"
   option: "= reveal OmniWM workspace bar after ~200 ms"

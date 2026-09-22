@@ -563,7 +563,9 @@ def validate_omniwm_consumer(data: dict) -> None:
     expected_workspaces = [
         {"name": "1", "displayName": "WEB", "layoutType": "niri"},
         {"name": "2", "displayName": "DEV", "layoutType": "niri"},
-        {"name": "3", "displayName": "COMMS", "layoutType": "dwindle"},
+        # COMMS inherits general.defaultLayoutType (niri) rather than pinning Dwindle,
+        # so the live OmniWM app no longer rewrites this workspace on launch.
+        {"name": "3", "displayName": "COMMS", "layoutType": "default"},
         {"name": "4", "displayName": "RUN", "layoutType": "niri"},
         {"name": "5", "displayName": "AUX", "layoutType": "niri"},
     ]
@@ -588,13 +590,20 @@ def validate_omniwm_consumer(data: dict) -> None:
     expected_app_routing = {
         # Browsers are explicitly routed to WEB by the revised host plan.
         "com.google.Chrome": "1",
+        "com.google.chrome.for.testing": "1",
         "com.apple.Safari": "1",
         "org.mozilla.firefox": "1",
         "app.zen-browser.zen": "1",
         "company.thebrowser.dia": "1",
+        # Editors and note-taking applications are routed to DEV.
         "com.openai.codex": "2",
         "dev.zed.Zed": "2",
+        "com.microsoft.VSCode": "2",
+        "md.obsidian": "2",
+        # Chat, mail, and media applications are routed to COMMS.
         "com.hnc.Discord": "3",
+        "dev.vencord.vesktop": "3",
+        "com.vng.zalo": "3",
         "com.microsoft.Outlook": "3",
         "com.apple.MobileSMS": "3",
         "com.spotify.client": "3",
@@ -680,7 +689,8 @@ def validate_omniwm_consumer(data: dict) -> None:
 
     print(
         f"PASS: macOS OmniWM Consumer validated ({len(required_bindings)} required hotkey bindings, "
-        f"5 mixed-layout workspaces, {len(expected_app_routing)} app-routing rules, Niri/Dwindle settings, "
+        f"5 workspaces (COMMS inherits the niri default), {len(expected_app_routing)} app-routing rules, "
+        f"Niri settings with Dwindle available per workspace, "
         f"native Quake terminal, ipcEnabled=true, Option-reveal workspaceBar overlay)."
     )
 

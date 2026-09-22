@@ -97,6 +97,11 @@ class HostMacBookControl:
     chord: str
     label: str
     commands: Tuple[str, ...]
+    # Native controls are backed by an OmniWM hotkey binding in settings.toml instead of
+    # by an omniwmctl IPC command in the Karabiner adapter. `binding` records the exact
+    # OmniWM key string that must match, so the chord cannot drift from the live config.
+    native: bool = False
+    binding: str = ""
 
 
 @dataclass(frozen=True)
@@ -140,11 +145,19 @@ def load_host_presentation(path: Path = HOST_PRESENTATION_PATH) -> HostCheatshee
         commands = raw_control.get("commands", [])
         if not isinstance(commands, list) or not commands:
             raise ValueError(f"MacBook control #{index + 1} must list at least one command")
+        native = bool(raw_control.get("native", False))
+        binding = str(raw_control.get("binding", ""))
+        if native and not binding:
+            raise ValueError(
+                f"MacBook control #{index + 1} is native and must declare the OmniWM 'binding' it represents"
+            )
         controls.append(
             HostMacBookControl(
                 chord=str(raw_control.get("chord", "")),
                 label=str(raw_control.get("label", "")),
                 commands=tuple(str(command) for command in commands),
+                native=native,
+                binding=binding,
             )
         )
 
@@ -267,9 +280,30 @@ def _laptop_shell_commands(data: Dict[str, Any]) -> Tuple[str, ...]:
 def _validate_macbook_controls(
     controls: Tuple[HostMacBookControl, ...],
     laptop_data: Dict[str, Any],
+    settings_data: Dict[str, Any],
 ) -> None:
     shell_commands = _laptop_shell_commands(laptop_data)
+    hotkey_bindings = {
+        str(hotkey.get("id")): str(hotkey.get("binding", ""))
+        for hotkey in settings_data.get("hotkeys", [])
+        if isinstance(hotkey, dict) and "id" in hotkey
+    }
     for control in controls:
+        if control.native:
+            # Native chords are OmniWM hotkeys and never pass through the Karabiner
+            # adapter, so they are tracked against settings.toml rather than the adapter.
+            for command in control.commands:
+                if command not in hotkey_bindings:
+                    raise ValueError(
+                        f"MacBook control {control.chord!r} is not backed by an OmniWM hotkey id: {command!r}"
+                    )
+                actual = hotkey_bindings[command]
+                if actual != control.binding:
+                    raise ValueError(
+                        f"MacBook control {control.chord!r} declares binding {control.binding!r} but "
+                        f"OmniWM hotkey {command!r} is bound to {actual!r}"
+                    )
+            continue
         missing = [
             command
             for command in control.commands
@@ -301,7 +335,7 @@ def build_host_cheatsheet_model() -> HostCheatsheetModel:
     routing = _routing_model(settings, workspaces, presentation)
     host_bindings = set(keymap.layer("HOST").bindings)
     host_action_groups = _host_action_groups(protocol, host_bindings, aliases, presentation)
-    _validate_macbook_controls(presentation.macbook_controls, laptop_data)
+    _validate_macbook_controls(presentation.macbook_controls, laptop_data, settings)
 
     return HostCheatsheetModel(
         presentation=presentation,

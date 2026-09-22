@@ -182,28 +182,30 @@ uv run scripts/sync_karabiner.py --apply --prune-backups  # also drop stale kara
 
 ## 3. Workspaces & Layout Strategy
 
-OmniWM operates with five persistent virtual workspaces. The workspace model is intentionally mixed: COMMS uses Dwindle while the other workspaces use Niri.
+OmniWM operates with five persistent virtual workspaces. WEB, DEV, RUN, and AUX pin `layoutType = "niri"`, while COMMS sets `layoutType = "default"` so it inherits `general.defaultLayoutType` (`niri`). All five workspaces therefore run Niri; Dwindle remains available per workspace, but no workspace selects it.
 
 | Workspace | Role                    | Layout  |
 | --------- | ----------------------- | ------- |
 | 1 WEB     | Browser / research      | Niri    |
 | 2 DEV     | Editor / development    | Niri    |
-| 3 COMMS   | Chat / email / meetings | Dwindle |
+| 3 COMMS   | Chat / email / meetings | Default → Niri |
 | 4 RUN     | Running apps / testing  | Niri    |
 | 5 AUX     | Miscellaneous           | Niri    |
 
-### Niri behavior: WEB, DEV, RUN, and AUX
+### Niri behavior: all five workspaces
 
 - Niri presents a horizontal scrolling strip with one visible container (`visibleContainerCount = 1`).
 - The default container span is 50% (`0.50`), with presets of `33%`, `50%`, `67%`, and `100%` (`[0.333, 0.5, 0.667, 1.0]`).
 - **Cycle Size** (`Shift+F18`) cycles the focused container span through those presets (`1/3` $\\rightarrow$ `1/2` $\\rightarrow$ `2/3` $\\rightarrow$ `full` $\\rightarrow$ `1/3`).
-- Columns can contain multiple vertically stacked windows. The same directional focus and move semantic keys work here and on Dwindle: `Ctrl+F13`/`Ctrl+F16` focus left/right, `Ctrl+F14`/`Ctrl+F15` focus down/up, and the corresponding `Ctrl+Shift+F13..F16` keys move windows.
+- Columns can contain multiple vertically stacked windows. The same directional focus and move semantic keys work on every workspace: `Ctrl+F13`/`Ctrl+F16` focus left/right, `Ctrl+F14`/`Ctrl+F15` focus down/up, and the corresponding `Ctrl+Shift+F13..F16` keys move windows.
 
-### Dwindle behavior: COMMS
+### Dwindle behavior (opt-in per workspace)
 
-- Dwindle arranges COMMS windows as a binary split tree using the configured split ratio.
+No workspace pins Dwindle today, so these notes describe what happens if one is switched to it in OmniWM's settings.
+
+- Dwindle arranges windows as a binary split tree using the configured split ratio (`[dwindle].defaultSplitRatio`).
 - **Cycle Size** (`Shift+F18`) cycles the focused Dwindle split ratio; it is not a global width control.
-- The same directional focus and move semantic keys are available on COMMS, so workspace layout does not change the keyboard's window-management vocabulary.
+- The same directional focus and move semantic keys remain available, so workspace layout does not change the keyboard's window-management vocabulary.
 
 ### Shared workspace actions
 
@@ -216,9 +218,9 @@ OmniWM operates with five persistent virtual workspaces. The workspace model is 
 
 New windows are routed only for the deliberate workspace defaults below. Workspace switching and app launching remain separate actions.
 
-- **WEB (`1`):** Chrome, Safari, Firefox, Zen, and Dia.
-- **DEV (`2`):** Codex and Zed.
-- **COMMS (`3`):** Discord, Outlook, Messages, and Spotify.
+- **WEB (`1`):** Chrome, Chrome for Testing, Safari, Firefox, Zen, and Dia.
+- **DEV (`2`):** Codex, Zed, VS Code, and Obsidian.
+- **COMMS (`3`):** Discord, Vesktop, Zalo, Outlook, Messages, and Spotify.
 - **RUN (`4`) and AUX (`5`):** no automatic routing yet.
 - Ghostty remains manual so a new standalone terminal opens in the current workspace. Unlisted applications remain in the workspace where they are opened.
 
@@ -241,8 +243,11 @@ The built-in MacBook keyboard adapter allows full daily-driving of the OmniWM en
 | `⌥ Return` | `toggle-fullscreen` | Toggle fullscreen |
 | `⌥ ⇧ Space` | `toggle-focused-window-floating` | Toggle focused window floating |
 | `⌥ \`` | `toggle-quake-terminal` | Toggle native Quake terminal |
+| `⌃ ⌥ Space` | _(native OmniWM hotkey — not via Karabiner)_ | Open the OmniWM command palette |
 
 All MacBook rules invoke the deterministic bundle binary `/Applications/OmniWM.app/Contents/MacOS/omniwmctl` (independent of Karabiner's `PATH`) and are strictly scoped to `is_built_in_keyboard: true` so the external Corne is unaffected.
+
+`⌃ ⌥ Space` is the one exception to that routing: it is a native OmniWM hotkey (`Control+Option+Space` → `openCommandPalette` in `settings.toml`) that never passes through Karabiner, so it behaves identically on the built-in and external keyboards and is tracked against `settings.toml` rather than the adapter.
 
 `Option` itself is tracked in the `omniwm_option_held` Karabiner variable by two pass-through trackers, and is declared only as an *optional* modifier on the actions above. Karabiner projects mandatory modifiers out of `to` events, so declaring Option mandatory would emit a phantom Option key-up that hides the workspace bar mid-chord.
 

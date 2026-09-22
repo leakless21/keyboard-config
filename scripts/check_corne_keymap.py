@@ -21,10 +21,16 @@ if str(REPO_ROOT) not in sys.path:
 
 try:
     from lib.keymap_parser import KeyboardConfig, parse_keymap_file
-    from lib.validation import assert_eq, assert_in, assert_true, fail
+    from lib.validation import assert_eq, assert_in, assert_true, fail, is_exactly_true
 except ImportError:
     from scripts.lib.keymap_parser import KeyboardConfig, parse_keymap_file
-    from scripts.lib.validation import assert_eq, assert_in, assert_true, fail
+    from scripts.lib.validation import (
+        assert_eq,
+        assert_in,
+        assert_true,
+        fail,
+        is_exactly_true,
+    )
 KEYMAP_PATH = REPO_ROOT / "config" / "corne.keymap"
 CONF_PATH = REPO_ROOT / "config" / "corne.conf"
 
@@ -231,7 +237,8 @@ def test_recovery_topology_and_destructive_bindings(cfg: KeyboardConfig) -> None
         "Keymap must declare conditional layer for ADJUST",
     )
     adjust_cond = next((c for c in cfg.conditional_layers if c.then_layer in ("L_ADJUST", "ADJUST")), None)
-    assert_true(adjust_cond is not None, "Missing conditional layer targeting ADJUST")
+    if adjust_cond is None:
+        fail("Missing conditional layer targeting ADJUST")
     assert_true(
         set(adjust_cond.if_layers) == {"L_NAV", "L_NUM"},
         f"ADJUST conditional layer must require if-layers <L_NAV L_NUM>, got: {adjust_cond.if_layers}",
@@ -451,8 +458,8 @@ def test_modifier_behaviors(cfg: KeyboardConfig) -> None:
     skm_beh = cfg.behaviors["skm"]
     assert_eq(skm_beh.compatible, "zmk,behavior-sticky-key", "skm must be compatible with zmk,behavior-sticky-key")
     assert_eq(skm_beh.properties.get("release-after-ms"), ["1000"], "skm release-after-ms must be 1000")
-    assert_true(skm_beh.properties.get("lazy") is True, "skm must have lazy property")
-    assert_true(skm_beh.properties.get("ignore-modifiers") is True, "skm must have ignore-modifiers property")
+    assert_true(is_exactly_true(skm_beh.properties.get("lazy")), "skm must have lazy property")
+    assert_true(is_exactly_true(skm_beh.properties.get("ignore-modifiers")), "skm must have ignore-modifiers property")
     assert_true("quick-release" not in skm_beh.properties, "skm must NOT have quick-release (to allow modifier chaining)")
 
     print("PASS: Modifier architecture verified (&sk on BASE, &skm on NUM/SYM/FUN rails, plain &kp on NAV, skm behavior properties).")

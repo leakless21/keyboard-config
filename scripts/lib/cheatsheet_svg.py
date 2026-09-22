@@ -15,35 +15,25 @@ print-optimized A4 landscape SVG document with:
 from __future__ import annotations
 
 import html
-from typing import Dict, List, Optional, Tuple
 
 try:
     from .cheatsheet import (
-        CheatsheetGeometry,
         CheatsheetModel,
-        CorneGeometry,
         KeyView,
         LayerView,
-        SofleGeometry,
     )
 except ImportError:
     try:
         from lib.cheatsheet import (
-            CheatsheetGeometry,
             CheatsheetModel,
-            CorneGeometry,
             KeyView,
             LayerView,
-            SofleGeometry,
         )
     except ImportError:
         from scripts.lib.cheatsheet import (
-            CheatsheetGeometry,
             CheatsheetModel,
-            CorneGeometry,
             KeyView,
             LayerView,
-            SofleGeometry,
         )
 
 
@@ -107,14 +97,27 @@ COLOR_KEY_TRANS_BG = "#f8fafc"
 COLOR_KEY_TRANS_BORDER = "#94a3b8"
 
 
-def escape(text: Optional[str]) -> str:
+def escape(text: str | None) -> str:
     """XML/HTML escape a text string."""
     if text is None:
         return ""
     return html.escape(str(text))
 
 
-def compute_corne_key_coords(pos: str, card_x: float, card_y: float) -> Tuple[float, float, float, float]:
+def parse_grid_index(position: str, char_index: int) -> int:
+    """Extract an integer grid index from a position label such as 'LT3'.
+
+    Position labels come from the geometry tables, so a malformed label means the
+    geometry itself is corrupt. Fail with the offending label instead of a bare
+    ValueError from int().
+    """
+    try:
+        return int(position[char_index])
+    except (IndexError, ValueError) as exc:
+        raise ValueError(f"Malformed keyboard position label: {position!r}") from exc
+
+
+def compute_corne_key_coords(pos: str, card_x: float, card_y: float) -> tuple[float, float, float, float]:
     """Compute absolute (x, y, w, h) for a Corne key position within a card."""
     row_step = CORNE_KEY_H + CORNE_KEY_GAP
     col_step = CORNE_KEY_W + CORNE_KEY_GAP
@@ -125,13 +128,13 @@ def compute_corne_key_coords(pos: str, card_x: float, card_y: float) -> Tuple[fl
 
     # Left Hand Matrix
     if pos.startswith("LT"):
-        col_idx = 5 - int(pos[2])
+        col_idx = 5 - parse_grid_index(pos, 2)
         return left_start_x + col_idx * col_step, alpha_top_y, CORNE_KEY_W, CORNE_KEY_H
     if pos.startswith("LM"):
-        col_idx = 5 - int(pos[2])
+        col_idx = 5 - parse_grid_index(pos, 2)
         return left_start_x + col_idx * col_step, alpha_top_y + row_step, CORNE_KEY_W, CORNE_KEY_H
     if pos.startswith("LB"):
-        col_idx = 5 - int(pos[2])
+        col_idx = 5 - parse_grid_index(pos, 2)
         return left_start_x + col_idx * col_step, alpha_top_y + 2 * row_step, CORNE_KEY_W, CORNE_KEY_H
 
     # Left Hand Thumbs
@@ -144,13 +147,13 @@ def compute_corne_key_coords(pos: str, card_x: float, card_y: float) -> Tuple[fl
 
     # Right Hand Matrix
     if pos.startswith("RT"):
-        col_idx = int(pos[2])
+        col_idx = parse_grid_index(pos, 2)
         return right_start_x + col_idx * col_step, alpha_top_y, CORNE_KEY_W, CORNE_KEY_H
     if pos.startswith("RM"):
-        col_idx = int(pos[2])
+        col_idx = parse_grid_index(pos, 2)
         return right_start_x + col_idx * col_step, alpha_top_y + row_step, CORNE_KEY_W, CORNE_KEY_H
     if pos.startswith("RB"):
-        col_idx = int(pos[2])
+        col_idx = parse_grid_index(pos, 2)
         return right_start_x + col_idx * col_step, alpha_top_y + 2 * row_step, CORNE_KEY_W, CORNE_KEY_H
 
     # Right Hand Thumbs
@@ -164,7 +167,7 @@ def compute_corne_key_coords(pos: str, card_x: float, card_y: float) -> Tuple[fl
     raise ValueError(f"Unknown Corne position: {pos}")
 
 
-def compute_sofle_key_coords(pos: str, card_x: float, card_y: float) -> Tuple[float, float, float, float]:
+def compute_sofle_key_coords(pos: str, card_x: float, card_y: float) -> tuple[float, float, float, float]:
     """Compute absolute (x, y, w, h) for a Sofle key position within a card."""
     row_step = SOFLE_KEY_H + SOFLE_KEY_GAP
     col_step = SOFLE_KEY_W + SOFLE_KEY_GAP
@@ -179,56 +182,56 @@ def compute_sofle_key_coords(pos: str, card_x: float, card_y: float) -> Tuple[fl
 
     # Number Row (LN5..LN0, RN0..RN5)
     if pos.startswith("LN"):
-        col_idx = 5 - int(pos[2])
+        col_idx = 5 - parse_grid_index(pos, 2)
         return left_start_x + col_idx * col_step, n_top_y, SOFLE_KEY_W, SOFLE_KEY_H
     if pos.startswith("RN"):
-        col_idx = int(pos[2]) + 1
+        col_idx = parse_grid_index(pos, 2) + 1
         return right_start_x + col_idx * col_step, n_top_y, SOFLE_KEY_W, SOFLE_KEY_H
 
     # Top Row (LT5..LT0, RT0..RT5)
     if pos.startswith("LT"):
-        col_idx = 5 - int(pos[2])
+        col_idx = 5 - parse_grid_index(pos, 2)
         return left_start_x + col_idx * col_step, t_top_y, SOFLE_KEY_W, SOFLE_KEY_H
     if pos.startswith("RT"):
-        col_idx = int(pos[2]) + 1
+        col_idx = parse_grid_index(pos, 2) + 1
         return right_start_x + col_idx * col_step, t_top_y, SOFLE_KEY_W, SOFLE_KEY_H
 
     # Middle Row (LM5..LM0, RM0..RM5)
     if pos.startswith("LM"):
-        col_idx = 5 - int(pos[2])
+        col_idx = 5 - parse_grid_index(pos, 2)
         return left_start_x + col_idx * col_step, m_top_y, SOFLE_KEY_W, SOFLE_KEY_H
     if pos.startswith("RM"):
-        col_idx = int(pos[2]) + 1
+        col_idx = parse_grid_index(pos, 2) + 1
         return right_start_x + col_idx * col_step, m_top_y, SOFLE_KEY_W, SOFLE_KEY_H
 
     # Bottom Row & Encoders
     if pos.startswith("LB"):
-        col_idx = 5 - int(pos[2])
+        col_idx = 5 - parse_grid_index(pos, 2)
         return left_start_x + col_idx * col_step, b_top_y, SOFLE_KEY_W, SOFLE_KEY_H
     if pos == "LEC":
         return left_start_x + 6 * col_step, b_top_y, SOFLE_KEY_W, SOFLE_KEY_H
     if pos == "REC":
         return right_start_x + 0 * col_step, b_top_y, SOFLE_KEY_W, SOFLE_KEY_H
     if pos.startswith("RB"):
-        col_idx = int(pos[2]) + 1
+        col_idx = parse_grid_index(pos, 2) + 1
         return right_start_x + col_idx * col_step, b_top_y, SOFLE_KEY_W, SOFLE_KEY_H
 
     # Thumbs (LH4..LH0, RH0..RH4)
     if pos.startswith("LH"):
-        idx = int(pos[2])
+        idx = parse_grid_index(pos, 2)
         col_idx = 5 - idx
         return left_start_x + col_idx * col_step, thumb_y, SOFLE_KEY_W, SOFLE_KEY_H
     if pos.startswith("RH"):
-        idx = int(pos[2])
+        idx = parse_grid_index(pos, 2)
         col_idx = idx + 1
         return right_start_x + col_idx * col_step, thumb_y, SOFLE_KEY_W, SOFLE_KEY_H
 
     raise ValueError(f"Unknown Sofle position: {pos}")
 
 
-def compute_key_coords(pos: str, card_x: float, card_y: float, keyboard: str = "corne") -> Tuple[float, float, float, float]:
+def compute_key_coords(pos: str, card_x: float, card_y: float, keyboard: str = "corne") -> tuple[float, float, float, float]:
     """Compute key coordinates dynamically based on keyboard target."""
-    if keyboard == "sofle" or pos.startswith("LN") or pos.startswith("RN") or pos in ("LEC", "REC") or pos in ("LH4", "LH3", "RH3", "RH4"):
+    if keyboard == "sofle" or pos.startswith(("LN", "RN")) or pos in ("LEC", "REC") or pos in ("LH4", "LH3", "RH3", "RH4"):
         return compute_sofle_key_coords(pos, card_x, card_y)
     return compute_corne_key_coords(pos, card_x, card_y)
 
@@ -238,7 +241,7 @@ def render_key_svg(
     card_x: float,
     card_y: float,
     layer_name: str,
-    color_palette: Dict[str, str],
+    color_palette: dict[str, str],
     keyboard: str = "corne",
     debug: bool = False,
 ) -> str:
@@ -417,7 +420,7 @@ def render_layer_panel(
     layer: LayerView,
     card_x: float,
     card_y: float,
-    color_palette: Dict[str, str],
+    color_palette: dict[str, str],
     keyboard: str = "corne",
     debug: bool = False,
 ) -> str:
@@ -458,7 +461,7 @@ def render_corne_notes_panel(
     card_x: float,
     card_y: float,
     model: CheatsheetModel,
-    color_palette: Dict[str, str],
+    color_palette: dict[str, str],
 ) -> str:
     """Render the Corne ACCESS & SYSTEM NOTES panel."""
     out = ['<g id="layer-notes" data-layer="NOTES">']
@@ -551,7 +554,7 @@ def render_sofle_access_notes_panel(
     card_x: float,
     card_y: float,
     model: CheatsheetModel,
-    color_palette: Dict[str, str],
+    color_palette: dict[str, str],
 ) -> str:
     """Render Sofle Panel 10 (col 1, row 3): ACCESS & SYSTEM NOTES."""
     out = ['<g id="layer-notes" data-layer="NOTES">']
@@ -637,7 +640,7 @@ def render_sofle_encoders_notes_panel(
     card_x: float,
     card_y: float,
     model: CheatsheetModel,
-    color_palette: Dict[str, str],
+    color_palette: dict[str, str],
 ) -> str:
     """Render Sofle Panel 11 (col 2, row 3): ENCODERS & PROTOCOL."""
     out = ['<g id="layer-encoder-notes" data-layer="ENCODERS">']
@@ -707,7 +710,7 @@ def render_sofle_encoders_notes_panel(
 def render_header(
     title: str,
     base_layout: str,
-    color_palette: Dict[str, str],
+    color_palette: dict[str, str],
     keyboard: str = "corne",
 ) -> str:
     """Render top title banner and visual legend."""
@@ -777,7 +780,7 @@ def render_cheatsheet_svg(
     color_palette = model.presentation_config.colors
     kb = model.keyboard.lower()
 
-    svg_parts: List[str] = [
+    svg_parts: list[str] = [
         f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {PAGE_WIDTH} {PAGE_HEIGHT}" width="297mm" height="210mm">',
         '  <defs>',
         '    <style><![CDATA[',

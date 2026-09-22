@@ -11,7 +11,7 @@ from __future__ import annotations
 import re
 import sys
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any
 
 # Robust path configuration for local and package execution
 SCRIPTS_DIR = Path(__file__).resolve().parent
@@ -24,12 +24,18 @@ if str(REPO_ROOT) not in sys.path:
 try:
     from lib.validation import assert_eq, assert_in, assert_true, fail, load_yaml
 except ImportError:
-    from scripts.lib.validation import assert_eq, assert_in, assert_true, fail, load_yaml
+    from scripts.lib.validation import (
+        assert_eq,
+        assert_in,
+        assert_true,
+        fail,
+        load_yaml,
+    )
 BUILD_YAML_PATH = REPO_ROOT / "build.yaml"
 WEST_YML_PATH = REPO_ROOT / "config" / "west.yml"
 BUILD_WORKFLOW_PATH = REPO_ROOT / ".github" / "workflows" / "build.yml"
 
-EXPECTED_TARGETS: Dict[str, Dict[str, Any]] = {
+EXPECTED_TARGETS: dict[str, dict[str, Any]] = {
     "corne-left": {
         "board": "nice_nano@2.0.0//zmk",
         "shield": "corne_left nice_oled",
@@ -136,10 +142,8 @@ def validate_workflow_sync(zmk_rev: str) -> None:
         r"zmkfirmware/zmk/\.github/workflows/build-user-config\.yml@([0-9a-f]{40})",
         content,
     )
-    assert_true(
-        workflow_sha_match is not None,
-        "build.yml missing pinned zmkfirmware reusable workflow with 40-character SHA",
-    )
+    if workflow_sha_match is None:
+        fail("build.yml missing pinned zmkfirmware reusable workflow with 40-character SHA")
     workflow_sha = workflow_sha_match.group(1)
     assert_eq(
         workflow_sha,

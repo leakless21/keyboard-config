@@ -4,8 +4,9 @@ cheatsheet: macos-omniwm
 title: "macOS · OMNIWM WORKFLOW CHEATSHEET"
 subtitle: "OmniWM workspaces · Corne HOST actions · MacBook equivalents"
 
-# Presentation names only. Workspace membership and layout come from settings.toml;
-# bindings and IPC commands are checked against the protocol and Karabiner assets.
+# Presentation names only. Workspace membership and layout come from
+# settings.toml; bindings and IPC commands are checked against the protocol
+# and Karabiner assets.
 routing_labels:
   com.google.Chrome: "Chrome"
   com.apple.Safari: "Safari"

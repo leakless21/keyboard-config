@@ -9,10 +9,11 @@ Ensures:
 
 from __future__ import annotations
 
+import hashlib
 import re
 import sys
+import xml.etree.ElementTree as ET
 from pathlib import Path
-from typing import Set
 
 # Robust path configuration for local and package execution
 SCRIPTS_DIR = Path(__file__).resolve().parent
@@ -35,7 +36,14 @@ try:
     from lib.host_cheatsheet_svg import render_host_cheatsheet_svg
     from lib.keymap_parser import parse_keymap_file
     from lib.protocol import ProtocolManifest, load_protocol
-    from lib.validation import assert_eq, assert_in, assert_true, fail, load_json, load_yaml
+    from lib.validation import (
+        assert_eq,
+        assert_in,
+        assert_true,
+        fail,
+        load_json,
+        load_yaml,
+    )
 except ImportError:
     from scripts.generate_protocol_files import generate_host_protocol_table
     from scripts.lib.cheatsheet import (
@@ -45,13 +53,21 @@ except ImportError:
         load_presentation_aliases,
     )
     from scripts.lib.cheatsheet_svg import render_cheatsheet_svg
-    from scripts.lib.host_cheatsheet import HOST_CHEATSHEET_INPUTS, build_host_cheatsheet_model
+    from scripts.lib.host_cheatsheet import (
+        HOST_CHEATSHEET_INPUTS,
+        build_host_cheatsheet_model,
+    )
     from scripts.lib.host_cheatsheet_svg import render_host_cheatsheet_svg
     from scripts.lib.keymap_parser import parse_keymap_file
     from scripts.lib.protocol import ProtocolManifest, load_protocol
-    from scripts.lib.validation import assert_eq, assert_in, assert_true, fail, load_json, load_yaml
-import hashlib
-import xml.etree.ElementTree as ET
+    from scripts.lib.validation import (
+        assert_eq,
+        assert_in,
+        assert_true,
+        fail,
+        load_json,
+        load_yaml,
+    )
 
 DOCS_HOST_PROTOCOL_PATH = REPO_ROOT / "docs" / "host-protocol.md"
 CORNE_KEYMAP_PATH = REPO_ROOT / "config" / "corne.keymap"
@@ -140,7 +156,7 @@ def test_display_alias_protocol_coverage(manifest: ProtocolManifest) -> None:
         )
 
     # Check that no undeclared F13-F24 aliases exist in keymap_drawer.config.yaml
-    for alias_raw in aliases.keys():
+    for alias_raw in aliases:
         if re.search(r"F(?:1[3-9]|2[0-4])", alias_raw):
             assert_in(
                 alias_raw,
@@ -264,7 +280,8 @@ def test_cheatsheet_structure(keyboard: str = "corne") -> None:
     for layer_name in expected_layers:
         panel_id = f"layer-{layer_name.lower()}"
         panel_elem = root.find(f".//svg:g[@id='{panel_id}']", ns)
-        assert_true(panel_elem is not None, f"Panel '{panel_id}' missing in {kb} SVG")
+        if panel_elem is None:
+            fail(f"Panel '{panel_id}' missing in {kb} SVG")
         assert_eq(panel_elem.attrib.get("data-layer"), layer_name, f"Panel '{panel_id}' data-layer mismatch")
 
         # Check keys count
@@ -285,28 +302,38 @@ def test_cheatsheet_structure(keyboard: str = "corne") -> None:
 
     # 3. Transition Invariants
     base_panel = root.find(".//svg:g[@id='layer-base']", ns)
+    if base_panel is None:
+        fail(f"BASE panel missing in {kb} SVG")
     base_transitions = base_panel.findall(".//svg:g[@data-target-layer]", ns)
     assert_eq(len(base_transitions), 7, f"BASE layer must have exactly 7 layer transitions, found {len(base_transitions)}")
 
     adjust_panel = root.find(".//svg:g[@id='layer-adjust']", ns)
+    if adjust_panel is None:
+        fail(f"ADJUST panel missing in {kb} SVG")
     adjust_transitions = adjust_panel.findall(".//svg:g[@data-target-layer]", ns)
     assert_eq(len(adjust_transitions), 1, f"ADJUST layer must have exactly 1 layer transition (GAME), found {len(adjust_transitions)}")
     assert_eq(adjust_transitions[0].attrib.get("data-target-layer"), "GAME", "ADJUST transition must target GAME")
 
     if kb == "sofle":
         game_panel = root.find(".//svg:g[@id='layer-game']", ns)
+        if game_panel is None:
+            fail(f"GAME panel missing in {kb} SVG")
         game_transitions = game_panel.findall(".//svg:g[@data-target-layer]", ns)
         assert_eq(len(game_transitions), 1, f"GAME layer in Sofle must have exactly 1 BASE transition on REC, found {len(game_transitions)}")
         assert_eq(game_transitions[0].attrib.get("data-target-layer"), "BASE", "GAME transition must target BASE")
         assert_eq(game_transitions[0].attrib.get("data-position"), "REC", "GAME exit must be on REC")
     else:
         game_panel = root.find(".//svg:g[@id='layer-game']", ns)
+        if game_panel is None:
+            fail(f"GAME panel missing in {kb} SVG")
         game_transitions = game_panel.findall(".//svg:g[@data-target-layer]", ns)
         assert_eq(len(game_transitions), 2, f"GAME layer in Corne must have exactly 2 GAME_FN transitions, found {len(game_transitions)}")
         for gt in game_transitions:
             assert_eq(gt.attrib.get("data-target-layer"), "GAME_FN", "GAME transitions must target GAME_FN")
 
         game_fn_panel = root.find(".//svg:g[@id='layer-game_fn']", ns)
+        if game_fn_panel is None:
+            fail(f"GAME_FN panel missing in {kb} SVG")
         game_fn_transitions = game_fn_panel.findall(".//svg:g[@data-target-layer]", ns)
         assert_eq(len(game_fn_transitions), 1, f"GAME_FN layer must have exactly 1 BASE transition, found {len(game_fn_transitions)}")
         assert_eq(game_fn_transitions[0].attrib.get("data-target-layer"), "BASE", "GAME_FN transition must target BASE")
@@ -314,6 +341,8 @@ def test_cheatsheet_structure(keyboard: str = "corne") -> None:
     # Verify Bootloaders are NOT transitions
     for panel_id in ["layer-nav", "layer-num", "layer-adjust"]:
         panel = root.find(f".//svg:g[@id='{panel_id}']", ns)
+        if panel is None:
+            fail(f"Panel '{panel_id}' missing in {kb} SVG")
         boot_keys = panel.findall(".//svg:g[@data-binding='&bootloader']", ns)
         for bk in boot_keys:
             assert_true(

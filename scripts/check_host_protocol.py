@@ -19,10 +19,8 @@ Enforces that every emitted firmware signal has a corresponding host translation
 
 from __future__ import annotations
 
-import re
 import sys
 from pathlib import Path
-from typing import Any, Dict, List, Set, Tuple
 
 # Robust path configuration for local and package execution
 SCRIPTS_DIR = Path(__file__).resolve().parent
@@ -34,12 +32,32 @@ if str(REPO_ROOT) not in sys.path:
 
 try:
     from lib.keymap_parser import parse_keymap_file
-    from lib.protocol import ProtocolManifest, SemanticSignal, load_protocol
-    from lib.validation import assert_eq, assert_in, assert_true, fail, load_json, load_toml, load_yaml
+    from lib.protocol import ProtocolManifest, load_protocol
+    from lib.validation import (
+        assert_eq,
+        assert_in,
+        assert_true,
+        fail,
+        is_exactly_false,
+        is_exactly_true,
+        load_json,
+        load_toml,
+        load_yaml,
+    )
 except ImportError:
     from scripts.lib.keymap_parser import parse_keymap_file
-    from scripts.lib.protocol import ProtocolManifest, SemanticSignal, load_protocol
-    from scripts.lib.validation import assert_eq, assert_in, assert_true, fail, load_json, load_toml, load_yaml
+    from scripts.lib.protocol import ProtocolManifest, load_protocol
+    from scripts.lib.validation import (
+        assert_eq,
+        assert_in,
+        assert_true,
+        fail,
+        is_exactly_false,
+        is_exactly_true,
+        load_json,
+        load_toml,
+        load_yaml,
+    )
 CORNE_KEYMAP_PATH = REPO_ROOT / "config" / "corne.keymap"
 SOFLE_KEYMAP_PATH = REPO_ROOT / "config" / "sofle.keymap"
 KARABINER_EXTERNAL_PATH = REPO_ROOT / "hosts" / "macos" / "karabiner" / "external-semantic.json"
@@ -135,10 +153,9 @@ def validate_karabiner_external(karabiner_data: dict) -> None:
     if len(rules) < 3:
         fail("Layer B (Karabiner External): Expected at least 3 rules in external-semantic.json")
 
-    all_manipulators = []
-    for r in rules:
-        for m in r.get("manipulators", []):
-            all_manipulators.append(m)
+    all_manipulators = [
+        manipulator for rule in rules for manipulator in rule.get("manipulators", [])
+    ]
 
     semantic_launcher_manipulators = []
     semantic_app_manipulators = []
@@ -252,7 +269,7 @@ def validate_karabiner_external(karabiner_data: dict) -> None:
             if c.get("type") == "device_if":
                 identifiers = c.get("identifiers", [])
                 for ident in identifiers:
-                    if ident.get("is_built_in_keyboard") is False or "vendor_id" in ident:
+                    if is_exactly_false(ident.get("is_built_in_keyboard")) or "vendor_id" in ident:
                         has_device_if = True
         if not has_device_if:
             fail(
@@ -301,7 +318,7 @@ def validate_karabiner_external(karabiner_data: dict) -> None:
             f"Layer B (Karabiner External): {f_key} normalizer missing system.use_fkeys_as_standard_function_keys variable_if condition",
         )
 
-    expected_translations: List[Tuple[str, Set[str], str, Set[str]]] = [
+    expected_translations: list[tuple[str, set[str], str, set[str]]] = [
         # Desktop launchers & controls (Alt+F15 handled via AppleScript shell_command above)
         ("f13", {"option"}, "spacebar", {"left_command"}),               # LAUNCHER -> Cmd+Space
         ("f17", {"option"}, "spacebar", {"left_control"}),               # LANG -> Ctrl+Space
@@ -380,7 +397,7 @@ def validate_karabiner_laptop(karabiner_data: dict) -> None:
         for c in manipulator.get("conditions", []):
             if c.get("type") == "device_if":
                 for ident in c.get("identifiers", []):
-                    if ident.get("is_built_in_keyboard") is True:
+                    if is_exactly_true(ident.get("is_built_in_keyboard")):
                         return True
         return False
 
@@ -532,28 +549,28 @@ def validate_omniwm_consumer(data: dict) -> None:
     assert_eq(data.get("schemaVersion"), 3, "OmniWM: schemaVersion must be 3")
 
     general = data.get("general", {})
-    assert_true(general.get("ipcEnabled") is True, "OmniWM: general.ipcEnabled must be true for CLI/IPC control")
+    assert_true(is_exactly_true(general.get("ipcEnabled")), "OmniWM: general.ipcEnabled must be true for CLI/IPC control")
     assert_eq(general.get("defaultLayoutType"), "niri", "OmniWM: general.defaultLayoutType must be niri")
-    assert_true(general.get("hotkeysEnabled") is True, "OmniWM: general.hotkeysEnabled must be true")
-    assert_true(general.get("updateChecksEnabled") is True, "OmniWM: general.updateChecksEnabled must remain true for stable-release tracking")
+    assert_true(is_exactly_true(general.get("hotkeysEnabled")), "OmniWM: general.hotkeysEnabled must be true")
+    assert_true(is_exactly_true(general.get("updateChecksEnabled")), "OmniWM: general.updateChecksEnabled must remain true for stable-release tracking")
 
     hidden_bar = data.get("hiddenBar", {})
-    assert_true(hidden_bar.get("enabled") is False, "OmniWM: hiddenBar.enabled must be false when no Hidden Bar integration is configured")
+    assert_true(is_exactly_false(hidden_bar.get("enabled")), "OmniWM: hiddenBar.enabled must be false when no Hidden Bar integration is configured")
     assert_in("hiddenBundleIDs", hidden_bar, "OmniWM: hiddenBar.hiddenBundleIDs must remain present for schema compatibility")
 
     ws_bar = data.get("workspaceBar", {})
-    assert_true(ws_bar.get("enabled") is True, "OmniWM: workspaceBar.enabled must be true")
+    assert_true(is_exactly_true(ws_bar.get("enabled")), "OmniWM: workspaceBar.enabled must be true")
     assert_eq(ws_bar.get("position"), "overlappingMenuBar", "OmniWM: workspaceBar.position must be overlappingMenuBar")
     assert_eq(ws_bar.get("notchMode"), "moveBelowMenuBar", "OmniWM: workspaceBar.notchMode must be moveBelowMenuBar")
     assert_eq(ws_bar.get("revealModifier"), "option", "OmniWM: workspaceBar.revealModifier must be option for Option-held overlay reveal")
-    assert_true(ws_bar.get("reserveLayoutSpace") is False, "OmniWM: workspaceBar.reserveLayoutSpace must be false (reveal mode is overlay-only; true would be misleading)")
+    assert_true(is_exactly_false(ws_bar.get("reserveLayoutSpace")), "OmniWM: workspaceBar.reserveLayoutSpace must be false (reveal mode is overlay-only; true would be misleading)")
     assert_eq(ws_bar.get("revealHoldMilliseconds"), 200.0, "OmniWM: workspaceBar.revealHoldMilliseconds must be 200.0")
 
     niri = data.get("niri", {})
     assert_true(niri.get("visibleContainerCount") in (1, 2, 3), "OmniWM: niri.visibleContainerCount must be between 1 and 3")
     assert_eq(niri.get("centerFocusedColumn"), "onOverflow", "OmniWM: niri.centerFocusedColumn must be onOverflow")
     assert_eq(niri.get("singleWindowFit"), "fill", "OmniWM: niri.singleWindowFit must be fill")
-    assert_true(niri.get("infiniteLoop") is False, "OmniWM: niri.infiniteLoop must be false")
+    assert_true(is_exactly_false(niri.get("infiniteLoop")), "OmniWM: niri.infiniteLoop must be false")
 
     presets = niri.get("containerPrimarySpanPresets", [])
     for expected_preset in [0.5, 1.0]:
@@ -575,7 +592,7 @@ def validate_omniwm_consumer(data: dict) -> None:
         len(expected_workspaces),
         f"OmniWM: Expected exactly {len(expected_workspaces)} workspace definitions, found {len(workspaces)}",
     )
-    for index, (workspace, expected) in enumerate(zip(workspaces, expected_workspaces), start=1):
+    for index, (workspace, expected) in enumerate(zip(workspaces, expected_workspaces, strict=True), start=1):
         for property_name, expected_value in expected.items():
             actual_value = workspace.get(property_name)
             assert_eq(
@@ -680,7 +697,7 @@ def validate_omniwm_consumer(data: dict) -> None:
         assert_eq(actual, expected_binding, f"OmniWM: Hotkey {hk_id} expected binding {expected_binding}, got {actual}")
 
     quake_cfg = data.get("quakeTerminal", {})
-    assert_true(quake_cfg.get("enabled") is True, "OmniWM: quakeTerminal.enabled must be true")
+    assert_true(is_exactly_true(quake_cfg.get("enabled")), "OmniWM: quakeTerminal.enabled must be true")
 
     # Verify no duplicate active bindings among hotkeys
     active_bindings = [h.get("binding") for h in hotkeys if h.get("binding") != "Unassigned"]
@@ -728,7 +745,9 @@ def validate_windows_ahk(content: str) -> None:
         ("!F17::", "ToggleInputLanguage", "Language Toggle -> EVKey"),
     ]
 
-    for trigger, target, desc in required_ahk_bindings:
+    # The middle field records the intended AutoHotkey replacement for documentation;
+    # only trigger presence and ordering are enforced here.
+    for trigger, _target, desc in required_ahk_bindings:
         if trigger not in content:
             fail(f"Windows AutoHotkey: Missing hotkey trigger '{trigger}' for {desc}")
 
@@ -802,7 +821,7 @@ def validate_glazewm_consumer(data: dict) -> None:
 
 def validate_protocol_signal_identities(manifest: ProtocolManifest) -> None:
     """Verify that all actions in protocol/semantic-v1.yaml have unique, well-formed signal identities."""
-    seen_identities: Dict[Tuple[str, frozenset[str]], str] = {}
+    seen_identities: dict[tuple[str, frozenset[str]], str] = {}
     for action_id, action in manifest.actions.items():
         ident = action.signal.identity
         if ident in seen_identities:

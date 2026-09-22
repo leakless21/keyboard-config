@@ -10,10 +10,10 @@ from __future__ import annotations
 import re
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Union
+from typing import Any
 
 # Positional geometry for Corne (42 keys: 3x6 alphas + 3-key thumbs per side)
-CORNE_POSITIONS: Dict[str, int] = {
+CORNE_POSITIONS: dict[str, int] = {
     # Left Hand - Top Row
     "LT5": 0, "LT4": 1, "LT3": 2, "LT2": 3, "LT1": 4, "LT0": 5,
     # Right Hand - Top Row
@@ -32,7 +32,7 @@ CORNE_POSITIONS: Dict[str, int] = {
 }
 
 # Positional geometry for Sofle (60 keys: number row, 3x6 alphas, encoders, 5-key thumbs)
-SOFLE_POSITIONS: Dict[str, int] = {
+SOFLE_POSITIONS: dict[str, int] = {
     # Number Row (Left 0..5, Right 6..11)
     "LN5": 0, "LN4": 1, "LN3": 2, "LN2": 3, "LN1": 4, "LN0": 5,
     "RN0": 6, "RN1": 7, "RN2": 8, "RN3": 9, "RN4": 10, "RN5": 11,
@@ -58,11 +58,11 @@ class Layer:
     name: str
     label: str
     display_name: str
-    bindings: List[str]
-    sensor_bindings: List[str] = field(default_factory=list)
-    pos_map: Dict[str, int] = field(default_factory=dict)
+    bindings: list[str]
+    sensor_bindings: list[str] = field(default_factory=list)
+    pos_map: dict[str, int] = field(default_factory=dict)
 
-    def pos(self, key_label_or_idx: Union[str, int]) -> str:
+    def pos(self, key_label_or_idx: str | int) -> str:
         """Return the exact binding expression at a given symbolic key label or 0-based index."""
         if isinstance(key_label_or_idx, int):
             idx = key_label_or_idx
@@ -74,7 +74,7 @@ class Layer:
             raise IndexError(f"Position index {idx} out of range for layer '{self.name}' ({len(self.bindings)} keys)")
         return self.bindings[idx]
 
-    def find_binding_positions(self, binding_pattern: str) -> List[str]:
+    def find_binding_positions(self, binding_pattern: str) -> list[str]:
         """Return list of symbolic position labels matching a regex pattern."""
         rev_map = {v: k for k, v in self.pos_map.items()}
         matches = []
@@ -83,7 +83,7 @@ class Layer:
                 matches.append(rev_map.get(idx, f"INDEX_{idx}"))
         return matches
 
-    def all_by_pos(self) -> Dict[str, str]:
+    def all_by_pos(self) -> dict[str, str]:
         """Return mapping of all symbolic positions to their binding expressions."""
         rev_map = {v: k for k, v in self.pos_map.items()}
         return {rev_map[idx]: self.bindings[idx] for idx in range(len(self.bindings))}
@@ -95,14 +95,14 @@ class Behavior:
     name: str
     node_name: str
     compatible: str
-    properties: Dict[str, Any]
+    properties: dict[str, Any]
 
 
 @dataclass
 class ConditionalLayer:
     """Represents a parsed conditional layer rule."""
     name: str
-    if_layers: List[str]
+    if_layers: list[str]
     then_layer: str
 
 
@@ -110,11 +110,11 @@ class ConditionalLayer:
 class KeyboardConfig:
     """Root configuration object parsed from a ZMK DTS keymap file."""
     layout: str
-    defines: Dict[str, int]
-    behaviors: Dict[str, Behavior]
-    conditional_layers: List[ConditionalLayer]
-    layers: Dict[str, Layer]
-    layer_order: List[str]
+    defines: dict[str, int]
+    behaviors: dict[str, Behavior]
+    conditional_layers: list[ConditionalLayer]
+    layers: dict[str, Layer]
+    layer_order: list[str]
     raw_content: str
 
     def layer(self, name: str) -> Layer:
@@ -124,7 +124,7 @@ class KeyboardConfig:
         return self.layers[name]
 
 
-def tokenize_bindings(text: str) -> List[str]:
+def tokenize_bindings(text: str) -> list[str]:
     """
     Tokenize ZMK DTS bindings into individual binding expressions.
 
@@ -135,7 +135,7 @@ def tokenize_bindings(text: str) -> List[str]:
     cleaned = re.sub(r'//.*', '', cleaned)
     tokens = cleaned.split()
     bindings = []
-    current: List[str] = []
+    current: list[str] = []
     for tok in tokens:
         if tok.startswith('&'):
             if current:
@@ -148,7 +148,7 @@ def tokenize_bindings(text: str) -> List[str]:
     return bindings
 
 
-def parse_keymap_content(content: str, layout: Optional[str] = None) -> KeyboardConfig:
+def parse_keymap_content(content: str, layout: str | None = None) -> KeyboardConfig:
     """Parse DTS keymap content string into structured KeyboardConfig."""
     if layout is None:
         if "key-labels/sofle.h" in content or "REC" in content or "LN0" in content:
@@ -162,7 +162,12 @@ def parse_keymap_content(content: str, layout: Optional[str] = None) -> Keyboard
     # 1. Parse #define integer constants
     defines = {}
     for m in re.finditer(r'#define\s+(\w+)\s+(\d+)', content):
-        defines[m.group(1)] = int(m.group(2))
+        # The capture is digits-only, but int() still rejects absurdly long digit
+        # strings (CPython's 4300-digit str->int limit), so fail with the define name.
+        try:
+            defines[m.group(1)] = int(m.group(2))
+        except ValueError as exc:
+            raise ValueError(f"Malformed #define value for {m.group(1)}: {m.group(2)!r}") from exc
 
     # 2. Parse custom behaviors
     def extract_dts_block(text: str, block_name: str) -> str:
@@ -189,7 +194,7 @@ def parse_keymap_content(content: str, layout: Optional[str] = None) -> Keyboard
             b_name = m.group(1)
             b_node = m.group(2)
             b_props_text = m.group(3)
-            props: Dict[str, Any] = {}
+            props: dict[str, Any] = {}
             clean_props_text = re.sub(r'/\*.*?\*/', '', b_props_text, flags=re.DOTALL)
             for stmt in clean_props_text.split(';'):
                 stmt = stmt.strip()
@@ -295,7 +300,7 @@ def parse_keymap_content(content: str, layout: Optional[str] = None) -> Keyboard
     )
 
 
-def parse_keymap_file(path: Union[str, Path], layout: Optional[str] = None) -> KeyboardConfig:
+def parse_keymap_file(path: str | Path, layout: str | None = None) -> KeyboardConfig:
     """Read and parse a keymap file from path."""
     p = Path(path)
     if not p.exists():

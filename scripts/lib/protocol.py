@@ -10,7 +10,6 @@ from __future__ import annotations
 import re
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Set
 
 try:
     from .validation import fail, load_yaml
@@ -23,7 +22,7 @@ except ImportError:
 REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 PROTOCOL_PATH = REPO_ROOT / "protocol" / "semantic-v1.yaml"
 
-MOD_CANONICAL: Dict[str, str] = {
+MOD_CANONICAL: dict[str, str] = {
     "ctrl": "ctrl",
     "control": "ctrl",
     "lc": "ctrl",
@@ -55,7 +54,7 @@ MOD_CANONICAL: Dict[str, str] = {
 @dataclass
 class SemanticSignal:
     key: str
-    modifiers: List[str] = field(default_factory=list)
+    modifiers: list[str] = field(default_factory=list)
 
     @property
     def normalized_key(self) -> str:
@@ -118,13 +117,13 @@ class SemanticSignal:
         return f"{prefix}{self.key}::"
 
     @classmethod
-    def from_zmk(cls, expr: str) -> Optional[SemanticSignal]:
+    def from_zmk(cls, expr: str) -> SemanticSignal | None:
         """Parse a ZMK keycode binding like '&kp LC(LA(LS(LG(F24))))' or '&kp F24'."""
         m = re.match(r"^&kp\s+(.+)$", expr.strip())
         if not m:
             return None
         inner = m.group(1)
-        mods: List[str] = []
+        mods: list[str] = []
         while True:
             wrap_m = re.match(r"^([A-Z_]+)\((.+)\)$", inner)
             if wrap_m:
@@ -138,7 +137,7 @@ class SemanticSignal:
         return cls(key=key, modifiers=mods)
 
     @classmethod
-    def from_karabiner(cls, key_code: str, mandatory_mods: List[str]) -> SemanticSignal:
+    def from_karabiner(cls, key_code: str, mandatory_mods: list[str]) -> SemanticSignal:
         """Parse Karabiner from.key_code and from.modifiers.mandatory."""
         key = key_code.upper()
         mods = [MOD_CANONICAL[m.lower()] for m in mandatory_mods if m.lower() in MOD_CANONICAL]
@@ -153,13 +152,13 @@ class SemanticSignal:
         return cls(key=key, modifiers=mods)
 
     @classmethod
-    def from_ahk(cls, trigger: str) -> Optional[SemanticSignal]:
+    def from_ahk(cls, trigger: str) -> SemanticSignal | None:
         """Parse AutoHotkey trigger like '^!+#F24::', '!F13::', or '*F21::'."""
         m = re.match(r"^\*?([\^!+#]*)(F\d{1,2})::$", trigger.strip(), re.IGNORECASE)
         if not m:
             return None
         mod_syms, key = m.group(1), m.group(2).upper()
-        mods: List[str] = []
+        mods: list[str] = []
         if "^" in mod_syms:
             mods.append("ctrl")
         if "!" in mod_syms:
@@ -176,28 +175,28 @@ class SemanticAction:
     signal: SemanticSignal
     category: str
     description: str
-    host_implementations: Dict[str, str] = field(default_factory=dict)
+    host_implementations: dict[str, str] = field(default_factory=dict)
 
 
 @dataclass
 class ProtocolManifest:
     version: int
     name: str
-    actions: Dict[str, SemanticAction]
+    actions: dict[str, SemanticAction]
 
     def action(self, action_id: str) -> SemanticAction:
         if action_id not in self.actions:
             raise KeyError(f"Action '{action_id}' not found in protocol")
         return self.actions[action_id]
 
-    def all_zmk_signals(self) -> Set[str]:
+    def all_zmk_signals(self) -> set[str]:
         return {a.signal.to_zmk() for a in self.actions.values()}
 
-    def all_glazewm_signals(self) -> Set[str]:
+    def all_glazewm_signals(self) -> set[str]:
         return {a.signal.to_glazewm() for a in self.actions.values()}
 
 
-def load_protocol(path: Optional[Path] = None) -> ProtocolManifest:
+def load_protocol(path: Path | None = None) -> ProtocolManifest:
     p = path or PROTOCOL_PATH
     data = load_yaml(p)
     if not isinstance(data, dict):

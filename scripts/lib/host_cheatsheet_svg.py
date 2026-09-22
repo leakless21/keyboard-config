@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import html
-from typing import List
 
 try:
     from .host_cheatsheet import HostCheatsheetModel
@@ -52,7 +51,7 @@ def text(x: float, y: float, value: object, class_name: str = "body", fill: str 
     return f'  <text x="{x:.1f}" y="{y:.1f}" class="{class_name}"{fill_attr}>{escape(value)}</text>'
 
 
-def panel(x: float, y: float, width: float, height: float, title: str, subtitle: str = "") -> List[str]:
+def panel(x: float, y: float, width: float, height: float, title: str, subtitle: str = "") -> list[str]:
     out = [
         f'  <g class="panel" data-panel="{escape(title)}">',
         f'    <rect x="{x:.1f}" y="{y:.1f}" width="{width:.1f}" height="{height:.1f}" rx="16" fill="{COLOR_PANEL}" stroke="{COLOR_BORDER}" stroke-width="2" />',
@@ -64,7 +63,7 @@ def panel(x: float, y: float, width: float, height: float, title: str, subtitle:
     return out
 
 
-def finish_panel(out: List[str]) -> None:
+def finish_panel(out: list[str]) -> None:
     out.append("  </g>")
 
 
@@ -123,7 +122,7 @@ def render_workspace_panel(model: HostCheatsheetModel) -> str:
 
     routing_y = table_y + 25 + len(model.workspaces) * row_height + 24
     out.append(text(table_x, routing_y, model.presentation.section_titles.get("routing", "CONSERVATIVE ROUTING"), "small-header", COLOR_ACCENT))
-    grouped: dict[str, List[str]] = {workspace.name: [] for workspace in model.workspaces}
+    grouped: dict[str, list[str]] = {workspace.name: [] for workspace in model.workspaces}
     for route in model.routing:
         grouped.setdefault(route.workspace_name, []).append(route.display_name)
     for index, workspace in enumerate(model.workspaces):
@@ -253,7 +252,7 @@ def render_host_cheatsheet_svg(model: HostCheatsheetModel) -> str:
     """Render a complete deterministic A4 landscape host workflow cheatsheet."""
     title = model.presentation.title
     subtitle = model.presentation.subtitle
-    svg: List[str] = [
+    svg: list[str] = [
         f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {PAGE_WIDTH} {PAGE_HEIGHT}" width="297mm" height="210mm">',
         "  <defs>",
         "    <style><![CDATA[",

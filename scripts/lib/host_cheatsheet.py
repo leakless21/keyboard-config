@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict, List, Tuple
+from typing import Any
 
 try:
     from .keymap_parser import parse_keymap_file
@@ -30,7 +30,7 @@ HOST_EXTERNAL_KARABINER_PATH = REPO_ROOT / "hosts" / "macos" / "karabiner" / "ex
 HOST_CORNE_KEYMAP_PATH = REPO_ROOT / "config" / "corne.keymap"
 HOST_ALIASES_PATH = REPO_ROOT / "keymap_drawer.config.yaml"
 
-HOST_CHEATSHEET_INPUTS: Dict[str, Path] = {
+HOST_CHEATSHEET_INPUTS: dict[str, Path] = {
     "protocol": HOST_PROTOCOL_PATH,
     "omniwm_settings": HOST_SETTINGS_PATH,
     "laptop_karabiner": HOST_LAPTOP_KARABINER_PATH,
@@ -41,7 +41,7 @@ HOST_CHEATSHEET_INPUTS: Dict[str, Path] = {
     "aliases": HOST_ALIASES_PATH,
 }
 
-HOST_ACTION_GROUPS: Tuple[Tuple[str, Tuple[str, ...]], ...] = (
+HOST_ACTION_GROUPS: tuple[tuple[str, tuple[str, ...]], ...] = (
     (
         "workspaces",
         tuple(f"workspace_{index}" for index in range(1, 6)),
@@ -89,14 +89,14 @@ class HostRouting:
 class HostActionGroup:
     key: str
     title: str
-    values: Tuple[str, ...]
+    values: tuple[str, ...]
 
 
 @dataclass(frozen=True)
 class HostMacBookControl:
     chord: str
     label: str
-    commands: Tuple[str, ...]
+    commands: tuple[str, ...]
     # Native controls are backed by an OmniWM hotkey binding in settings.toml instead of
     # by an omniwmctl IPC command in the Karabiner adapter. `binding` records the exact
     # OmniWM key string that must match, so the chord cannot drift from the live config.
@@ -109,24 +109,24 @@ class HostCheatsheetPresentation:
     schema_version: int
     title: str
     subtitle: str
-    routing_labels: Dict[str, str]
-    section_titles: Dict[str, str]
-    host_group_titles: Dict[str, str]
-    macbook_controls: Tuple[HostMacBookControl, ...]
-    behavior_notes: Dict[str, str]
+    routing_labels: dict[str, str]
+    section_titles: dict[str, str]
+    host_group_titles: dict[str, str]
+    macbook_controls: tuple[HostMacBookControl, ...]
+    behavior_notes: dict[str, str]
 
 
 @dataclass(frozen=True)
 class HostCheatsheetModel:
     presentation: HostCheatsheetPresentation
-    workspaces: Tuple[HostWorkspace, ...]
-    routing: Tuple[HostRouting, ...]
-    host_action_groups: Tuple[HostActionGroup, ...]
-    macbook_controls: Tuple[HostMacBookControl, ...]
-    behavior_notes: Dict[str, str]
+    workspaces: tuple[HostWorkspace, ...]
+    routing: tuple[HostRouting, ...]
+    host_action_groups: tuple[HostActionGroup, ...]
+    macbook_controls: tuple[HostMacBookControl, ...]
+    behavior_notes: dict[str, str]
 
 
-def _string_map(value: Any) -> Dict[str, str]:
+def _string_map(value: Any) -> dict[str, str]:
     if not isinstance(value, dict):
         return {}
     return {str(key): str(item) for key, item in value.items()}
@@ -138,7 +138,7 @@ def load_host_presentation(path: Path = HOST_PRESENTATION_PATH) -> HostCheatshee
     if not isinstance(data, dict):
         raise ValueError(f"Host cheatsheet presentation must be a mapping: {path}")
 
-    controls: List[HostMacBookControl] = []
+    controls: list[HostMacBookControl] = []
     for index, raw_control in enumerate(data.get("macbook_controls", [])):
         if not isinstance(raw_control, dict):
             raise ValueError(f"MacBook control #{index + 1} must be a mapping")
@@ -173,7 +173,7 @@ def load_host_presentation(path: Path = HOST_PRESENTATION_PATH) -> HostCheatshee
     )
 
 
-def _workspace_model(settings: Dict[str, Any]) -> Tuple[HostWorkspace, ...]:
+def _workspace_model(settings: dict[str, Any]) -> tuple[HostWorkspace, ...]:
     workspaces = settings.get("workspaces", [])
     if not isinstance(workspaces, list):
         raise ValueError("OmniWM settings must contain a workspaces array")
@@ -189,13 +189,13 @@ def _workspace_model(settings: Dict[str, Any]) -> Tuple[HostWorkspace, ...]:
 
 
 def _routing_model(
-    settings: Dict[str, Any],
-    workspaces: Tuple[HostWorkspace, ...],
+    settings: dict[str, Any],
+    workspaces: tuple[HostWorkspace, ...],
     presentation: HostCheatsheetPresentation,
-) -> Tuple[HostRouting, ...]:
+) -> tuple[HostRouting, ...]:
     workspace_by_name = {workspace.name: workspace for workspace in workspaces}
     workspace_order = {workspace.name: index for index, workspace in enumerate(workspaces)}
-    routes: List[Tuple[int, HostRouting]] = []
+    routes: list[tuple[int, HostRouting]] = []
 
     for index, rule in enumerate(settings.get("appRules", [])):
         if not isinstance(rule, dict) or "assignToWorkspace" not in rule:
@@ -226,12 +226,12 @@ def _routing_model(
 def _host_action_groups(
     manifest: ProtocolManifest,
     host_bindings: set[str],
-    aliases: Dict[str, str],
+    aliases: dict[str, str],
     presentation: HostCheatsheetPresentation,
-) -> Tuple[HostActionGroup, ...]:
-    groups: List[HostActionGroup] = []
+) -> tuple[HostActionGroup, ...]:
+    groups: list[HostActionGroup] = []
     for group_key, action_ids in HOST_ACTION_GROUPS:
-        labels: List[str] = []
+        labels: list[str] = []
         for action_id in action_ids:
             raw_binding = manifest.action(action_id).signal.to_zmk()
             if raw_binding not in host_bindings:
@@ -251,7 +251,7 @@ def _host_action_groups(
                 "move": "Move ",
             }
             prefix = prefixes[group_key]
-            labels = [label[len(prefix):] if label.startswith(prefix) else label for label in labels]
+            labels = [label.removeprefix(prefix) for label in labels]
 
         groups.append(
             HostActionGroup(
@@ -263,8 +263,8 @@ def _host_action_groups(
     return tuple(groups)
 
 
-def _laptop_shell_commands(data: Dict[str, Any]) -> Tuple[str, ...]:
-    commands: List[str] = []
+def _laptop_shell_commands(data: dict[str, Any]) -> tuple[str, ...]:
+    commands: list[str] = []
     for rule in data.get("rules", []):
         if not isinstance(rule, dict):
             continue
@@ -278,9 +278,9 @@ def _laptop_shell_commands(data: Dict[str, Any]) -> Tuple[str, ...]:
 
 
 def _validate_macbook_controls(
-    controls: Tuple[HostMacBookControl, ...],
-    laptop_data: Dict[str, Any],
-    settings_data: Dict[str, Any],
+    controls: tuple[HostMacBookControl, ...],
+    laptop_data: dict[str, Any],
+    settings_data: dict[str, Any],
 ) -> None:
     shell_commands = _laptop_shell_commands(laptop_data)
     hotkey_bindings = {

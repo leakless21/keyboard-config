@@ -7,7 +7,7 @@ import argparse
 import json
 import sys
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any
 
 SCRIPTS_DIR = Path(__file__).resolve().parent
 REPO_ROOT = SCRIPTS_DIR.parent
@@ -23,7 +23,10 @@ try:
     from lib.validation import load_json
 except ImportError:
     from scripts.generate_cheatsheet import compute_sha256, generate_pdf
-    from scripts.lib.host_cheatsheet import HOST_CHEATSHEET_INPUTS, build_host_cheatsheet_model
+    from scripts.lib.host_cheatsheet import (
+        HOST_CHEATSHEET_INPUTS,
+        build_host_cheatsheet_model,
+    )
     from scripts.lib.host_cheatsheet_svg import render_host_cheatsheet_svg
     from scripts.lib.validation import load_json
 
@@ -38,7 +41,7 @@ def format_path(path: Path) -> str:
         return str(path)
 
 
-def input_hashes() -> Dict[str, str]:
+def input_hashes() -> dict[str, str]:
     return {
         f"{name}_sha256": compute_sha256(path)
         for name, path in HOST_CHEATSHEET_INPUTS.items()
@@ -49,7 +52,7 @@ def check_manifest(
     manifest_path: Path,
     pdf_path: Path,
     expected_svg_sha: str,
-    expected_input_hashes: Dict[str, str],
+    expected_input_hashes: dict[str, str],
 ) -> int:
     if not manifest_path.exists():
         print(f"FAIL: Manifest artifact missing: {manifest_path}", file=sys.stderr)
@@ -88,7 +91,7 @@ def generate_host_cheatsheet(
     *,
     check: bool = False,
     svg_only: bool = False,
-    out_dir: Optional[Path] = None,
+    out_dir: Path | None = None,
 ) -> int:
     """Generate host SVG/PDF/manifest artifacts, or check them without writing."""
     output_dir = out_dir or DOCS_GENERATED_DIR
@@ -136,7 +139,7 @@ def generate_host_cheatsheet(
         else:
             print("NOTE: 'rsvg-convert' not found or failed. Skipped host PDF generation.", file=sys.stderr)
 
-    manifest: Dict[str, Any] = {
+    manifest: dict[str, Any] = {
         "schema": 1,
         "cheatsheet": HOST_SHEET_NAME,
         **hashes,

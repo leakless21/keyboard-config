@@ -25,7 +25,6 @@ import shutil
 import subprocess
 import sys
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
 
 # Robust path setup for standalone execution
 SCRIPTS_DIR = Path(__file__).resolve().parent
@@ -38,11 +37,11 @@ if str(REPO_ROOT) not in sys.path:
 try:
     from lib.cheatsheet import build_cheatsheet_model
     from lib.cheatsheet_svg import render_cheatsheet_svg
-    from lib.validation import fail, load_json
+    from lib.validation import load_json
 except ImportError:
     from scripts.lib.cheatsheet import build_cheatsheet_model
     from scripts.lib.cheatsheet_svg import render_cheatsheet_svg
-    from scripts.lib.validation import fail, load_json
+    from scripts.lib.validation import load_json
 
 DOCS_GENERATED_DIR = REPO_ROOT / "docs" / "generated"
 def format_path(p: Path) -> str:
@@ -118,7 +117,7 @@ def generate_single_cheatsheet(
     png: bool = False,
     debug: bool = False,
     check: bool = False,
-    out_dir: Optional[Path] = None,
+    out_dir: Path | None = None,
 ) -> int:
     """Generate cheatsheet artifacts for a single keyboard target."""
     kb = keyboard.lower()
@@ -253,11 +252,11 @@ def generate_cheatsheet(
     png: bool = False,
     debug: bool = False,
     check: bool = False,
-    out_dir: Optional[Path] = None,
+    out_dir: Path | None = None,
 ) -> int:
     """Dispatch cheatsheet generation for requested keyboard(s)."""
     kb = keyboard.lower()
-    targets: List[str] = ["corne", "sofle"] if kb == "all" else [kb]
+    targets: list[str] = ["corne", "sofle"] if kb == "all" else [kb]
 
     exit_code = 0
     for target in targets:

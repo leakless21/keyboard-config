@@ -36,7 +36,7 @@ def generate_host_protocol_table(manifest: ProtocolManifest) -> str:
         "|---|---|---|---|",
     ]
 
-    for action_id, action in manifest.actions.items():
+    for action in manifest.actions.values():
         sig_str = f"`{action.signal.canonical_str}`"
         desc = action.description
         macos = action.host_implementations.get("macos", "-")

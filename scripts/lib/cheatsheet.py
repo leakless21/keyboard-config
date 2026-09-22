@@ -10,42 +10,33 @@ from __future__ import annotations
 import re
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Dict, List, Literal, Optional, Protocol, Tuple, Union
+from typing import ClassVar, Literal, Protocol
 
 try:
     from .keymap_parser import (
-        CORNE_POSITIONS,
-        Behavior,
         ConditionalLayer,
         KeyboardConfig,
-        Layer,
         parse_keymap_file,
     )
-    from .protocol import ProtocolManifest, load_protocol
-    from .validation import assert_eq, assert_true, fail, load_yaml
+    from .protocol import load_protocol
+    from .validation import load_yaml
 except ImportError:
     try:
         from lib.keymap_parser import (
-            CORNE_POSITIONS,
-            Behavior,
             ConditionalLayer,
             KeyboardConfig,
-            Layer,
             parse_keymap_file,
         )
-        from lib.protocol import ProtocolManifest, load_protocol
-        from lib.validation import assert_eq, assert_true, fail, load_yaml
+        from lib.protocol import load_protocol
+        from lib.validation import load_yaml
     except ImportError:
         from scripts.lib.keymap_parser import (
-            CORNE_POSITIONS,
-            Behavior,
             ConditionalLayer,
             KeyboardConfig,
-            Layer,
             parse_keymap_file,
         )
-        from scripts.lib.protocol import ProtocolManifest, load_protocol
-        from scripts.lib.validation import assert_eq, assert_true, fail, load_yaml
+        from scripts.lib.protocol import load_protocol
+        from scripts.lib.validation import load_yaml
 
 REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 KEYMAP_DRAWER_CONFIG_PATH = REPO_ROOT / "keymap_drawer.config.yaml"
@@ -57,11 +48,11 @@ class KeyView:
     """Semantic view of a single key on a layer."""
     position: str
     raw_binding: str
-    tap: Optional[str]
-    hold: Optional[str]
+    tap: str | None
+    hold: str | None
     kind: Literal["normal", "unused", "transparent", "transition", "system", "modifier", "held_activator"]
-    target_layer: Optional[str] = None
-    transition_mode: Optional[Literal["hold", "momentary", "persistent", "tap"]] = None
+    target_layer: str | None = None
+    transition_mode: Literal["hold", "momentary", "persistent", "tap"] | None = None
     is_modifier: bool = False
     is_bootloader: bool = False
     is_held_activator: bool = False
@@ -74,10 +65,10 @@ class LayerView:
     display_name: str
     description: str
     color: str
-    keys: Dict[str, KeyView] = field(default_factory=dict)
-    key_list: List[KeyView] = field(default_factory=list)
+    keys: dict[str, KeyView] = field(default_factory=dict)
+    key_list: list[KeyView] = field(default_factory=list)
     subtitle: str = ""
-    activators: List[Tuple[str, Optional[str], Optional[str]]] = field(default_factory=list)
+    activators: list[tuple[str, str | None, str | None]] = field(default_factory=list)
     def get_key(self, pos: str) -> KeyView:
         if pos not in self.keys:
             raise KeyError(f"Position '{pos}' not found in layer '{self.name}'")
@@ -91,8 +82,8 @@ class CheatsheetConfig:
     keyboard: str
     title: str
     base_layout: str
-    colors: Dict[str, str]
-    descriptions: Dict[str, str]
+    colors: dict[str, str]
+    descriptions: dict[str, str]
 
 
 @dataclass
@@ -101,26 +92,26 @@ class CheatsheetModel:
     keyboard: str
     title: str
     base_layout: str
-    layers: List[LayerView]
-    layer_map: Dict[str, LayerView]
-    conditional_layers: List[ConditionalLayer]
-    transition_graph: Dict[str, List[Tuple[str, str, str]]]  # from_layer -> [(trigger_desc, to_layer, mode)]
-    bootloader_positions: List[Tuple[str, str, str]]  # [(layer, pos, side)]
+    layers: list[LayerView]
+    layer_map: dict[str, LayerView]
+    conditional_layers: list[ConditionalLayer]
+    transition_graph: dict[str, list[tuple[str, str, str]]]  # from_layer -> [(trigger_desc, to_layer, mode)]
+    bootloader_positions: list[tuple[str, str, str]]  # [(layer, pos, side)]
     presentation_config: CheatsheetConfig
 
 
 class CheatsheetGeometry(Protocol):
     """Protocol for keyboard schematic geometry."""
     @property
-    def positions(self) -> List[str]:
+    def positions(self) -> list[str]:
         ...
 
     @property
-    def left_positions(self) -> List[str]:
+    def left_positions(self) -> list[str]:
         ...
 
     @property
-    def right_positions(self) -> List[str]:
+    def right_positions(self) -> list[str]:
         ...
 
     def is_left(self, pos: str) -> bool:
@@ -133,7 +124,7 @@ class CheatsheetGeometry(Protocol):
 class CorneGeometry:
     """Immutable 42-position schematic geometry for Corne keyboard."""
 
-    ORDERED_POSITIONS: List[str] = [
+    ORDERED_POSITIONS: ClassVar[list[str]] = [
         # Top row
         "LT5", "LT4", "LT3", "LT2", "LT1", "LT0", "RT0", "RT1", "RT2", "RT3", "RT4", "RT5",
         # Middle (Home) row
@@ -144,14 +135,14 @@ class CorneGeometry:
         "LH2", "LH1", "LH0", "RH0", "RH1", "RH2",
     ]
 
-    LEFT_POSITIONS: List[str] = [
+    LEFT_POSITIONS: ClassVar[list[str]] = [
         "LT5", "LT4", "LT3", "LT2", "LT1", "LT0",
         "LM5", "LM4", "LM3", "LM2", "LM1", "LM0",
         "LB5", "LB4", "LB3", "LB2", "LB1", "LB0",
         "LH2", "LH1", "LH0",
     ]
 
-    RIGHT_POSITIONS: List[str] = [
+    RIGHT_POSITIONS: ClassVar[list[str]] = [
         "RT0", "RT1", "RT2", "RT3", "RT4", "RT5",
         "RM0", "RM1", "RM2", "RM3", "RM4", "RM5",
         "RB0", "RB1", "RB2", "RB3", "RB4", "RB5",
@@ -159,15 +150,15 @@ class CorneGeometry:
     ]
 
     @property
-    def positions(self) -> List[str]:
+    def positions(self) -> list[str]:
         return list(self.ORDERED_POSITIONS)
 
     @property
-    def left_positions(self) -> List[str]:
+    def left_positions(self) -> list[str]:
         return list(self.LEFT_POSITIONS)
 
     @property
-    def right_positions(self) -> List[str]:
+    def right_positions(self) -> list[str]:
         return list(self.RIGHT_POSITIONS)
 
     def is_left(self, pos: str) -> bool:
@@ -179,7 +170,7 @@ class CorneGeometry:
 class SofleGeometry:
     """Immutable 60-position schematic geometry for Sofle keyboard."""
 
-    ORDERED_POSITIONS: List[str] = [
+    ORDERED_POSITIONS: ClassVar[list[str]] = [
         # Number Row
         "LN5", "LN4", "LN3", "LN2", "LN1", "LN0", "RN0", "RN1", "RN2", "RN3", "RN4", "RN5",
         # Top Row
@@ -192,7 +183,7 @@ class SofleGeometry:
         "LH4", "LH3", "LH2", "LH1", "LH0", "RH0", "RH1", "RH2", "RH3", "RH4",
     ]
 
-    LEFT_POSITIONS: List[str] = [
+    LEFT_POSITIONS: ClassVar[list[str]] = [
         "LN5", "LN4", "LN3", "LN2", "LN1", "LN0",
         "LT5", "LT4", "LT3", "LT2", "LT1", "LT0",
         "LM5", "LM4", "LM3", "LM2", "LM1", "LM0",
@@ -200,7 +191,7 @@ class SofleGeometry:
         "LH4", "LH3", "LH2", "LH1", "LH0",
     ]
 
-    RIGHT_POSITIONS: List[str] = [
+    RIGHT_POSITIONS: ClassVar[list[str]] = [
         "RN0", "RN1", "RN2", "RN3", "RN4", "RN5",
         "RT0", "RT1", "RT2", "RT3", "RT4", "RT5",
         "RM0", "RM1", "RM2", "RM3", "RM4", "RM5",
@@ -209,15 +200,15 @@ class SofleGeometry:
     ]
 
     @property
-    def positions(self) -> List[str]:
+    def positions(self) -> list[str]:
         return list(self.ORDERED_POSITIONS)
 
     @property
-    def left_positions(self) -> List[str]:
+    def left_positions(self) -> list[str]:
         return list(self.LEFT_POSITIONS)
 
     @property
-    def right_positions(self) -> List[str]:
+    def right_positions(self) -> list[str]:
         return list(self.RIGHT_POSITIONS)
 
     def is_left(self, pos: str) -> bool:
@@ -228,7 +219,7 @@ class SofleGeometry:
 
 
 # Standard keycode to display text mapping
-STANDARD_KP_MAP: Dict[str, str] = {
+STANDARD_KP_MAP: dict[str, str] = {
     # Whitespace & Control
     "SPACE": "Space",
     "BACKSPACE": "Bsp",
@@ -297,7 +288,7 @@ STANDARD_KP_MAP: Dict[str, str] = {
 }
 
 # Modifier name normalization
-MODIFIER_MAP: Dict[str, str] = {
+MODIFIER_MAP: dict[str, str] = {
     "LMETA": "Cmd",
     "LGUI": "Cmd",
     "LEFT_ALT": "Alt",
@@ -315,11 +306,14 @@ MODIFIER_MAP: Dict[str, str] = {
 }
 
 
-def load_cheatsheet_config(path: Optional[Path] = None) -> CheatsheetConfig:
+def load_cheatsheet_config(path: Path | None = None) -> CheatsheetConfig:
     """Load presentation metadata from cheatsheets/<keyboard>.yaml."""
     p = path or CHEATSHEET_CONFIG_PATH
     data = load_yaml(p)
-    schema_version = int(data.get("schema_version", 1))
+    raw_schema_version = data.get("schema_version", 1)
+    if not isinstance(raw_schema_version, int) or isinstance(raw_schema_version, bool):
+        raise ValueError(f"Cheatsheet schema_version must be an integer: {raw_schema_version!r}")
+    schema_version = raw_schema_version
     keyboard = str(data.get("keyboard", "corne"))
     title = str(data.get("title", "CORNE · ONE-PAGE LAYER CHEATSHEET"))
     base_layout = str(data.get("base_layout", "Colemak-DH"))
@@ -335,7 +329,7 @@ def load_cheatsheet_config(path: Optional[Path] = None) -> CheatsheetConfig:
     )
 
 
-def load_presentation_aliases(path: Optional[Path] = None) -> Dict[str, str]:
+def load_presentation_aliases(path: Path | None = None) -> dict[str, str]:
     """Extract raw_binding_map from keymap_drawer.config.yaml."""
     p = path or KEYMAP_DRAWER_CONFIG_PATH
     data = load_yaml(p)
@@ -384,7 +378,7 @@ def resolve_binding(
     layer_name: str,
     position: str,
     kb_config: KeyboardConfig,
-    aliases: Dict[str, str],
+    aliases: dict[str, str],
 ) -> KeyView:
     """
     Resolve a raw ZMK binding string into a typed KeyView according to the strict resolver rules:
@@ -413,7 +407,7 @@ def resolve_binding(
             raw_binding=raw,
             tap=alias_label,
             hold=None,
-            kind="system" if raw.startswith("&studio") or raw.startswith("&caps") else ("modifier" if is_mod else "normal"),
+            kind="system" if raw.startswith(("&studio", "&caps")) else ("modifier" if is_mod else "normal"),
             is_modifier=is_mod,
         )
 
@@ -572,34 +566,34 @@ def resolve_binding(
     # -------------------------------------------------------------------------
     # 7. Device Management & Connectivity Behaviors
     # -------------------------------------------------------------------------
-    if op == "&bt":
-        if len(tokens) >= 2:
-            bt_sub = tokens[1]
-            if bt_sub == "BT_CLR":
-                return KeyView(position=position, raw_binding=raw, tap="BT Clear", hold=None, kind="system")
-            if bt_sub == "BT_NXT":
-                return KeyView(position=position, raw_binding=raw, tap="BT Next", hold=None, kind="system")
-            if bt_sub == "BT_PRV":
-                return KeyView(position=position, raw_binding=raw, tap="BT Prev", hold=None, kind="system")
-            if bt_sub == "BT_SEL" and len(tokens) >= 3:
+    if op == "&bt" and len(tokens) >= 2:
+        bt_sub = tokens[1]
+        if bt_sub == "BT_CLR":
+            return KeyView(position=position, raw_binding=raw, tap="BT Clear", hold=None, kind="system")
+        if bt_sub == "BT_NXT":
+            return KeyView(position=position, raw_binding=raw, tap="BT Next", hold=None, kind="system")
+        if bt_sub == "BT_PRV":
+            return KeyView(position=position, raw_binding=raw, tap="BT Prev", hold=None, kind="system")
+        if bt_sub == "BT_SEL" and len(tokens) >= 3:
+            try:
                 profile_idx = int(tokens[2]) + 1
-                return KeyView(position=position, raw_binding=raw, tap=f"BT {profile_idx}", hold=None, kind="system")
+            except ValueError as exc:
+                raise ValueError(f"Malformed BT_SEL binding '{raw}' at {layer_name}:{position}") from exc
+            return KeyView(position=position, raw_binding=raw, tap=f"BT {profile_idx}", hold=None, kind="system")
 
-    if op == "&out":
-        if len(tokens) >= 2:
-            out_sub = tokens[1]
-            if out_sub == "OUT_USB":
-                return KeyView(position=position, raw_binding=raw, tap="Out USB", hold=None, kind="system")
-            if out_sub == "OUT_BLE":
-                return KeyView(position=position, raw_binding=raw, tap="Out BLE", hold=None, kind="system")
+    if op == "&out" and len(tokens) >= 2:
+        out_sub = tokens[1]
+        if out_sub == "OUT_USB":
+            return KeyView(position=position, raw_binding=raw, tap="Out USB", hold=None, kind="system")
+        if out_sub == "OUT_BLE":
+            return KeyView(position=position, raw_binding=raw, tap="Out BLE", hold=None, kind="system")
 
-    if op == "&ext_power":
-        if len(tokens) >= 2:
-            ep_sub = tokens[1]
-            if ep_sub == "EP_ON":
-                return KeyView(position=position, raw_binding=raw, tap="Ext On", hold=None, kind="system")
-            if ep_sub == "EP_OFF":
-                return KeyView(position=position, raw_binding=raw, tap="Ext Off", hold=None, kind="system")
+    if op == "&ext_power" and len(tokens) >= 2:
+        ep_sub = tokens[1]
+        if ep_sub == "EP_ON":
+            return KeyView(position=position, raw_binding=raw, tap="Ext On", hold=None, kind="system")
+        if ep_sub == "EP_OFF":
+            return KeyView(position=position, raw_binding=raw, tap="Ext Off", hold=None, kind="system")
 
     # -------------------------------------------------------------------------
     # 8. Standard &kp formatting
@@ -669,8 +663,8 @@ def generate_layer_subtitle(
     layer_idx: int,
     description: str,
     layer_view: LayerView,
-    base_layer_view: Optional[LayerView] = None,
-    conditional_layers: Optional[List[ConditionalLayer]] = None,
+    base_layer_view: LayerView | None = None,
+    conditional_layers: list[ConditionalLayer] | None = None,
 ) -> str:
     """
     Generate precise layer subtitle derived from BASE transitions and conditional layers
@@ -683,7 +677,7 @@ def generate_layer_subtitle(
     if conditional_layers:
         for cl in conditional_layers:
             if normalize_layer_name(cl.then_layer) == layer_name:
-                if_names = [normalize_layer_name(l) for l in cl.if_layers]
+                if_names = [normalize_layer_name(src) for src in cl.if_layers]
                 return f"{layer_name} · L{layer_idx}   (Hold {' + '.join(if_names)})"
 
     # 2. Single-activator layers derived from BASE transitions
@@ -703,11 +697,11 @@ def generate_layer_subtitle(
 
 def build_cheatsheet_model(
     keyboard: str = "corne",
-    keymap_path: Optional[Path] = None,
-    cheatsheet_config_path: Optional[Path] = None,
-    aliases_path: Optional[Path] = None,
-    protocol_path: Optional[Path] = None,
-    geometry: Optional[CheatsheetGeometry] = None,
+    keymap_path: Path | None = None,
+    cheatsheet_config_path: Path | None = None,
+    aliases_path: Path | None = None,
+    protocol_path: Path | None = None,
+    geometry: CheatsheetGeometry | None = None,
 ) -> CheatsheetModel:
     """
     Construct the intermediate semantic model from firmware keymap, protocol,
@@ -722,12 +716,13 @@ def build_cheatsheet_model(
     kb_config = parse_keymap_file(k_path, layout=kb)
     config = load_cheatsheet_config(c_path)
     aliases = load_presentation_aliases(a_path)
-    manifest = load_protocol(p_path)
+    # The cheatsheet needs the manifest to be valid, but reads aliases elsewhere.
+    load_protocol(p_path)
     geom = geometry or (SofleGeometry() if kb == "sofle" else CorneGeometry())
-    layers: List[LayerView] = []
-    layer_map: Dict[str, LayerView] = {}
-    transition_graph: Dict[str, List[Tuple[str, str, str]]] = {}
-    bootloader_positions: List[Tuple[str, str, str]] = []
+    layers: list[LayerView] = []
+    layer_map: dict[str, LayerView] = {}
+    transition_graph: dict[str, list[tuple[str, str, str]]] = {}
+    bootloader_positions: list[tuple[str, str, str]] = []
 
     # Map each layer
     for idx, layer_name in enumerate(kb_config.layer_order):
@@ -743,7 +738,7 @@ def build_cheatsheet_model(
             color=color,
         )
 
-        layer_transitions: List[Tuple[str, str, str]] = []
+        layer_transitions: list[tuple[str, str, str]] = []
 
         # Iterate all positions defined by geometry
         for pos in geom.positions:

@@ -159,15 +159,20 @@ def parse_keymap_content(content: str, layout: str | None = None) -> KeyboardCon
     pos_map = SOFLE_POSITIONS if layout == "sofle" else CORNE_POSITIONS
     expected_key_count = 60 if layout == "sofle" else 42
 
-    # 1. Parse #define integer constants
+    # 1. Parse #define integer constants (decimal, hex, binary, or octal literals)
     defines = {}
-    for m in re.finditer(r'#define\s+(\w+)\s+(\d+)', content):
-        # The capture is digits-only, but int() still rejects absurdly long digit
-        # strings (CPython's 4300-digit str->int limit), so fail with the define name.
+    value_pattern = r"(?:0[xX][0-9a-fA-F]+|0[bB][01]+|0[oO][0-7]+|\d+)"
+    for m in re.finditer(rf'#define\s+(\w+)\s+({value_pattern})', content):
+        raw_value = m.group(2)
+        # int(raw, 0) rejects values with a leading zero such as "08", so pick the base
+        # from the prefix instead. A bare (\d+) capture would read 0x1F as 0.
+        base = {"0x": 16, "0b": 2, "0o": 8}.get(raw_value[:2].lower(), 10)
+        # int() also rejects absurdly long digit strings (CPython's 4300-digit
+        # str->int limit), so fail with the offending define name.
         try:
-            defines[m.group(1)] = int(m.group(2))
+            defines[m.group(1)] = int(raw_value, base)
         except ValueError as exc:
-            raise ValueError(f"Malformed #define value for {m.group(1)}: {m.group(2)!r}") from exc
+            raise ValueError(f"Malformed #define value for {m.group(1)}: {raw_value!r}") from exc
 
     # 2. Parse custom behaviors
     def extract_dts_block(text: str, block_name: str) -> str:

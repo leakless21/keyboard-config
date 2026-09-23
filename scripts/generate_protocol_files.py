@@ -54,15 +54,16 @@ def update_host_protocol_doc(manifest: ProtocolManifest) -> bool:
     content = DOCS_HOST_PROTOCOL_PATH.read_text(encoding="utf-8")
     table = generate_host_protocol_table(manifest)
 
-    # Replace section between ## 1. Canonical Protocol Matrix and the next ---
-    pattern = r"(## 1\. Canonical Protocol Matrix\s*\n\s*\n)(?:\|[^\n]+\|\n)+(?=\s*\n---)"
-    replacement = rf"\g<1>{table}"
-
-    new_content, count = re.subn(pattern, replacement, content)
-    if count == 0:
-        # If pattern didn't match, attempt general matrix replacement
-        pattern2 = r"(## 1\. Canonical Protocol Matrix\s*\n\s*\n)([\s\S]*?)(?=\n---)"
-        new_content, count = re.subn(pattern2, rf"\g<1>{table}\n", content)
+    # Replace the table between the matrix heading and the next horizontal rule.
+    # The match deliberately consumes the blank line preceding `---` and the
+    # replacement re-emits exactly one, so the result is a fixed point. The previous
+    # two-pattern version added the blank line when its first pattern missed and
+    # removed it when it matched, so the file oscillated between two states.
+    pattern = re.compile(
+        r"^(## 1\. Canonical Protocol Matrix[ \t]*\n)(?:.*\n)*?(?=^---)",
+        re.MULTILINE,
+    )
+    new_content, count = pattern.subn(lambda match: f"{match.group(1)}\n{table}\n\n", content, count=1)
 
     if count == 0:
         fail("Could not find Protocol Matrix section in docs/host-protocol.md")

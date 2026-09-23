@@ -172,8 +172,8 @@ macbook_controls:
     label: "move column"
     native: true
     bindings:
-      - "Control+Option+Shift+Left"
-      - "Control+Option+Shift+Right"
+      - "Control+Option+Shift+LeftArrow"
+      - "Control+Option+Shift+RightArrow"
     commands:
       - "moveColumn.left"
       - "moveColumn.right"

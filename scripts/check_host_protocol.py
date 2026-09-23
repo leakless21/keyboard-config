@@ -761,8 +761,8 @@ def validate_omniwm_consumer(data: dict) -> None:
         "setWindowSecondarySpan.decrease10Percent": "Option+Shift+Minus",
         "setWindowSecondarySpan.increase10Percent": "Option+Shift+Equal",
         "resetWindowSecondarySpan": "Control+Option+R",
-        "moveColumn.left": "Control+Option+Shift+Left",
-        "moveColumn.right": "Control+Option+Shift+Right",
+        "moveColumn.left": "Control+Option+Shift+LeftArrow",
+        "moveColumn.right": "Control+Option+Shift+RightArrow",
         "toggleColumnTabbed": "Option+T",
         "toggleContainerFullPrimarySpan": "Option+Shift+F",
         "focusColumnFirst": "Option+Home",
@@ -772,6 +772,22 @@ def validate_omniwm_consumer(data: dict) -> None:
     for hk_id, expected_binding in required_bindings.items():
         actual = hk_map.get(hk_id)
         assert_eq(actual, expected_binding, f"OmniWM: Hotkey {hk_id} expected binding {expected_binding}, got {actual}")
+
+    # OmniWM's key vocabulary spells arrows with an *Arrow suffix (LeftArrow, RightArrow,
+    # UpArrow, DownArrow). A bare Left/Right/Up/Down is not a key name, and OmniWM reacts by
+    # rejecting the ENTIRE settings file and silently falling back to defaults — so a single
+    # typo here costs every custom binding, not just the one line. Guard the whole file.
+    bare_directions = {"Left", "Right", "Up", "Down"}
+    for hotkey_id, binding in hk_map.items():
+        if not isinstance(binding, str) or binding == "Unassigned":
+            continue
+        offending = set(binding.split("+")) & bare_directions
+        assert_eq(
+            offending,
+            set(),
+            f"OmniWM: Hotkey {hotkey_id} binding {binding!r} uses {sorted(offending)}; "
+            f"arrow keys must be spelled LeftArrow/RightArrow/UpArrow/DownArrow",
+        )
 
     quake_cfg = data.get("quakeTerminal", {})
     assert_true(is_exactly_true(quake_cfg.get("enabled")), "OmniWM: quakeTerminal.enabled must be true")

@@ -233,7 +233,7 @@ minWidth = 500.0
 [[appRules]]
 assignToWorkspace = "1"
 bundleId = "net.imput.helium"
-id = "049F9634-2175-4779-906F-85D6F9525E07"
+id = "E35EDF2D-8235-4B22-B7A8-88E8ECF7D59F"
 minHeight = 400.0
 minWidth = 600.0
 
@@ -757,11 +757,11 @@ binding = "Unassigned"
 id = "toggleNativeFullscreen"
 
 [[hotkeys]]
-binding = "Control+Option+Shift+Left"
+binding = "Control+Option+Shift+LeftArrow"
 id = "moveColumn.left"
 
 [[hotkeys]]
-binding = "Control+Option+Shift+Right"
+binding = "Control+Option+Shift+RightArrow"
 id = "moveColumn.right"
 
 [[hotkeys]]

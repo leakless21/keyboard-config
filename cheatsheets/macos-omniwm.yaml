@@ -13,6 +13,7 @@ routing_labels:
   org.mozilla.firefox: "Firefox"
   app.zen-browser.zen: "Zen"
   company.thebrowser.dia: "Dia"
+  net.imput.helium: "Helium"
   com.openai.codex: "Codex"
   dev.zed.Zed: "Zed"
   com.hnc.Discord: "Discord"
@@ -23,7 +24,7 @@ routing_labels:
 section_titles:
   workspace_model: "WORKSPACE MODEL"
   corne_host: "CORNE HOST ACTIONS"
-  macbook: "MACBOOK EQUIVALENTS"
+  macbook: "MACBOOK SHORTCUTS"
   behavior: "BEHAVIOR NOTES"
   routing: "CONSERVATIVE ROUTING"
 
@@ -82,7 +83,7 @@ macbook_controls:
     label: "overview"
     commands:
       - "toggle-overview"
-  - chord: "⌥Return"
+  - chord: "⌥⇧Return"
     label: "fullscreen"
     commands:
       - "toggle-fullscreen"
@@ -94,14 +95,88 @@ macbook_controls:
     label: "Quake"
     commands:
       - "toggle-quake-terminal"
-  # Native chord: OmniWM owns this hotkey directly, so it is tracked against
-  # settings.toml rather than the Karabiner IPC adapter (hence `native`).
+  # Launchers hand off to native macOS automation rather than OmniWM IPC.
+  - chord: "⌥Enter"
+    label: "terminal"
+    commands:
+      - "Ghostty"
+      - "new window"
+  - chord: "⌥B"
+    label: "browser"
+    commands:
+      - "open -b"
+      - "net.imput.helium"
+  - chord: "⌥E"
+    label: "yazi"
+    commands:
+      - "new surface configuration"
+      - "/opt/homebrew/bin/yazi"
+  # Native OmniWM hotkeys: no Karabiner adapter involved, so these are
+  # tracked against settings.toml rather than the adapter's IPC commands.
   - chord: "⌃⌥Space"
     label: "palette"
     native: true
-    binding: "Control+Option+Space"
+    bindings:
+      - "Control+Option+Space"
     commands:
       - "openCommandPalette"
+  - chord: "⌥- / ⌥="
+    label: "column width"
+    native: true
+    bindings:
+      - "Option+Minus"
+      - "Option+Equal"
+    commands:
+      - "setContainerPrimarySpan.decrease10Percent"
+      - "setContainerPrimarySpan.increase10Percent"
+  - chord: "⌥⇧- / ⌥⇧="
+    label: "window height"
+    native: true
+    bindings:
+      - "Option+Shift+Minus"
+      - "Option+Shift+Equal"
+    commands:
+      - "setWindowSecondarySpan.decrease10Percent"
+      - "setWindowSecondarySpan.increase10Percent"
+  - chord: "⌃⌥R"
+    label: "reset height"
+    native: true
+    bindings:
+      - "Control+Option+R"
+    commands:
+      - "resetWindowSecondarySpan"
+  - chord: "⌥T"
+    label: "tabbed column"
+    native: true
+    bindings:
+      - "Option+T"
+    commands:
+      - "toggleColumnTabbed"
+  - chord: "⌥⇧F"
+    label: "full-width column"
+    native: true
+    bindings:
+      - "Option+Shift+F"
+    commands:
+      - "toggleContainerFullPrimarySpan"
+  - chord: "⌥Home / ⌥End"
+    label: "first/last column"
+    native: true
+    bindings:
+      - "Option+Home"
+      - "Option+End"
+    commands:
+      - "focusColumnFirst"
+      - "focusColumnLast"
+  - chord: "⌃⌥⇧← / →"
+    label: "move column"
+    native: true
+    bindings:
+      - "Control+Option+Shift+Left"
+      - "Control+Option+Shift+Right"
+    commands:
+      - "moveColumn.left"
+      - "moveColumn.right"
 
 behavior_notes:
   niri: "Size → 33 / 50 / 67 / 100% container span"

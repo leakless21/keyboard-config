@@ -844,6 +844,9 @@
               "optional": [
                 "caps_lock",
                 "option"
+              ],
+              "mandatory": [
+                "shift"
               ]
             }
           },
@@ -917,6 +920,105 @@
           "to": [
             {
               "shell_command": "/Applications/OmniWM.app/Contents/MacOS/omniwmctl command toggle-quake-terminal"
+            }
+          ]
+        },
+        {
+          "type": "basic",
+          "conditions": [
+            {
+              "type": "device_if",
+              "identifiers": [
+                {
+                  "is_built_in_keyboard": true
+                }
+              ]
+            },
+            {
+              "type": "variable_if",
+              "name": "omniwm_option_held",
+              "value": 1
+            }
+          ],
+          "from": {
+            "key_code": "return_or_enter",
+            "modifiers": {
+              "mandatory": [],
+              "optional": [
+                "caps_lock",
+                "option"
+              ]
+            }
+          },
+          "to": [
+            {
+              "shell_command": "osascript -e 'tell application \"Ghostty\" to activate' -e 'tell application \"Ghostty\" to new window'"
+            }
+          ]
+        },
+        {
+          "type": "basic",
+          "conditions": [
+            {
+              "type": "device_if",
+              "identifiers": [
+                {
+                  "is_built_in_keyboard": true
+                }
+              ]
+            },
+            {
+              "type": "variable_if",
+              "name": "omniwm_option_held",
+              "value": 1
+            }
+          ],
+          "from": {
+            "key_code": "b",
+            "modifiers": {
+              "mandatory": [],
+              "optional": [
+                "caps_lock",
+                "option"
+              ]
+            }
+          },
+          "to": [
+            {
+              "shell_command": "open -b net.imput.helium"
+            }
+          ]
+        },
+        {
+          "type": "basic",
+          "conditions": [
+            {
+              "type": "device_if",
+              "identifiers": [
+                {
+                  "is_built_in_keyboard": true
+                }
+              ]
+            },
+            {
+              "type": "variable_if",
+              "name": "omniwm_option_held",
+              "value": 1
+            }
+          ],
+          "from": {
+            "key_code": "e",
+            "modifiers": {
+              "mandatory": [],
+              "optional": [
+                "caps_lock",
+                "option"
+              ]
+            }
+          },
+          "to": [
+            {
+              "shell_command": "osascript -e 'tell application \"Ghostty\"' -e 'set cfg to new surface configuration' -e 'set command of cfg to \"/opt/homebrew/bin/yazi\"' -e 'activate' -e 'set win to new window with configuration cfg' -e 'end tell'"
             }
           ]
         }

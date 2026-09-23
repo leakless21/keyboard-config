@@ -151,25 +151,38 @@ def render_macbook_panel(model: HostCheatsheetModel) -> str:
         width,
         height,
         model.presentation.section_titles.get("macbook", "MACBOOK EQUIVALENTS"),
-        "Option-held shortcuts through the OmniWM IPC adapter",
+        "Karabiner Option chords, native OmniWM controls, and app launchers",
     )
 
     row_x = x + 34
     row_y = y + 116
     row_height = 67
-    chord_x = row_x + 10
-    label_x = row_x + 475
-    out.append(text(chord_x, row_y, "CHORD", "table-header"))
-    out.append(text(label_x, row_y, "ACTION", "table-header"))
+    controls = model.macbook_controls
+    # The MacBook set now spans Karabiner IPC, native OmniWM controls, and app launchers.
+    # Two columns keep all of it on one page without shrinking the type.
+    column_gap = 34
+    column_width = (width - 68 - column_gap) / 2
+    rows_per_column = (len(controls) + 1) // 2
 
-    for index, control in enumerate(model.macbook_controls):
-        current_y = row_y + 34 + index * row_height
-        fill = "#f8fafc" if index % 2 == 0 else "#ffffff"
-        out.append(
-            f'    <rect x="{row_x:.1f}" y="{current_y - 27:.1f}" width="{width - 68:.1f}" height="{row_height:.1f}" rx="7" fill="{fill}" />'
-        )
-        out.append(text(chord_x, current_y, control.chord, "shortcut"))
-        out.append(text(label_x, current_y, control.label, "body"))
+    for column in range(2):
+        col_x = row_x + column * (column_width + column_gap)
+        chord_x = col_x + 10
+        label_x = col_x + 300
+        out.append(text(chord_x, row_y, "CHORD", "table-header"))
+        out.append(text(label_x, row_y, "ACTION", "table-header"))
+
+        for row in range(rows_per_column):
+            index = column * rows_per_column + row
+            if index >= len(controls):
+                break
+            control = controls[index]
+            current_y = row_y + 34 + row * row_height
+            fill = "#f8fafc" if row % 2 == 0 else "#ffffff"
+            out.append(
+                f'    <rect x="{col_x:.1f}" y="{current_y - 27:.1f}" width="{column_width:.1f}" height="{row_height:.1f}" rx="7" fill="{fill}" />'
+            )
+            out.append(text(chord_x, current_y, control.chord, "shortcut"))
+            out.append(text(label_x, current_y, control.label, "body"))
 
     finish_panel(out)
     return "\n".join(out)

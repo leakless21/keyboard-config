@@ -97,11 +97,12 @@ class HostMacBookControl:
     chord: str
     label: str
     commands: tuple[str, ...]
-    # Native controls are backed by an OmniWM hotkey binding in settings.toml instead of
-    # by an omniwmctl IPC command in the Karabiner adapter. `binding` records the exact
-    # OmniWM key string that must match, so the chord cannot drift from the live config.
+    # Native controls are backed by OmniWM hotkey bindings in settings.toml instead of
+    # by an omniwmctl IPC command in the Karabiner adapter. `bindings` runs parallel to
+    # `commands`, so a row may group several chords (e.g. "⌥- / ⌥=") and each one is
+    # still pinned to the exact OmniWM key string it must match.
     native: bool = False
-    binding: str = ""
+    bindings: tuple[str, ...] = ()
 
 
 @dataclass(frozen=True)
@@ -146,10 +147,13 @@ def load_host_presentation(path: Path = HOST_PRESENTATION_PATH) -> HostCheatshee
         if not isinstance(commands, list) or not commands:
             raise ValueError(f"MacBook control #{index + 1} must list at least one command")
         native = bool(raw_control.get("native", False))
-        binding = str(raw_control.get("binding", ""))
-        if native and not binding:
+        raw_bindings = raw_control.get("bindings", [])
+        if not isinstance(raw_bindings, list):
+            raise ValueError(f"MacBook control #{index + 1} 'bindings' must be a list")
+        bindings = tuple(str(item) for item in raw_bindings)
+        if native and not bindings:
             raise ValueError(
-                f"MacBook control #{index + 1} is native and must declare the OmniWM 'binding' it represents"
+                f"MacBook control #{index + 1} is native and must declare the OmniWM 'bindings' it represents"
             )
         controls.append(
             HostMacBookControl(
@@ -157,12 +161,16 @@ def load_host_presentation(path: Path = HOST_PRESENTATION_PATH) -> HostCheatshee
                 label=str(raw_control.get("label", "")),
                 commands=tuple(str(command) for command in commands),
                 native=native,
-                binding=binding,
+                bindings=bindings,
             )
         )
 
+    raw_schema_version = data.get("schema_version", 1)
+    if not isinstance(raw_schema_version, int) or isinstance(raw_schema_version, bool):
+        raise ValueError(f"Host cheatsheet schema_version must be an integer: {raw_schema_version!r}")
+
     return HostCheatsheetPresentation(
-        schema_version=int(data.get("schema_version", 1)),
+        schema_version=raw_schema_version,
         title=str(data.get("title", "macOS · OMNIWM WORKFLOW CHEATSHEET")),
         subtitle=str(data.get("subtitle", "")),
         routing_labels=_string_map(data.get("routing_labels", {})),
@@ -292,15 +300,20 @@ def _validate_macbook_controls(
         if control.native:
             # Native chords are OmniWM hotkeys and never pass through the Karabiner
             # adapter, so they are tracked against settings.toml rather than the adapter.
-            for command in control.commands:
+            if len(control.bindings) != len(control.commands):
+                raise ValueError(
+                    f"MacBook control {control.chord!r} must declare one binding per command "
+                    f"({len(control.bindings)} bindings for {len(control.commands)} commands)"
+                )
+            for command, expected_binding in zip(control.commands, control.bindings, strict=True):
                 if command not in hotkey_bindings:
                     raise ValueError(
                         f"MacBook control {control.chord!r} is not backed by an OmniWM hotkey id: {command!r}"
                     )
                 actual = hotkey_bindings[command]
-                if actual != control.binding:
+                if actual != expected_binding:
                     raise ValueError(
-                        f"MacBook control {control.chord!r} declares binding {control.binding!r} but "
+                        f"MacBook control {control.chord!r} declares binding {expected_binding!r} but "
                         f"OmniWM hotkey {command!r} is bound to {actual!r}"
                     )
             continue

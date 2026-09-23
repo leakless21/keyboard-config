@@ -231,6 +231,13 @@ minHeight = 420.0
 minWidth = 500.0
 
 [[appRules]]
+assignToWorkspace = "1"
+bundleId = "net.imput.helium"
+id = "049F9634-2175-4779-906F-85D6F9525E07"
+minHeight = 400.0
+minWidth = 600.0
+
+[[appRules]]
 assignToWorkspace = "3"
 bundleId = "com.spotify.client"
 id = "2DE9390B-0DB4-4D0C-9ABA-06F76F1D4EA9"
@@ -750,11 +757,11 @@ binding = "Unassigned"
 id = "toggleNativeFullscreen"
 
 [[hotkeys]]
-binding = "Unassigned"
+binding = "Control+Option+Shift+Left"
 id = "moveColumn.left"
 
 [[hotkeys]]
-binding = "Unassigned"
+binding = "Control+Option+Shift+Right"
 id = "moveColumn.right"
 
 [[hotkeys]]
@@ -926,7 +933,7 @@ binding = "Unassigned"
 id = "expandContainerToAvailablePrimarySpan"
 
 [[hotkeys]]
-binding = "Unassigned"
+binding = "Control+Option+R"
 id = "resetWindowSecondarySpan"
 
 [[hotkeys]]
@@ -946,11 +953,11 @@ binding = "Unassigned"
 id = "setWindowPrimarySpan.increase10Percent"
 
 [[hotkeys]]
-binding = "Unassigned"
+binding = "Option+Shift+Minus"
 id = "setWindowSecondarySpan.decrease10Percent"
 
 [[hotkeys]]
-binding = "Unassigned"
+binding = "Option+Shift+Equal"
 id = "setWindowSecondarySpan.increase10Percent"
 
 [[hotkeys]]

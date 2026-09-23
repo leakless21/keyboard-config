@@ -375,6 +375,12 @@ def validate_karabiner_external(karabiner_data: dict) -> None:
 OPTION_TRACKING_VARIABLE = "omniwm_option_held"
 OPTION_KEYS = {"left_option", "right_option"}
 
+# The primary browser the MacBook adapter launches/focuses with Option+B. It mirrors the
+# macOS default https handler; this constant and laptop-omniwm.json must agree.
+PRIMARY_BROWSER_BUNDLE_ID = "net.imput.helium"
+# Option+E opens Yazi inside a Ghostty window rather than a bare shell.
+YAZI_EXECUTABLE = "/opt/homebrew/bin/yazi"
+
 
 def validate_karabiner_laptop(karabiner_data: dict) -> None:
     """Verify that the MacBook built-in keyboard adapter maps conventional Option chords to OmniWM IPC,
@@ -388,7 +394,11 @@ def validate_karabiner_laptop(karabiner_data: dict) -> None:
     assert_true(len(rules) >= 1, "Layer B (Karabiner Laptop): Expected at least 1 rule in laptop-omniwm.json")
 
     all_manipulators = [m for r in rules for m in r.get("manipulators", [])]
-    assert_eq(len(all_manipulators), 27, f"Layer B (Karabiner Laptop): Expected exactly 27 manipulators (2 Option trackers + 25 IPC actions), found {len(all_manipulators)}")
+    assert_eq(
+        len(all_manipulators),
+        30,
+        f"Layer B (Karabiner Laptop): Expected exactly 30 manipulators (2 Option trackers + 25 IPC actions + 3 native launchers), found {len(all_manipulators)}",
+    )
 
     # Canonical deterministic CLI path: explicit app-bundle binary, independent of Karabiner's PATH.
     OMNIWMCTL_PREFIX = "/Applications/OmniWM.app/Contents/MacOS/omniwmctl command "
@@ -403,6 +413,16 @@ def validate_karabiner_laptop(karabiner_data: dict) -> None:
 
     trackers = [m for m in all_manipulators if m.get("from", {}).get("key_code") in OPTION_KEYS]
     actions = [m for m in all_manipulators if m.get("from", {}).get("key_code") not in OPTION_KEYS]
+
+    def shell_command_of(manipulator: dict) -> str:
+        to_list = manipulator.get("to", [])
+        if len(to_list) == 1 and "shell_command" in to_list[0]:
+            return str(to_list[0]["shell_command"])
+        return ""
+
+    # Launchers hand off to native macOS automation; everything else is OmniWM IPC.
+    launcher_actions = [m for m in actions if not shell_command_of(m).startswith("/Applications/OmniWM.app/")]
+    ipc_actions = [m for m in actions if m not in launcher_actions]
 
     # --- Option trackers: keep the physical key down, mirror the state into a variable ---
     assert_eq(len(trackers), 2, f"Layer B (Karabiner Laptop): Expected exactly 2 Option trackers (left_option, right_option), found {len(trackers)}")
@@ -445,8 +465,13 @@ def validate_karabiner_laptop(karabiner_data: dict) -> None:
             f"Layer B (Karabiner Laptop): Option tracker for {key} must be pure state tracking, not IPC",
         )
 
-    # --- IPC actions: Option optional + variable condition, never Option-mandatory ---
-    assert_eq(len(actions), 25, f"Layer B (Karabiner Laptop): Expected exactly 25 OmniWM IPC actions, found {len(actions)}")
+    # --- Actions: Option optional + variable condition, never Option-mandatory ---
+    assert_eq(len(ipc_actions), 25, f"Layer B (Karabiner Laptop): Expected exactly 25 OmniWM IPC actions, found {len(ipc_actions)}")
+    assert_eq(
+        len(launcher_actions),
+        3,
+        f"Layer B (Karabiner Laptop): Expected exactly 3 native launcher actions (Option+Return, Option+B, Option+E), found {len(launcher_actions)}",
+    )
 
     for idx, m in enumerate(actions):
         assert_true(has_builtin_scope(m), f"Layer B (Karabiner Laptop): Action #{idx} missing is_built_in_keyboard: true scoping")
@@ -482,8 +507,18 @@ def validate_karabiner_laptop(karabiner_data: dict) -> None:
         assert_true("shell_command" in to_act, f"Layer B (Karabiner Laptop): Action #{idx} must invoke OmniWM IPC via shell_command, not synthetic key events")
         assert_true("key_code" not in to_act, f"Layer B (Karabiner Laptop): Action #{idx} must not emit synthetic F13-F20 events (would strip physical Option state)")
         cmd = to_act.get("shell_command", "")
-        assert_true("omniwmctl command" in cmd, f"Layer B (Karabiner Laptop): Action #{idx} must invoke omniwmctl command: {cmd}")
-        assert_true(OMNIWMCTL_PREFIX in cmd, f"Layer B (Karabiner Laptop): Action #{idx} must use deterministic bundle path '{OMNIWMCTL_PREFIX.strip()}': {cmd}")
+        if m in launcher_actions:
+            assert_true(
+                "omniwmctl" not in cmd,
+                f"Layer B (Karabiner Laptop): Launcher #{idx} ({m['from']['key_code']}) must launch natively, not through OmniWM IPC: {cmd}",
+            )
+            assert_true(
+                cmd.startswith(("osascript", "open ")),
+                f"Layer B (Karabiner Laptop): Launcher #{idx} ({m['from']['key_code']}) must use a native macOS launch command: {cmd}",
+            )
+        else:
+            assert_true("omniwmctl command" in cmd, f"Layer B (Karabiner Laptop): Action #{idx} must invoke omniwmctl command: {cmd}")
+            assert_true(OMNIWMCTL_PREFIX in cmd, f"Layer B (Karabiner Laptop): Action #{idx} must use deterministic bundle path '{OMNIWMCTL_PREFIX.strip()}': {cmd}")
 
     # Required mappings: (from_key, from_mandatory_mods, expected OmniWM IPC command suffix)
     expected_laptop_mappings = [
@@ -517,8 +552,8 @@ def validate_karabiner_laptop(karabiner_data: dict) -> None:
         ("period", set(), "cycle-size forward"),
         # Option+Shift+O -> toggle-overview
         ("o", {"shift"}, "toggle-overview"),
-        # Option+Return -> toggle-fullscreen
-        ("return_or_enter", set(), "toggle-fullscreen"),
+        # Option+Shift+Return -> toggle-fullscreen (bare Option+Return is the Ghostty launcher)
+        ("return_or_enter", {"shift"}, "toggle-fullscreen"),
         # Option+Shift+Space -> toggle-focused-window-floating
         ("spacebar", {"shift"}, "toggle-focused-window-floating"),
         # Option+` -> toggle-quake-terminal
@@ -538,9 +573,38 @@ def validate_karabiner_laptop(karabiner_data: dict) -> None:
                     break
         assert_true(found, f"Layer B (Karabiner Laptop): Missing mapping for {from_key} (mandatory mods={from_mods}) -> '{expected_cmd}'")
 
+    # Required launchers: (from_key, from_mandatory_mods, fragments that must all appear in the command)
+    expected_laptop_launchers = [
+        # Option+Return -> standalone Ghostty window (same AppleScript as the external adapter)
+        ("return_or_enter", set(), ("Ghostty", "new window")),
+        # Option+B -> launch/focus the primary browser
+        ("b", set(), ("open -b", PRIMARY_BROWSER_BUNDLE_ID)),
+        # Option+E -> Ghostty window running Yazi
+        ("e", set(), ("new surface configuration", YAZI_EXECUTABLE)),
+    ]
+
+    for from_key, from_mods, fragments in expected_laptop_launchers:
+        matches = [
+            m
+            for m in launcher_actions
+            if m.get("from", {}).get("key_code") == from_key
+            and set(m.get("from", {}).get("modifiers", {}).get("mandatory", [])) == from_mods
+        ]
+        assert_eq(
+            len(matches),
+            1,
+            f"Layer B (Karabiner Laptop): Expected exactly 1 launcher for {from_key} (mandatory mods={from_mods}), found {len(matches)}",
+        )
+        command = shell_command_of(matches[0])
+        for fragment in fragments:
+            assert_true(
+                fragment in command,
+                f"Layer B (Karabiner Laptop): Launcher for {from_key} must contain {fragment!r}: {command}",
+            )
+
     print(
-        f"PASS: macOS Karabiner Built-in Laptop Adapter validated (2 Option trackers + {len(expected_laptop_mappings)} OmniWM IPC mappings "
-        f"scoped to is_built_in_keyboard=true; Option optional-only, never mandatory, no synthetic F13-F20)."
+        f"PASS: macOS Karabiner Built-in Laptop Adapter validated (2 Option trackers + {len(expected_laptop_mappings)} OmniWM IPC mappings + "
+        f"{len(expected_laptop_launchers)} native launchers scoped to is_built_in_keyboard=true; Option optional-only, never mandatory, no synthetic F13-F20)."
     )
 
 
@@ -612,6 +676,7 @@ def validate_omniwm_consumer(data: dict) -> None:
         "org.mozilla.firefox": "1",
         "app.zen-browser.zen": "1",
         "company.thebrowser.dia": "1",
+        "net.imput.helium": "1",
         # Editors and note-taking applications are routed to DEV.
         "com.openai.codex": "2",
         "dev.zed.Zed": "2",
@@ -690,6 +755,18 @@ def validate_omniwm_consumer(data: dict) -> None:
         "toggleFocusedWindowFloating": "F20",
         "focusPrevious": "Option+F16",
         "toggleQuakeTerminal": "Option+F14",
+        # Niri geometry controls (OmniWM-native, documented in the cheatsheet)
+        "setContainerPrimarySpan.decrease10Percent": "Option+Minus",
+        "setContainerPrimarySpan.increase10Percent": "Option+Equal",
+        "setWindowSecondarySpan.decrease10Percent": "Option+Shift+Minus",
+        "setWindowSecondarySpan.increase10Percent": "Option+Shift+Equal",
+        "resetWindowSecondarySpan": "Control+Option+R",
+        "moveColumn.left": "Control+Option+Shift+Left",
+        "moveColumn.right": "Control+Option+Shift+Right",
+        "toggleColumnTabbed": "Option+T",
+        "toggleContainerFullPrimarySpan": "Option+Shift+F",
+        "focusColumnFirst": "Option+Home",
+        "focusColumnLast": "Option+End",
     }
 
     for hk_id, expected_binding in required_bindings.items():

@@ -218,7 +218,7 @@ No workspace pins Dwindle today, so these notes describe what happens if one is 
 
 New windows are routed only for the deliberate workspace defaults below. Workspace switching and app launching remain separate actions.
 
-- **WEB (`1`):** Chrome, Chrome for Testing, Safari, Firefox, Zen, and Dia.
+- **WEB (`1`):** Chrome, Chrome for Testing, Helium, Safari, Firefox, Zen, and Dia.
 - **DEV (`2`):** Codex, Zed, VS Code, and Obsidian.
 - **COMMS (`3`):** Discord, Vesktop, Zalo, Outlook, Messages, and Spotify.
 - **RUN (`4`) and AUX (`5`):** no automatic routing yet.
@@ -230,8 +230,12 @@ New windows are routed only for the deliberate workspace defaults below. Workspa
 
 The built-in MacBook keyboard adapter allows full daily-driving of the OmniWM environment without the physical Corne keyboard. It preserves the exact physical `Option` chords but transports them as OmniWM IPC rather than synthetic `F13`–`F20` events, so the physical `Option` key remains held and visible to OmniWM's workspace-bar reveal monitor.
 
+The built-in MacBook keyboard drives three distinct layers: Karabiner Option chords that reach OmniWM over IPC, native macOS launchers, and OmniWM's own hotkeys.
+
+### Karabiner Option Chords → OmniWM IPC
+
 | Built-in Key Chord | OmniWM IPC (`omniwmctl command …`) | OmniWM Action |
-|---|---|---|
+| --- | --- | --- |
 | `⌥ 1` … `5` | `switch-workspace 1` … `5` | Switch to workspace 1–5 |
 | `⌥ ⇧ 1` … `5` | `move-to-workspace 1` … `5` | Move active window to workspace 1–5 |
 | `⌥ H / J / K / L` | `focus left / down / up / right` | Focus Left / Down / Up / Right |
@@ -240,14 +244,34 @@ The built-in MacBook keyboard adapter allows full daily-driving of the OmniWM en
 | `⌥ Tab` | `focus previous` | Focus previous window across workspaces |
 | `⌥ .` | `cycle-size forward` | Cycle Size |
 | `⌥ ⇧ O` | `toggle-overview` | Toggle OmniWM Overview |
-| `⌥ Return` | `toggle-fullscreen` | Toggle fullscreen |
+| `⌥ ⇧ Return` | `toggle-fullscreen` | Toggle fullscreen |
 | `⌥ ⇧ Space` | `toggle-focused-window-floating` | Toggle focused window floating |
 | `⌥ \`` | `toggle-quake-terminal` | Toggle native Quake terminal |
-| `⌃ ⌥ Space` | _(native OmniWM hotkey — not via Karabiner)_ | Open the OmniWM command palette |
 
-All MacBook rules invoke the deterministic bundle binary `/Applications/OmniWM.app/Contents/MacOS/omniwmctl` (independent of Karabiner's `PATH`) and are strictly scoped to `is_built_in_keyboard: true` so the external Corne is unaffected.
+### Launchers (Native macOS Automation)
 
-`⌃ ⌥ Space` is the one exception to that routing: it is a native OmniWM hotkey (`Control+Option+Space` → `openCommandPalette` in `settings.toml`) that never passes through Karabiner, so it behaves identically on the built-in and external keyboards and is tracked against `settings.toml` rather than the adapter.
+| Built-in Key Chord | Mechanism | Behaviour |
+| --- | --- | --- |
+| `⌥ Return` | Ghostty AppleScript | New standalone Ghostty window |
+| `⌥ B` | `open -b net.imput.helium` | Launch or focus the primary browser |
+| `⌥ E` | Ghostty `new surface configuration` | New Ghostty window running Yazi |
+
+`⌥ E` reuses the same Ghostty window path as `⌥ Return`, but seeds the surface with `command` set to the resolved Yazi executable, so the file manager *is* the window's process rather than being typed into a shell.
+
+### Native OmniWM Hotkeys (Never Touch Karabiner)
+
+| Built-in Key Chord | OmniWM Action | Behaviour |
+| --- | --- | --- |
+| `⌃ ⌥ Space` | `openCommandPalette` | Open the OmniWM command palette |
+| `⌥ -` / `⌥ =` | `setContainerPrimarySpan` ∓10% | Narrow / widen the focused column |
+| `⌥ ⇧ -` / `⌥ ⇧ =` | `setWindowSecondarySpan` ∓10% | Shorter / taller stacked window |
+| `⌃ ⌥ R` | `resetWindowSecondarySpan` | Reset stacked-window height |
+| `⌥ T` | `toggleColumnTabbed` | Toggle a tabbed column |
+| `⌥ ⇧ F` | `toggleContainerFullPrimarySpan` | Full-width column |
+| `⌥ Home` / `⌥ End` | `focusColumnFirst` / `focusColumnLast` | First / last column |
+| `⌃ ⌥ ⇧ ←` / `→` | `moveColumn.left` / `moveColumn.right` | Move the whole column |
+
+Karabiner-routed chords invoke the deterministic bundle binary `/Applications/OmniWM.app/Contents/MacOS/omniwmctl` (independent of Karabiner's `PATH`) and are strictly scoped to `is_built_in_keyboard: true` so the external Corne is unaffected. The native hotkeys above are bound in `hosts/macos/omniwm/settings.toml` and therefore behave identically on both keyboards; the cheatsheet tracks them against that file rather than against the adapter.
 
 `Option` itself is tracked in the `omniwm_option_held` Karabiner variable by two pass-through trackers, and is declared only as an *optional* modifier on the actions above. Karabiner projects mandatory modifiers out of `to` events, so declaring Option mandatory would emit a phantom Option key-up that hides the workspace bar mid-chord.
 

@@ -952,7 +952,7 @@
           },
           "to": [
             {
-              "shell_command": "osascript -e 'tell application \"Ghostty\" to activate' -e 'tell application \"Ghostty\" to new window'"
+              "shell_command": "osascript -e \"set r to application \\\"Ghostty\\\" is running\" -e \"tell application \\\"Ghostty\\\" to activate\" -e \"tell application \\\"Ghostty\\\"\" -e \"if r then\" -e \"new window\" -e \"else\" -e \"repeat 20 times\" -e \"if (count of windows) > 0 then exit repeat\" -e \"delay 0.15\" -e \"end repeat\" -e \"if (count of windows) is 0 then new window\" -e \"end if\" -e \"end tell\""
             }
           ]
         },
@@ -1018,7 +1018,7 @@
           },
           "to": [
             {
-              "shell_command": "osascript -e 'tell application \"Ghostty\"' -e 'set cfg to new surface configuration' -e 'set command of cfg to \"/opt/homebrew/bin/yazi\"' -e 'activate' -e 'set win to new window with configuration cfg' -e 'end tell'"
+              "shell_command": "osascript -e \"set r to application \\\"Ghostty\\\" is running\" -e \"tell application \\\"Ghostty\\\"\" -e \"activate\" -e \"set cfg to new surface configuration\" -e \"set command of cfg to \\\"/opt/homebrew/bin/yazi\\\"\" -e \"if r then\" -e \"new window with configuration cfg\" -e \"else\" -e \"repeat 20 times\" -e \"if (count of windows) > 0 then exit repeat\" -e \"delay 0.15\" -e \"end repeat\" -e \"set strays to {}\" -e \"if (count of windows) > 0 then set strays to id of every window\" -e \"new window with configuration cfg\" -e \"repeat with sid in strays\" -e \"try\" -e \"close window (first window whose id is (sid as text))\" -e \"end try\" -e \"end repeat\" -e \"end if\" -e \"end tell\""
             }
           ]
         }
